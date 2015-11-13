@@ -38,7 +38,7 @@ namespace CLplusplus {
       std::vector<Platform> result;
       result.reserve(number_of_platforms);
       for(cl_uint current_platform = 0; current_platform < number_of_platforms; ++current_platform) {
-         result.emplace_back(platforms[current_platform]);
+         result.emplace_back(Platform{platforms[current_platform]});
       }
 
       // Return the result

@@ -99,7 +99,7 @@ int main() {
    const auto context_callback = [](const std::string & errinfo, const void * private_info, size_t cb) -> void {
       std::cout << std::endl << "OPENCL CONTEXT ERROR: " << errinfo << " (private info at address " << (size_t)(void*)(private_info) << ", cb is " << cb << ")" << std::endl;
    };
-   CLplusplus::Context context(context_properties, selected_platform_and_device.second, context_callback);
+   CLplusplus::Context context{context_properties, selected_platform_and_device.second, context_callback};
 
    // Display context properties
    std::cout << "Generated OpenCL context features " << context.num_devices() << " device(s) :" << std::endl;
@@ -133,6 +133,32 @@ int main() {
             std::cout << " * <Some unrecognized property>" << std::endl;
       }
    }
+   std::cout << std::endl;
+
+   // Create an out-of-order command queue for the device
+   const auto command_queue = context.create_command_queue(CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE);
+
+   // Display command queue properties
+   if(command_queue.raw_context_id() != context.raw_context_id()) std::cout << "Oops ! Command queue seems to identify with the wrong context..." << std::endl;
+
+   const auto queue_device = command_queue.device();
+   std::cout << "Command queue device is " << queue_device.name() << " (vendor ID " << queue_device.vendor_id() << ")" << std::endl;
+
+   const auto queue_properties = command_queue.properties();
+   std::cout << "Command execution will be performed ";
+   if(queue_properties & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE) {
+      std::cout << "in-order";
+   } else {
+      std::cout << "out-of-order";
+   }
+   std::cout << std::endl;
+   std::cout << "Command profiling is ";
+   if(queue_properties & CL_QUEUE_PROFILING_ENABLE) {
+      std::cout << "enabled";
+   } else {
+      std::cout << "disabled";
+   }
+   std::cout << std::endl;
 
    return 0;
 }

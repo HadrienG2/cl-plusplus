@@ -41,7 +41,7 @@ namespace CLplusplus {
    class Device {
       public:
          // We need a valid OpenCL device ID in order to initialize this class
-         Device(const cl_device_id identifier);
+         Device(const cl_device_id identifier, const bool increment_reference_count);
 
          // Sub-devices are reference counted using the following functions
          Device(const Device & source);
@@ -145,7 +145,7 @@ namespace CLplusplus {
          bool preferred_interop_user_sync() const { return raw_bool_query(CL_DEVICE_PREFERRED_INTEROP_USER_SYNC); }
 
          bool has_parent_device() const { return (raw_parent_device() != NULL); }
-         CLplusplus::Device parent_device() const { return Device(raw_parent_device()); }
+         CLplusplus::Device parent_device() const { return Device{raw_parent_device(), true}; }
          
          cl_uint partition_max_sub_devices() const { return raw_uint_query(CL_DEVICE_PARTITION_MAX_SUB_DEVICES); }
          bool supports_partitioning() const { return (partition_max_sub_devices() > 1); }

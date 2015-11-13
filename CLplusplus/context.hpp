@@ -39,7 +39,7 @@ namespace CLplusplus {
    class Context {
       public:
          // First of all, we can wrap an existing context of known C handle
-         Context(const cl_context identifier);
+         Context(const cl_context identifier, const bool increment_reference_count);
 
          // For all other context creation constructors, we accept native std::functions as callbacks, with and without user-defined data blocks.
          // We discourage the use of such blocks in C++11 as lambdas and std::bind() usually provide a safer alternative, but they are needed for legacy C code compatibility.
@@ -68,12 +68,11 @@ namespace CLplusplus {
          std::vector<CLplusplus::Device> devices() const;
          ContextProperties properties() const;
 
-         // TODO : It is possible to spawn a command queue on a context, for a device within this context.
-         CommandQueue create_command_queue(const Device & device, cl_command_queue_properties properties);
-
-         // TODO : In the common case where the OpenCL context only wraps a single device, we can make that argument implicit.
+         // It is possible to spawn a command queue on a context, for a device within this context.
+         // And in the common case where the OpenCL context only wraps a single device, we can make that argument implicit.
          // If the context *could* contain multiple devices, even if that is not the case for a specific program instance, an exception will be thrown.
-         CommandQueue create_command_queue(cl_command_queue_properties);
+         CommandQueue create_command_queue(const Device & device, const cl_command_queue_properties properties);
+         CommandQueue create_command_queue(const cl_command_queue_properties properties);
          class AmbiguousDevice : WrapperException {};
 
          // Unsupported context properties can be queried in a nearly pure OpenCL way, with some common-case usability optimizations
@@ -89,6 +88,12 @@ namespace CLplusplus {
          // This is the internal identifier that represents our context
          cl_context internal_id;
 
+         // If our context was created with only one device, this will contain its OpenCL identifier, otherwise it will contain NULL
+         cl_device_id single_device_id;
+
+         // In general, we DO NOT want to deal with multiple kinds of callbacks, so the user data version is converted to a regular callback as soon as possible
+         ContextCallback make_context_callback(const ContextCallbackWithUserData & callback, void * const user_data);
+
          // High-level context callbacks are stored here. They will be called by a lower-level static function which follows OpenCL's linkage conventions.
          ContextCallback * internal_callback_ptr;
          static void CL_CALLBACK raw_callback(const char * errinfo, const void * private_info, size_t cb, void * actual_callback_ptr);
@@ -100,8 +105,11 @@ namespace CLplusplus {
          // These functions manage the life cycle of reference-counted contexts
          void copy_internal_data(const Context & source);
          cl_uint reference_count() const { return raw_uint_query(CL_CONTEXT_REFERENCE_COUNT); }
-         void retain_context();
+         void retain_context() const;
          void release_context();
+
+         // This function works behind the scene to create a command queue from a raw device ID
+         CommandQueue raw_create_command_queue(const cl_device_id device_id, const cl_command_queue_properties properties);
    };
 
 }

@@ -20,7 +20,9 @@ LIBS := -lOpenCL
 .PHONY: all clean
 
 ALL_EXECUTABLES := clpp_info.bin clpp_test.bin clpp_context.bin
-all: $(ALL_EXECUTABLES)
+all: $(ALL_EXECUTABLES) test
+
+test: clpp_test.bin
 	./clpp_test.bin
 
 %.o: %.cpp $(CL_PLUSPLUS_HEADERS)

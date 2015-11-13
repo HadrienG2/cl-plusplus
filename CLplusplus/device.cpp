@@ -23,9 +23,14 @@
 
 namespace CLplusplus {
 
-   Device::Device(const cl_device_id identifier) : internal_id{identifier} {
+   Device::Device(const cl_device_id identifier, const bool increment_reference_count) :
+      internal_id{identifier}
+   {
       // Handle invalid device IDs
       if(internal_id == NULL) throw InvalidArgument();
+
+      // Unless asked not to do so, increment the device's reference count
+      if(increment_reference_count) retain_device();
    }
 
    Device::Device(const Device & source) {
@@ -99,7 +104,7 @@ namespace CLplusplus {
       std::vector<Device> result;
       result.reserve(number_of_subdevices);
       for(size_t i = 0; i < number_of_subdevices; ++i) {
-         result.emplace_back(Device{raw_result[i]});
+         result.emplace_back(Device{raw_result[i], false});
       }
       
       // Return the result

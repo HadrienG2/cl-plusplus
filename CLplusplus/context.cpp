@@ -22,44 +22,55 @@
 
 namespace CLplusplus {
 
-   Context::Context(const cl_context identifier) : internal_id{identifier} {
+   Context::Context(const cl_context identifier, const bool increment_reference_count) :
+      internal_id{identifier}
+   {
       // Handle invalid context IDs
       if(internal_id == NULL) throw InvalidArgument();
+      
+      // Unless asked not to do so, increment the context's reference count
+      if(increment_reference_count) retain_context();
    }
 
    Context::Context(ContextProperties & properties, const Device & device, const ContextCallback & callback) :
+      single_device_id{device.raw_device_id()},
       internal_callback_ptr{callback ? (new ContextCallback{callback}) : nullptr}
    {
       create_context(properties, 1, &device);
    }
 
-   Context::Context(ContextProperties & properties, const Device & device, const ContextCallbackWithUserData & callback, void * const user_data) {
-      using namespace std::placeholders;
-      internal_callback_ptr = new ContextCallback{std::bind(callback, _1, _2, _3, user_data)};
+   Context::Context(ContextProperties & properties, const Device & device, const ContextCallbackWithUserData & callback, void * const user_data) :
+      single_device_id{device.raw_device_id()},
+      internal_callback_ptr{callback ? new ContextCallback{make_context_callback(callback, user_data)} : nullptr}
+   {
       create_context(properties, 1, &device);
    }
 
    Context::Context(ContextProperties & properties, const std::vector<Device> & devices, const ContextCallback & callback) :
+      single_device_id{NULL},
       internal_callback_ptr{callback ? (new ContextCallback{callback}) : nullptr}
    {
       create_context(properties, devices.size(), &devices[0]);
    }
 
-   Context::Context(ContextProperties & properties, const std::vector<Device> & devices, const ContextCallbackWithUserData & callback, void * const user_data) {
-      using namespace std::placeholders;
-      internal_callback_ptr = new ContextCallback{std::bind(callback, _1, _2, _3, user_data)};
+   Context::Context(ContextProperties & properties, const std::vector<Device> & devices, const ContextCallbackWithUserData & callback, void * const user_data) :
+      single_device_id{NULL},
+      internal_callback_ptr{callback ? new ContextCallback{make_context_callback(callback, user_data)} : nullptr}
+   {
       create_context(properties, devices.size(), &devices[0]);
    }
 
    Context::Context(ContextProperties & properties, const cl_device_type device_type, const ContextCallback & callback) :
+      single_device_id{NULL},
       internal_callback_ptr{callback ? (new ContextCallback{callback}) : nullptr}
    {
       create_context_from_type(properties, device_type);
    }
 
-   Context::Context(ContextProperties & properties, const cl_device_type device_type, const ContextCallbackWithUserData & callback, void * const user_data) {
-      using namespace std::placeholders;
-      internal_callback_ptr = new ContextCallback{std::bind(callback, _1, _2, _3, user_data)};
+   Context::Context(ContextProperties & properties, const cl_device_type device_type, const ContextCallbackWithUserData & callback, void * const user_data) :
+      single_device_id{NULL},
+      internal_callback_ptr{callback ? new ContextCallback{make_context_callback(callback, user_data)} : nullptr}
+   {
       create_context_from_type(properties, device_type);
    }
 
@@ -91,7 +102,7 @@ namespace CLplusplus {
 
       // Convert it into high-level output
       std::vector<Device> result;
-      for(unsigned int i = 0; i < device_amount; ++i) result.emplace_back(Device{opencl_devices[i]});
+      for(unsigned int i = 0; i < device_amount; ++i) result.emplace_back(Device{opencl_devices[i], true});
       return result;
    }
 
@@ -105,6 +116,18 @@ namespace CLplusplus {
 
       // Convert it into high-level output
       return ContextProperties{opencl_properties};
+   }
+
+   CommandQueue Context::create_command_queue(const Device & device, const cl_command_queue_properties properties) {
+      return raw_create_command_queue(device.raw_device_id(), properties);
+   }
+
+   CommandQueue Context::create_command_queue(const cl_command_queue_properties properties) {
+      // If our context was created, or could have been created, with more than one device, then this call is invalid
+      if(single_device_id == NULL) throw AmbiguousDevice();
+
+      // Otherwise, create the command queue using the previously stored device id
+      return raw_create_command_queue(single_device_id, properties);
    }
 
    cl_uint Context::raw_uint_query(const cl_context_info parameter_name) const {
@@ -121,6 +144,11 @@ namespace CLplusplus {
 
    void Context::raw_query(cl_context_info parameter_name, size_t output_storage_size, void * output_storage, size_t * actual_output_size) const {
       throw_if_failed(clGetContextInfo(internal_id, parameter_name, output_storage_size, output_storage, actual_output_size));
+   }
+
+   Context::ContextCallback Context::make_context_callback(const ContextCallbackWithUserData & callback, void * const user_data) {
+      using namespace std::placeholders;
+      return ContextCallback{std::bind(callback, _1, _2, _3, user_data)};
    }
 
    void CL_CALLBACK Context::raw_callback(const char * errinfo, const void * private_info, size_t cb, void * actual_callback_ptr) {
@@ -163,7 +191,7 @@ namespace CLplusplus {
       internal_callback_ptr = source.internal_callback_ptr;
    }
 
-   void Context::retain_context() {
+   void Context::retain_context() const {
       throw_if_failed(clRetainContext(internal_id));
    }
 
@@ -171,6 +199,13 @@ namespace CLplusplus {
       bool last_reference = (reference_count() == 1);
       throw_if_failed(clReleaseContext(internal_id));
       if(last_reference && internal_callback_ptr) delete internal_callback_ptr;
+   }
+
+   CommandQueue Context::raw_create_command_queue(const cl_device_id device_id, const cl_command_queue_properties properties) {
+      cl_int error_code;
+      const auto command_queue_id = clCreateCommandQueue(internal_id, device_id, properties, &error_code);
+      throw_if_failed(error_code);
+      return CommandQueue{command_queue_id, false};
    }
 
 }

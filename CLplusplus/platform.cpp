@@ -24,7 +24,9 @@
 
 namespace CLplusplus {
 
-   Platform::Platform(const cl_platform_id identifier) : internal_id{identifier} {
+   Platform::Platform(const cl_platform_id identifier) :
+      internal_id{identifier}
+   {
       // Handle invalid platform IDs
       if(internal_id == NULL) throw InvalidArgument();
    }
@@ -42,7 +44,7 @@ namespace CLplusplus {
       std::vector<Device> result;
       result.reserve(number_of_devices);
       for(cl_uint current_device = 0; current_device < number_of_devices; ++current_device) {
-         result.emplace_back(devices[current_device]);
+         result.emplace_back(Device{devices[current_device], false});
       }
 
       // Return the result
