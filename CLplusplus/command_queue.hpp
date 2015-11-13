@@ -49,6 +49,10 @@ namespace CLplusplus {
          size_t raw_query_output_size(const cl_command_queue_info parameter_name) const;
          void raw_query(const cl_command_queue_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
 
+         // Finally, if the need arises, one can directly access the command queue identifier in order to perform raw OpenCL operations.
+         // WARNING : Be very careful when you do this, as such raw identifiers will NOT be taken into account during reference counting !
+         cl_command_queue raw_command_queue_id() const { return internal_id; }
+
       private:
          // This is the internal identifier that represents our command queue
          cl_command_queue internal_id;

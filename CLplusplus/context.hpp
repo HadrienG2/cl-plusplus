@@ -81,7 +81,7 @@ namespace CLplusplus {
          void raw_query(const cl_context_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
 
          // Finally, if the need arises, one can directly access the context identifier in order to perform raw OpenCL operations.
-         // WARNING : Be very careful when you do this, as such raw identifiers will NOT be taken into account during context reference counting !
+         // WARNING : Be very careful when you do this, as such raw identifiers will NOT be taken into account during reference counting !
          cl_context raw_context_id() const { return internal_id; }
 
       private:

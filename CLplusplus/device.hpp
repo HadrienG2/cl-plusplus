@@ -179,7 +179,7 @@ namespace CLplusplus {
          void raw_query(const cl_device_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
 
          // Finally, if the need arises, one can directly access the device identifier in order to perform raw OpenCL operations.
-         // WARNING : Be very careful when you do this with subdevices, as such identifiers will NOT be taken into account during device reference counting !
+         // WARNING : Be very careful when you do this with subdevices, as such identifiers will NOT be taken into account during reference counting !
          cl_device_id raw_device_id() const { return internal_id; }
 
       private:
