@@ -34,6 +34,7 @@ namespace CLplusplus {
 
       // This function can be used for version compatibility check, but please note that it ignores vendor-specific information
       bool operator>=(const Version & reference);
+      bool operator<(const Version & reference) { return !(*this >= reference); }
    };
 
    // These specific instances represent various supported OpenCL versions

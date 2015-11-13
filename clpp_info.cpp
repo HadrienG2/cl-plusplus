@@ -39,10 +39,10 @@ int main() {
          return (platform.version() >= target_version);                       // Platform OpenCL version is recent enough
       },
       [](const CLplusplus::Device & device) -> bool {
+         if(device.version() < target_version) return false;                  // OpenCL platforms may support older-generation devices, which we need to eliminate
          const bool device_supports_ooe_execution = device.queue_properties() & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
          const auto device_double_config = device.double_fp_config();
          return device.available() &&                                         // Device is available for compute purposes
-                (device.version() >= target_version) &&                       // Device OpenCL version is recent enough
                 device.endian_little() &&                                     // Device is little-endian
                 (device.execution_capabilities() & CL_EXEC_KERNEL) &&         // Device can execute OpenCL kernels
                 device_supports_ooe_execution &&                              // Device can execute OpenCL commands out of order
