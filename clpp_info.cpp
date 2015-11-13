@@ -26,50 +26,26 @@
 #include "CLplusplus/queries.hpp"
 #include "CLplusplus/version.hpp"
 
-// Some minimal platform and device parameters are specified here, but most of them are specified below
-const CLplusplus::Version target_version = CLplusplus::version_1p2;
-const cl_ulong min_mem_alloc_size = 20 * 1024 * 1024;
-const cl_ulong min_local_mem_size = 16 * 1024;
-
 // This program implements a cousin of the well-known CLinfo program, illustrating the syntax and capabilities of CLplusplus
 int main() {
    // Detect OpenCL platform and device combinations which match our expectations
-   const auto filtered_platforms = CLplusplus::get_filtered_devices(
-      [](const CLplusplus::Platform & platform) -> bool {
-         return (platform.version() >= target_version);                       // Platform OpenCL version is recent enough
-      },
-      [](const CLplusplus::Device & device) -> bool {
-         if(device.version() < target_version) return false;                  // OpenCL platforms may support older-generation devices, which we need to eliminate
-         const bool device_supports_ooe_execution = device.queue_properties() & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
-         const auto device_double_config = device.double_fp_config();
-         return device.available() &&                                         // Device is available for compute purposes
-                device.endian_little() &&                                     // Device is little-endian
-                (device.execution_capabilities() & CL_EXEC_KERNEL) &&         // Device can execute OpenCL kernels
-                device_supports_ooe_execution &&                              // Device can execute OpenCL commands out of order
-                device.compiler_available() && device.linker_available() &&   // Implementation has an OpenCL C compiler and linker for this device
-                (device.max_mem_alloc_size() >= min_mem_alloc_size) &&        // Device accepts large enough global memory allocations
-                (device.local_mem_type() == CL_LOCAL) &&                      // Device has local memory support, with dedicated storage
-                (device.local_mem_size() >= min_local_mem_size) &&            // Device has a large enough local memory
-                (device_double_config != 0) &&                                // Doubles are supported
-                ((device_double_config & CL_FP_SOFT_FLOAT) == 0);             // Doubles are not emulated in software
-      }
-   );
+   const auto platforms = CLplusplus::get_platforms();
 
    // Display the basic platform detection result
-   if(filtered_platforms.size() > 0) {
-      std::cout << filtered_platforms.size() << " suitable OpenCL platform(s) detected" << std::endl;
+   const auto num_platforms = platforms.size();
+   if(num_platforms > 0) {
+      std::cout << num_platforms << " OpenCL platform(s) detected" << std::endl;
    } else {
-      std::cout << "No suitable OpenCL platform or device detected!" << std::endl;
+      std::cout << "No OpenCL platform detected!" << std::endl;
       std::abort();
    }
 
    // Investigate each detected OpenCL platform
-   for(size_t i = 0; i < filtered_platforms.size(); ++i) {
+   for(size_t i = 0; i < num_platforms; ++i) {
 
       // Print some introductory text
       std::cout << std::endl << "=== Investigating platform " << i << " ===" << std::endl << std::endl;
-      const auto & platform = filtered_platforms[i].platform;
-      const auto & devices = filtered_platforms[i].filtered_devices;
+      const auto & platform = platforms[i];
       
       // Detect platform profile
       const auto profile = platform.profile();
@@ -102,8 +78,9 @@ int main() {
       }
       std::cout << std::endl;
 
-      // Determine how many suitable devices were found on this platform
-      std::cout << std::endl << "Platform features " << devices.size() << " suitable device(s)" << std::endl;
+      // Determine how many devices are available on this platform
+      const auto devices = platforms[i].devices(CL_DEVICE_TYPE_ALL);
+      std::cout << std::endl << "Platform features " << devices.size() << " device(s)" << std::endl;
 
       // Investigate each detected OpenCL device
       for(size_t j = 0; j < devices.size(); ++j) {
