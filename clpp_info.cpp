@@ -28,7 +28,7 @@
 
 // This program implements a cousin of the well-known CLinfo program, illustrating the syntax and capabilities of CLplusplus
 int main() {
-   // Detect OpenCL platform and device combinations which match our expectations
+   // Detect OpenCL platforms
    const auto platforms = CLplusplus::get_platforms();
 
    // Display the basic platform detection result
