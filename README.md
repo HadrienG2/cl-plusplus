@@ -17,7 +17,7 @@ A makefile is provided to automate the build process. It is not very pretty on t
 
 Once you have confirmed that the examples applications are working, studying their code and the wrapper's headers, should give you a good feel of how the wrapper works. At the moment, I do not have better documentation available, but I will be sure to write some once the wrapper is feature-complete.
 
-## What is the OpenCL support status, and how far do you plan to go?
+## What are the current and targeted OpenCL support?
 At the moment (Nov. 2015) I am targeting OpenCL 1.2, because that is the best which my GPU vendor will accept to support, in an attempt to push forward its own competing proprietary technology.
 
 Platform layer is complete: one can query platforms and devices, create contexts, and query said context properties.
