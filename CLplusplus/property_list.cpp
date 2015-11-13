@@ -17,7 +17,7 @@
 
 #include <CL/cl.h>
 
-#include "properties.hpp"
+#include "property_list.hpp"
 
 namespace CLplusplus {
 
@@ -208,7 +208,7 @@ namespace CLplusplus {
 
    namespace UnitTests {
 
-      void run_tests_properties() {
+      void run_tests_property_list() {
          // For this test, we will use lists of device partition properties
          using TestedProperty = cl_device_partition_property;
          using TestedPropertyList = PropertyList<TestedProperty>;

@@ -26,7 +26,7 @@
 
 #include "extensions.hpp"
 #include "profile.hpp"
-#include "properties.hpp"
+#include "property_list.hpp"
 #include "version.hpp"
 
 // This code unit provides facilities for handling OpenCL devices
@@ -34,7 +34,7 @@ namespace CLplusplus {
 
    // When an OpenCL device is partitioned into subdevices, some partitioning properties must be specified.
    // For this, OpenCL uses zero-terminated lists, which are relatively impractical to parse and a common source of security issues.
-   // We propose an higher-level abstraction, see details in properties.hpp
+   // We propose an higher-level abstraction, see details in property_list.hpp
    using PartitionProperties = CLplusplus::PropertyList<cl_device_partition_property>;
 
    // This class represents an OpenCL device that can be queried in a high-level way

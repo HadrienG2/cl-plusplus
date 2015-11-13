@@ -20,7 +20,7 @@
 #include "common.hpp"
 #include "extensions.hpp"
 #include "profile.hpp"
-#include "properties.hpp"
+#include "property_list.hpp"
 #include "version.hpp"
 
 namespace CLplusplus {
@@ -35,6 +35,8 @@ namespace CLplusplus {
             throw DeviceNotFound();
          case CL_DEVICE_PARTITION_FAILED:
             throw DevicePartitionFailed();
+         case CL_INVALID_COMMAND_QUEUE:
+            throw InvalidCommandQueue();
          case CL_INVALID_CONTEXT:
             throw InvalidContext();
          case CL_INVALID_DEVICE:
@@ -47,6 +49,8 @@ namespace CLplusplus {
             throw InvalidPlatform();
          case CL_INVALID_PROPERTY:
             throw InvalidProperty();
+         case CL_INVALID_QUEUE_PROPERTIES:
+            throw InvalidQueueProperties();
          case CL_INVALID_VALUE:
             throw InvalidValue();
          case CL_OUT_OF_HOST_MEMORY:
@@ -168,7 +172,7 @@ namespace CLplusplus {
          try { run_tests_common(); } catch(...) { fail("Some unit tests failed for common.hpp", true); }
          try { run_tests_extensions(); } catch(...) { fail("Some unit tests failed for extensions.hpp", true); }
          try { run_tests_profile(); } catch(...) { fail("Some unit tests failed for profile.hpp", true); }
-         try { run_tests_properties(); } catch(...) { fail("Some unit tests failed for properties.hpp", true); }
+         try { run_tests_property_list(); } catch(...) { fail("Some unit tests failed for property_list.hpp", true); }
          try { run_tests_version(); } catch(...) { fail("Some unit tests failed for version.hpp", true); }
          std::cout << "All unit tests passed !" << std::endl;
       }

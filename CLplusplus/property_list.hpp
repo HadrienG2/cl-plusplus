@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with CLplusplus.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef INCLUDE_CL_PLUSPLUS_PROPERTIES
-#define INCLUDE_CL_PLUSPLUS_PROPERTIES
+#ifndef INCLUDE_CL_PLUSPLUS_PROPERTY_LIST
+#define INCLUDE_CL_PLUSPLUS_PROPERTY_LIST
 
 #include <utility>
 #include <vector>
@@ -123,7 +123,7 @@ namespace CLplusplus {
    namespace UnitTests {
 
       // Test the components of this unit
-      void run_tests_properties();
+      void run_tests_property_list();
 
    }
 

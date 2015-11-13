@@ -23,15 +23,16 @@
 
 #include <CL/cl.h>
 
+#include "command_queue.hpp"
 #include "device.hpp"
-#include "properties.hpp"
+#include "property_list.hpp"
 
 // This unit provides facilities for handling OpenCL contexts
 namespace CLplusplus {
 
    // When an OpenCL context is created, some properties must be specified.
    // For this, OpenCL uses zero-terminated lists, which are relatively impractical to parse and a common source of security issues.
-   // We propose an higher-level abstraction on top of these, see details in properties.hpp
+   // We propose an higher-level abstraction on top of these, see details in property_list.hpp
    using ContextProperties = CLplusplus::PropertyList<cl_context_properties>;
 
    // This class represents an OpenCL context, that can be queried in a high-level way.
@@ -40,7 +41,7 @@ namespace CLplusplus {
          // First of all, we can wrap an existing context of known C handle
          Context(const cl_context identifier);
 
-         // For all context creation constructors, we accept native std::functions as callbacks, with and without user-defined data blocks.
+         // For all other context creation constructors, we accept native std::functions as callbacks, with and without user-defined data blocks.
          // We discourage the use of such blocks in C++11 as lambdas and std::bind() usually provide a safer alternative, but they are needed for legacy C code compatibility.
          using ContextCallback = std::function<void(const std::string &, const void *, size_t)>;
          using ContextCallbackWithUserData = std::function<void(const std::string &, const void *, size_t, void *)>;
@@ -67,7 +68,15 @@ namespace CLplusplus {
          std::vector<CLplusplus::Device> devices() const;
          ContextProperties properties() const;
 
-         // And unsupported context properties can be queried in a nearly pure OpenCL way, with some common-case usability optimizations
+         // TODO : It is possible to spawn a command queue on a context, for a device within this context.
+         CommandQueue create_command_queue(const Device & device, cl_command_queue_properties properties);
+
+         // TODO : In the common case where the OpenCL context only wraps a single device, we can make that argument implicit.
+         // If the context *could* contain multiple devices, even if that is not the case for a specific program instance, an exception will be thrown.
+         CommandQueue create_command_queue(cl_command_queue_properties);
+         class AmbiguousDevice : WrapperException {};
+
+         // Unsupported context properties can be queried in a nearly pure OpenCL way, with some common-case usability optimizations
          cl_uint raw_uint_query(const cl_context_info parameter_name) const;
          size_t raw_query_output_size(const cl_context_info parameter_name) const;
          void raw_query(const cl_context_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
