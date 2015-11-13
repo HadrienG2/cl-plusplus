@@ -20,7 +20,7 @@ Once you have confirmed that the examples applications are working, studying the
 ## What are the current and targeted OpenCL support?
 At the moment (Nov. 2015) I am targeting OpenCL 1.2, because that is the best which my GPU vendor will accept to support, in an attempt to push forward its own competing proprietary technology.
 
-Platform layer is complete: one can query platforms and devices, create contexts, and query said context properties.
+Platform layer is complete: one can query platforms and devices, create contexts, and query context properties.
 
 Runtime layer is coming next. With it, one will be able create command queues, submit commands, and in fact do everything which OpenCL allows on the host side.
 
