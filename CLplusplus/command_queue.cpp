@@ -31,6 +31,14 @@ namespace CLplusplus {
       return *this;
    }
 
+   void CommandQueue::flush() const {
+      throw_if_failed(clFlush(internal_id));
+   }
+
+   void CommandQueue::finish() const {
+      throw_if_failed(clFinish(internal_id));
+   }
+
    size_t CommandQueue::raw_query_output_size(cl_command_queue_info parameter_name) const {
       size_t result;
       raw_query(parameter_name, 0, nullptr, &result);

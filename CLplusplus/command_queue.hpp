@@ -40,7 +40,13 @@ namespace CLplusplus {
          Device device() const { return Device{raw_value_query<cl_device_id>(CL_QUEUE_DEVICE), true}; }
          cl_command_queue_properties properties() const { return raw_value_query<cl_command_queue_properties>(CL_QUEUE_PROPERTIES); }
 
-         // And unsupported command queue properties can be queried in a nearly pure OpenCL way, with some common-case usability optimizations
+         // TODO : Add kernel execution, etc.
+
+         // In an OpenCL command queue, one can wait for some global command-related events
+         void flush() const;  // Wait for all previously issued commands to be sent to the device
+         void finish() const; // Wait for all previously issued commands to finish execution
+
+         // Unsupported command queue properties can be queried in a nearly pure OpenCL way, with some common-case usability optimizations
          template<typename ValueType> ValueType raw_value_query(const cl_command_queue_info parameter_name) const {
             ValueType result;
             raw_query(parameter_name, sizeof(ValueType), &result);
