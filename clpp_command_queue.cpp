@@ -19,14 +19,14 @@
 
 #include <CL/cl.h>
 
-#include "CLplusplus/context.hpp"
+#include "CLplusplus/command_queue.hpp"
 #include "CLplusplus/device.hpp"
 #include "CLplusplus/platform.hpp"
 #include "CLplusplus/version.hpp"
 
 #include "shared.hpp"
 
-// This program demonstrates context creation and basic handling in CLplusplus
+// This program demonstrates conmmand queue creation and basic handling in CLplusplus
 int main() {
    // Some minimal platform and device parameters are specified here
    const CLplusplus::Version target_version = CLplusplus::version_1p2;
@@ -34,7 +34,7 @@ int main() {
    const cl_ulong min_local_mem_size = 16 * 1024;
 
    // Have the user select a suitable device, according to some criteria (see shared.hpp for more details)
-   Shared::PlatformAndDevice selected_platform_and_device = Shared::select_device(
+   const auto selected_platform_and_device = Shared::select_device(
       [&](const CLplusplus::Platform & platform) -> bool {
          return (platform.version() >= target_version);                       // Platform OpenCL version is recent enough
       },
@@ -55,51 +55,33 @@ int main() {
       }
    );
 
-   // Define the properties of the OpenCL context which we are going to create
-   CLplusplus::ContextProperties context_properties;
-   const auto platform_id = selected_platform_and_device.first.raw_platform_id();
-   context_properties.append(CL_CONTEXT_PLATFORM, (cl_context_properties)(void *)platform_id);
+   // Create an OpenCL context on the device with some default parameters (see shared.hpp for more details)
+   const auto context = Shared::build_default_context(selected_platform_and_device);
 
-   // Define a callback to be called in case of a context error
-   const auto context_callback = [](const std::string & errinfo, const void * private_info, size_t cb) -> void {
-      std::cout << std::endl << "OPENCL CONTEXT ERROR: " << errinfo << " (private info at address " << (size_t)(void*)(private_info) << ", cb is " << cb << ")" << std::endl;
-   };
+   // Create an out-of-order command queue for the device
+   const auto command_queue = context.create_command_queue(CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE);
 
-   // Create the context
-   const CLplusplus::Context context{context_properties, selected_platform_and_device.second, context_callback};
+   // Display command queue properties
+   if(command_queue.raw_context_id() != context.raw_context_id()) std::cout << "Oops ! Command queue seems to identify with the wrong context..." << std::endl;
 
-   // Display context properties
-   std::cout << "Generated OpenCL context features " << context.num_devices() << " device(s) :" << std::endl;
+   const auto queue_device = command_queue.device();
+   std::cout << "Command queue device is " << queue_device.name() << " (vendor ID " << queue_device.vendor_id() << ")" << std::endl;
 
-   for(const auto & device : context.devices()) {
-      std::cout << " * " << device.name() << " (vendor ID " << device.vendor_id() << ")" << std::endl;
+   const auto queue_properties = command_queue.properties();
+   std::cout << "Command execution will be performed ";
+   if(queue_properties & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE) {
+      std::cout << "in-order";
+   } else {
+      std::cout << "out-of-order";
    }
-   
-   std::cout << "The context was created with the following properties :" << std::endl;
-   for(const auto & property : context.properties()) {
-      switch(property.name()) {
-         case CL_CONTEXT_PLATFORM:
-            {
-               const CLplusplus::Platform platform((cl_platform_id)(void *)property.value());
-               std::cout << " * Platform is " << platform.name() << std::endl;
-            }
-            break;
-         case CL_CONTEXT_INTEROP_USER_SYNC:
-            {
-               std::cout << " * In interop scenarii, ";
-               const bool user_is_responsible = (property.value() == CL_TRUE);
-               if(user_is_responsible) {
-                  std::cout << "the user is responsible for OpenCL-graphics synchronization";
-               } else {
-                  std::cout << "OpenCL-graphics synchronization is managed by the platform";
-               }
-               std::cout << std::endl;
-            }
-            break;
-         default:
-            std::cout << " * <Some unrecognized property>" << std::endl;
-      }
+   std::cout << std::endl;
+   std::cout << "Command profiling is ";
+   if(queue_properties & CL_QUEUE_PROFILING_ENABLE) {
+      std::cout << "enabled";
+   } else {
+      std::cout << "disabled";
    }
+   std::cout << std::endl;
 
    return 0;
 }
