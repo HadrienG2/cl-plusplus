@@ -71,8 +71,8 @@ namespace CLplusplus {
          // It is possible to spawn a command queue on a context, for a device within this context.
          // And in the common case where the OpenCL context only wraps a single device, we can make that argument implicit.
          // If the context *could* contain multiple devices, even if that is not the case for a specific program instance, an exception will be thrown.
-         CommandQueue create_command_queue(const Device & device, const cl_command_queue_properties properties);
-         CommandQueue create_command_queue(const cl_command_queue_properties properties);
+         CommandQueue create_command_queue(const Device & device, const cl_command_queue_properties properties) const;
+         CommandQueue create_command_queue(const cl_command_queue_properties properties) const;
          class AmbiguousDevice : WrapperException {};
 
          // Unsupported context properties can be queried in a nearly pure OpenCL way, with some common-case usability optimizations
@@ -109,7 +109,7 @@ namespace CLplusplus {
          void release_context();
 
          // This function works behind the scene to create a command queue from a raw device ID
-         CommandQueue raw_create_command_queue(const cl_device_id device_id, const cl_command_queue_properties properties);
+         CommandQueue raw_create_command_queue(const cl_device_id device_id, const cl_command_queue_properties properties) const;
    };
 
 }

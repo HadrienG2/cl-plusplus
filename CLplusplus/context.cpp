@@ -118,11 +118,11 @@ namespace CLplusplus {
       return ContextProperties{opencl_properties};
    }
 
-   CommandQueue Context::create_command_queue(const Device & device, const cl_command_queue_properties properties) {
+   CommandQueue Context::create_command_queue(const Device & device, const cl_command_queue_properties properties) const {
       return raw_create_command_queue(device.raw_device_id(), properties);
    }
 
-   CommandQueue Context::create_command_queue(const cl_command_queue_properties properties) {
+   CommandQueue Context::create_command_queue(const cl_command_queue_properties properties) const {
       // If our context was created, or could have been created, with more than one device, then this call is invalid
       if(single_device_id == NULL) throw AmbiguousDevice();
 
@@ -201,7 +201,7 @@ namespace CLplusplus {
       if(last_reference && internal_callback_ptr) delete internal_callback_ptr;
    }
 
-   CommandQueue Context::raw_create_command_queue(const cl_device_id device_id, const cl_command_queue_properties properties) {
+   CommandQueue Context::raw_create_command_queue(const cl_device_id device_id, const cl_command_queue_properties properties) const {
       cl_int error_code;
       const auto command_queue_id = clCreateCommandQueue(internal_id, device_id, properties, &error_code);
       throw_if_failed(error_code);
