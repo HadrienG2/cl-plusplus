@@ -31,9 +31,10 @@
 // This header and namespace contains some functionality which is shared between multiple OpenCL code examples
 namespace Shared {
 
-   // This function lets a user pick, on the command line, an OpenCL device which matches some minimal criteria
    using PlatformAndDevice = std::pair<CLplusplus::Platform, CLplusplus::Device>;
    class NoSuitableDevice : std::exception{};
+
+   // This function lets a user pick, on the command line, an OpenCL device which matches some minimal criteria
    PlatformAndDevice select_device(const CLplusplus::PlatformPredicate & platform_predicate, const CLplusplus::DevicePredicate & device_predicate) {
       // Detect all OpenCL platform + device combinations which match our expectations
       const auto filtered_platforms = CLplusplus::get_filtered_devices(platform_predicate, device_predicate);
