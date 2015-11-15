@@ -42,10 +42,13 @@ namespace CLplusplus {
       class InvalidDevice : public StandardException {};
       class InvalidDevicePartitionCount : public StandardException {};
       class InvalidDeviceType : public StandardException {};
+      class InvalidEventWaitList : public StandardException {};
+      class InvalidMemObject : public StandardException {};
       class InvalidPlatform : public StandardException {};
       class InvalidProperty : public StandardException {};
       class InvalidQueueProperties : public StandardException {};
       class InvalidValue : public StandardException {};
+      class MemObjectAllocationFailure : public StandardException {};
       class OutOfHostMemory : public StandardException {};
       class OutOfResources : public StandardException {};
    }

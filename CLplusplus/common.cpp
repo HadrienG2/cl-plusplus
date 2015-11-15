@@ -45,6 +45,10 @@ namespace CLplusplus {
             throw InvalidDevicePartitionCount();
          case CL_INVALID_DEVICE_TYPE:
             throw InvalidDeviceType();
+         case CL_INVALID_EVENT_WAIT_LIST:
+            throw InvalidEventWaitList();
+         case CL_INVALID_MEM_OBJECT:
+            throw InvalidMemObject();
          case CL_INVALID_PLATFORM:
             throw InvalidPlatform();
          case CL_INVALID_PROPERTY:
@@ -53,6 +57,8 @@ namespace CLplusplus {
             throw InvalidQueueProperties();
          case CL_INVALID_VALUE:
             throw InvalidValue();
+         case CL_MEM_OBJECT_ALLOCATION_FAILURE:
+            throw MemObjectAllocationFailure();
          case CL_OUT_OF_HOST_MEMORY:
             throw OutOfHostMemory();
          case CL_OUT_OF_RESOURCES:
