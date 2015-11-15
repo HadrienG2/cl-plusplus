@@ -35,6 +35,8 @@ namespace CLplusplus {
             throw DeviceNotFound();
          case CL_DEVICE_PARTITION_FAILED:
             throw DevicePartitionFailed();
+         case CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST:
+            throw ExecStatusErrorForEventsInWaitList();
          case CL_INVALID_COMMAND_QUEUE:
             throw InvalidCommandQueue();
          case CL_INVALID_CONTEXT:
@@ -45,10 +47,14 @@ namespace CLplusplus {
             throw InvalidDevicePartitionCount();
          case CL_INVALID_DEVICE_TYPE:
             throw InvalidDeviceType();
+         case CL_INVALID_EVENT:
+            throw InvalidEvent();
          case CL_INVALID_EVENT_WAIT_LIST:
             throw InvalidEventWaitList();
          case CL_INVALID_MEM_OBJECT:
             throw InvalidMemObject();
+         case CL_INVALID_OPERATION:
+            throw InvalidOperation();
          case CL_INVALID_PLATFORM:
             throw InvalidPlatform();
          case CL_INVALID_PROPERTY:

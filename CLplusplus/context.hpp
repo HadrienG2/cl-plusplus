@@ -25,6 +25,7 @@
 
 #include "command_queue.hpp"
 #include "device.hpp"
+#include "event.hpp"
 #include "property_list.hpp"
 
 // This unit provides facilities for handling OpenCL contexts
@@ -79,6 +80,9 @@ namespace CLplusplus {
          CommandQueue create_command_queue(const Device & device, const cl_command_queue_properties properties) const;
          CommandQueue create_command_queue(const cl_command_queue_properties properties) const;
          class AmbiguousDevice : WrapperException {};
+
+         // Within the boundaries of a context, one may also create user-triggered OpenCL events, so as to control the execution of asynchronous OpenCL code
+         Event create_user_event() const;
 
          // Finally, if the need arises, one can directly access the context identifier in order to perform raw OpenCL operations.
          // WARNING : Be very careful when you do this, as such raw identifiers will NOT be taken into account during reference counting !

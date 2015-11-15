@@ -54,7 +54,7 @@ namespace CLplusplus {
          CLplusplus::MemoryObject associated_memobject() const { return MemoryObject{raw_associated_memobject(), true}; }
          size_t offset() const { return raw_size_query(CL_MEM_OFFSET); }
 
-         // Unsupported property values may be queries in a lower-level way
+         // Unsupported property values may be queried in a lower-level way
          cl_context raw_context_id() const { return raw_value_query<cl_context>(CL_QUEUE_CONTEXT); } // NOTE : Returning a Context here would lead to a circular dependency.
                                                                                                      // WARNING : Beware that trying to use this identifier in a Context can lead to callback memory leaks.
          cl_mem raw_associated_memobject() const { return raw_value_query<cl_mem>(CL_MEM_ASSOCIATED_MEMOBJECT); }

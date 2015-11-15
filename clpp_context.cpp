@@ -21,6 +21,7 @@
 
 #include "CLplusplus/context.hpp"
 #include "CLplusplus/device.hpp"
+#include "CLplusplus/event.hpp"
 #include "CLplusplus/platform.hpp"
 #include "CLplusplus/version.hpp"
 
@@ -87,6 +88,11 @@ int main() {
             std::cout << " * <Some unrecognized property>" << std::endl;
       }
    }
+
+   // Create a user event in the context, mark it as complete, and wait for it. This operation should return immediately.
+   const auto event = context.create_user_event();
+   event.set_status(CL_COMPLETE);
+   CLplusplus::wait_for_events({event});
 
    return 0;
 }

@@ -84,7 +84,7 @@ int main() {
    }
    std::cout << std::endl;
 
-   // Try dry-flushing and finishing our command queue
+   // Try flushing and finishing our command queue. Should return without doing anything.
    command_queue.flush();
    command_queue.finish();
 

@@ -142,6 +142,13 @@ namespace CLplusplus {
       return raw_create_command_queue(single_device_id, properties);
    }
 
+   Event Context::create_user_event() const {
+      cl_int error_code;
+      const auto event_id = clCreateUserEvent(internal_id, &error_code);
+      throw_if_failed(error_code);
+      return Event{event_id, false};
+   }
+
    Context::ContextCallback Context::make_context_callback(const ContextCallbackWithUserData & callback, void * const user_data) {
       using namespace std::placeholders;
       return ContextCallback{std::bind(callback, _1, _2, _3, user_data)};
