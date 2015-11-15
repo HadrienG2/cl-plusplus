@@ -30,24 +30,20 @@ namespace CLplusplus {
       if(internal_id == NULL) throw InvalidArgument();
 
       // Unless asked not to do so, increment the device's reference count
-      if(increment_reference_count) retain_device();
+      if(increment_reference_count) retain();
    }
 
-   Device::Device(const Device & source) {
+   Device::Device(const Device & source) :
+      internal_id{source.internal_id}
+   {
       // Whenever a copy of a reference-counted device is made, its reference count should be incremented
-      internal_id = source.internal_id;
-      retain_device();
-   }
-
-   Device::~Device() {
-      // Decrement device reference count, possibly causing subdevice liberation (this will do nothing for root devices)
-      release_device();
+      retain();
    }
 
    Device & Device::operator=(const Device & source) {
       // Reference count considerations also apply to copy assignment operator
       internal_id = source.internal_id;
-      retain_device();
+      retain();
       return *this;
    }
 
@@ -88,6 +84,28 @@ namespace CLplusplus {
       return PartitionProperties{opencl_list};
    }
 
+   std::string Device::raw_string_query(cl_platform_info parameter_name) const {
+      // Check how long the output string should be
+      size_t output_string_length = raw_query_output_size(parameter_name);
+      
+      // Fetch the output string
+      char output_string[output_string_length];
+      raw_query(parameter_name, output_string_length, (void *)output_string);
+
+      // Return the result
+      return std::string(output_string);
+   }
+
+   size_t Device::raw_query_output_size(cl_device_info parameter_name) const {
+      size_t result;
+      raw_query(parameter_name, 0, nullptr, &result);
+      return result;
+   }
+
+   void Device::raw_query(cl_device_info parameter_name, size_t output_storage_size, void * output_storage, size_t * actual_output_size) const {
+      throw_if_failed(clGetDeviceInfo(internal_id, parameter_name, output_storage_size, output_storage, actual_output_size));
+   }
+
    std::vector<Device> Device::create_sub_devices(PartitionProperties & properties) {
       // Convert the provided partition property list into a zero-terminated OpenCL array
       const auto opencl_properties = properties.opencl_view();
@@ -111,33 +129,11 @@ namespace CLplusplus {
       return result;
    }
 
-   std::string Device::raw_string_query(cl_platform_info parameter_name) const {
-      // Check how long the output string should be
-      size_t output_string_length = raw_query_output_size(parameter_name);
-      
-      // Fetch the output string
-      char output_string[output_string_length];
-      raw_query(parameter_name, output_string_length, (void *)output_string);
-
-      // Return the result
-      return std::string(output_string);
-   }
-
-   size_t Device::raw_query_output_size(cl_device_info parameter_name) const {
-      size_t result;
-      raw_query(parameter_name, 0, nullptr, &result);
-      return result;
-   }
-
-   void Device::raw_query(cl_device_info parameter_name, size_t output_storage_size, void * output_storage, size_t * actual_output_size) const {
-      throw_if_failed(clGetDeviceInfo(internal_id, parameter_name, output_storage_size, output_storage, actual_output_size));
-   }
-
-   void Device::retain_device() const {
+   void Device::retain() const {
       throw_if_failed(clRetainDevice(internal_id));
    }
 
-   void Device::release_device() const {
+   void Device::release() {
       throw_if_failed(clReleaseDevice(internal_id));
    }
 

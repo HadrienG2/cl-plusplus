@@ -60,7 +60,7 @@ namespace CLplusplus {
          void raw_query(const cl_platform_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
 
          // Finally, if the need arises, one can directly access the platform identifier in order to perform raw OpenCL operations
-         cl_platform_id raw_platform_id() const { return internal_id; }
+         cl_platform_id raw_identifier() const { return internal_id; }
 
       private:
          cl_platform_id internal_id;

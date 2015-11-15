@@ -81,7 +81,7 @@ namespace Shared {
    CLplusplus::Context build_default_context(const PlatformAndDevice & platform_and_device) {
       // Define the context's properties
       CLplusplus::ContextProperties context_properties;
-      const auto platform_id = platform_and_device.first.raw_platform_id();
+      const auto platform_id = platform_and_device.first.raw_identifier();
       context_properties.append(CL_CONTEXT_PLATFORM, (cl_context_properties)(void *)platform_id);
 
       // Define a basic error callback

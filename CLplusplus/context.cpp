@@ -23,24 +23,25 @@
 namespace CLplusplus {
 
    Context::Context(const cl_context identifier, const bool increment_reference_count) :
-      internal_id{identifier}
+      internal_id{identifier},
+      internal_callback_ptr{nullptr}
    {
       // Handle invalid context IDs
       if(internal_id == NULL) throw InvalidArgument();
       
       // Unless asked not to do so, increment the context's reference count
-      if(increment_reference_count) retain_context();
+      if(increment_reference_count) retain();
    }
 
    Context::Context(ContextProperties & properties, const Device & device, const ContextCallback & callback) :
-      single_device_id{device.raw_device_id()},
+      single_device_id{device.raw_identifier()},
       internal_callback_ptr{callback ? (new ContextCallback{callback}) : nullptr}
    {
       create_context(properties, 1, &device);
    }
 
    Context::Context(ContextProperties & properties, const Device & device, const ContextCallbackWithUserData & callback, void * const user_data) :
-      single_device_id{device.raw_device_id()},
+      single_device_id{device.raw_identifier()},
       internal_callback_ptr{callback ? new ContextCallback{make_context_callback(callback, user_data)} : nullptr}
    {
       create_context(properties, 1, &device);
@@ -77,18 +78,13 @@ namespace CLplusplus {
    Context::Context(const Context & source) {
       // Whenever a copy of a reference-counted context is made, its reference count should be incremented
       copy_internal_data(source);
-      retain_context();
-   }
-
-   Context::~Context() {
-      // Decrement context reference count, possibly causing context liberation
-      release_context();
+      retain();
    }
 
    Context & Context::operator=(const Context & source) {
       // Reference count considerations also apply to copy assignment operator
       copy_internal_data(source);
-      retain_context();
+      retain();
       return *this;
    }
 
@@ -118,18 +114,6 @@ namespace CLplusplus {
       return ContextProperties{opencl_properties};
    }
 
-   CommandQueue Context::create_command_queue(const Device & device, const cl_command_queue_properties properties) const {
-      return raw_create_command_queue(device.raw_device_id(), properties);
-   }
-
-   CommandQueue Context::create_command_queue(const cl_command_queue_properties properties) const {
-      // If our context was created, or could have been created, with more than one device, then this call is invalid
-      if(single_device_id == NULL) throw AmbiguousDevice();
-
-      // Otherwise, create the command queue using the previously stored device id
-      return raw_create_command_queue(single_device_id, properties);
-   }
-
    cl_uint Context::raw_uint_query(const cl_context_info parameter_name) const {
       cl_uint result;
       raw_query(parameter_name, sizeof(cl_uint), &result);
@@ -146,20 +130,32 @@ namespace CLplusplus {
       throw_if_failed(clGetContextInfo(internal_id, parameter_name, output_storage_size, output_storage, actual_output_size));
    }
 
+   CommandQueue Context::create_command_queue(const Device & device, const cl_command_queue_properties properties) const {
+      return raw_create_command_queue(device.raw_identifier(), properties);
+   }
+
+   CommandQueue Context::create_command_queue(const cl_command_queue_properties properties) const {
+      // If our context was created, or could have been created, with more than one device, then this call is invalid
+      if(single_device_id == NULL) throw AmbiguousDevice();
+
+      // Otherwise, create the command queue using the previously stored device id
+      return raw_create_command_queue(single_device_id, properties);
+   }
+
    Context::ContextCallback Context::make_context_callback(const ContextCallbackWithUserData & callback, void * const user_data) {
       using namespace std::placeholders;
       return ContextCallback{std::bind(callback, _1, _2, _3, user_data)};
    }
 
    void CL_CALLBACK Context::raw_callback(const char * errinfo, const void * private_info, size_t cb, void * actual_callback_ptr) {
-      const auto actual_callback = static_cast<const ContextCallback *>(actual_callback_ptr);
-      (*actual_callback)(std::string{errinfo}, private_info, cb);
+      const auto actual_callback = *(static_cast<const ContextCallback *>(actual_callback_ptr));
+      actual_callback(std::string{errinfo}, private_info, cb);
    }
 
    void Context::create_context(ContextProperties & properties, const cl_uint device_count, const Device * devices) {
       // Extract the internal identifiers of our devices
       cl_device_id device_ids[device_count];
-      for(unsigned int i = 0; i < device_count; ++i) device_ids[i] = devices[i].raw_device_id();
+      for(unsigned int i = 0; i < device_count; ++i) device_ids[i] = devices[i].raw_identifier();
       
       // Create the context
       cl_int error_code;
@@ -188,14 +184,15 @@ namespace CLplusplus {
 
    void Context::copy_internal_data(const Context & source) {
       internal_id = source.internal_id;
+      single_device_id = source.single_device_id;
       internal_callback_ptr = source.internal_callback_ptr;
    }
 
-   void Context::retain_context() const {
+   void Context::retain() const {
       throw_if_failed(clRetainContext(internal_id));
    }
 
-   void Context::release_context() {
+   void Context::release() {
       bool last_reference = (reference_count() == 1);
       throw_if_failed(clReleaseContext(internal_id));
       if(last_reference && internal_callback_ptr) delete internal_callback_ptr;

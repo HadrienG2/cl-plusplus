@@ -63,7 +63,7 @@ int main() {
    const auto command_queue = context.create_command_queue(CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE);
 
    // Display command queue properties
-   if(command_queue.raw_context_id() != context.raw_context_id()) std::cout << "Oops ! Command queue seems to identify with the wrong context..." << std::endl;
+   if(command_queue.raw_context_id() != context.raw_identifier()) std::cout << "Oops ! Command queue seems to identify with the wrong context..." << std::endl;
 
    const auto queue_device = command_queue.device();
    std::cout << "Command queue device is " << queue_device.name() << " (vendor ID " << queue_device.vendor_id() << ")" << std::endl;
@@ -83,6 +83,10 @@ int main() {
       std::cout << "disabled";
    }
    std::cout << std::endl;
+
+   // Try dry-flushing and finishing our command queue
+   command_queue.flush();
+   command_queue.finish();
 
    return 0;
 }

@@ -45,7 +45,7 @@ int main() {
 
    // Define the properties of the OpenCL context which we are going to create
    CLplusplus::ContextProperties context_properties;
-   const auto platform_id = selected_platform_and_device.first.raw_platform_id();
+   const auto platform_id = selected_platform_and_device.first.raw_identifier();
    context_properties.append(CL_CONTEXT_PLATFORM, (cl_context_properties)(void *)platform_id);
 
    // Define a callback to be called in case of a context error
