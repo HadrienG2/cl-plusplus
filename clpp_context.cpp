@@ -38,8 +38,7 @@ int main() {
       },
       [&](const CLplusplus::Device & device) -> bool {
          if(device.version() < target_version) return false;   // OpenCL platforms may support older-generation devices, which we need to eliminate
-         return device.available() &&                          // Device is available for compute purposes
-                device.endian_little();                        // Device is little-endian
+         return device.available();                            // Device is available for compute purposes
       }
    );
 
