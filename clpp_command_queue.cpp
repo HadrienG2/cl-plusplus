@@ -34,6 +34,7 @@ int main() {
    const cl_ulong min_local_mem_size = 16 * 1024;
 
    // Have the user select a suitable device, according to some criteria (see shared.hpp for more details)
+   // TODO : Transfer some of this complexity to more advanced CLplusplus examples
    const auto selected_platform_and_device = Shared::select_device(
       [&](const CLplusplus::Platform & platform) -> bool {
          return (platform.version() >= target_version);                       // Platform OpenCL version is recent enough
