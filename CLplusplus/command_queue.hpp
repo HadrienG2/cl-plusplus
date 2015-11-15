@@ -18,9 +18,13 @@
 #ifndef INCLUDE_CL_PLUSPLUS_COMMAND_QUEUE
 #define INCLUDE_CL_PLUSPLUS_COMMAND_QUEUE
 
+#include <vector>
+
 #include <CL/cl.h>
 
 #include "device.hpp"
+#include "event.hpp"
+#include "memory_object.hpp"
 
 // This code unit provides facilities for handling OpenCL command queues
 namespace CLplusplus {
@@ -36,7 +40,7 @@ namespace CLplusplus {
          CommandQueue & operator=(const CommandQueue & source);
 
          // Command queue properties which are supported by the wrapper are directly accessible in a convenient, high-level fashion
-         Device device() const { return Device{raw_value_query<cl_device_id>(CL_QUEUE_DEVICE), true}; }
+         CLplusplus::Device device() const { return Device{raw_value_query<cl_device_id>(CL_QUEUE_DEVICE), true}; }
          cl_command_queue_properties properties() const { return raw_value_query<cl_command_queue_properties>(CL_QUEUE_PROPERTIES); }
 
          // Unsupported property values may be queried in a lower-level way
@@ -52,6 +56,14 @@ namespace CLplusplus {
          size_t raw_query_output_size(const cl_command_queue_info parameter_name) const;
          void raw_query(const cl_command_queue_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
 
+         // Asynchronously unmap a previously mapped memory object
+         void enqueue_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const std::vector<Event> event_wait_list) const;
+         Event enqueued_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const std::vector<Event> event_wait_list) const;
+
+         // Asynchronously migrate memory objects to the device represented by this command queue
+         void enqueue_migrate_mem_objects(const std::vector<MemoryObject> & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list) const;
+         Event enqueued_migrate_mem_objects(const std::vector<MemoryObject> & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list) const;
+
          // TODO : Add kernel execution, etc.
 
          // In an OpenCL command queue, one can wait for some global command-related events
@@ -65,6 +77,10 @@ namespace CLplusplus {
       private:
          // This is the internal identifier that represents our command queue
          cl_command_queue internal_id;
+
+         // These are the raw OpenCL calls that higher-level functions make
+         void raw_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const std::vector<Event> event_wait_list, cl_event * event) const;
+         void raw_migrate_mem_objects(const std::vector<MemoryObject> & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list, cl_event * event) const;
 
          // These functions manage the life cycle of reference-counted command queues
          cl_uint reference_count() const { return raw_value_query<cl_uint>(CL_QUEUE_REFERENCE_COUNT); }
