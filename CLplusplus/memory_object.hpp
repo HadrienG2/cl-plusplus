@@ -26,6 +26,7 @@
 // This code unit defines a base class for all OpenCL memory objects : buffers, images...
 namespace CLplusplus {
 
+   // This class provides a high-level interface to all OpenCL memory objects
    class MemoryObject {
       public:
          // Memory objects are reference counted using the following functions
@@ -72,9 +73,6 @@ namespace CLplusplus {
          size_t raw_query_output_size(const cl_mem_info parameter_name) const;
          void raw_query(const cl_mem_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
 
-         // TODO : Provide CommandQueue with a way to unmap memory objects
-         // TODO : Provide CommandQueue with a way to migrate memory objects
-
          // Finally, if the need arises, one can directly access the memory object identifier in order to perform raw OpenCL operations.
          // WARNING : Be very careful when you do this, as such raw identifiers will NOT be taken into account during reference counting !
          cl_mem raw_identifier() const { return internal_id; }
@@ -101,6 +99,10 @@ namespace CLplusplus {
          void retain() const;
          void release();
    };
+
+   // Because there are multiple kinds of memory objects, which inherit from the same base class, it's important to always pass memory objects by reference.
+   // The following typedef makes it easier to pass multiple memory object references to a function, using standard STL vectors.
+   using ConstMemoryObjectRefVector = std::vector<std::reference_wrapper<const MemoryObject>>;
 
 }
 

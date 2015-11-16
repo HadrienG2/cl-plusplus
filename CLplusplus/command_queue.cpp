@@ -47,11 +47,11 @@ namespace CLplusplus {
       return Event{event_id, false};
    }
 
-   void CommandQueue::enqueue_migrate_mem_objects(const std::vector<MemoryObject> & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list) const {
+   void CommandQueue::enqueue_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list) const {
       raw_migrate_mem_objects(mem_objects, flags, event_wait_list, nullptr);
    }
 
-   Event CommandQueue::enqueued_migrate_mem_objects(const std::vector<MemoryObject> & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list) const {
+   Event CommandQueue::enqueued_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list) const {
       cl_event event_id;
       raw_migrate_mem_objects(mem_objects, flags, event_wait_list, &event_id);
       return Event{event_id, false};
@@ -78,11 +78,11 @@ namespace CLplusplus {
       }
    }
 
-   void CommandQueue::raw_migrate_mem_objects(const std::vector<MemoryObject> & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list, cl_event * event) const {
+   void CommandQueue::raw_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list, cl_event * event) const {
       // Convert the memory object list to its OpenCL representation
       const auto num_objects = mem_objects.size();
       cl_mem raw_object_ids[num_objects];
-      for(size_t i = 0; i < num_objects; ++i) raw_object_ids[i] = mem_objects[i].raw_identifier();
+      for(size_t i = 0; i < num_objects; ++i) raw_object_ids[i] = mem_objects[i].get().raw_identifier();
 
       // Call for the migration of memory objects
       const auto num_events = event_wait_list.size();

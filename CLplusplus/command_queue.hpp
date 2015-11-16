@@ -61,8 +61,8 @@ namespace CLplusplus {
          Event enqueued_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const std::vector<Event> event_wait_list) const;
 
          // Asynchronously migrate memory objects to the device represented by this command queue
-         void enqueue_migrate_mem_objects(const std::vector<MemoryObject> & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list) const;
-         Event enqueued_migrate_mem_objects(const std::vector<MemoryObject> & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list) const;
+         void enqueue_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list) const;
+         Event enqueued_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list) const;
 
          // TODO : Add kernel execution, etc.
 
@@ -80,7 +80,7 @@ namespace CLplusplus {
 
          // These are the raw OpenCL calls that higher-level functions make
          void raw_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const std::vector<Event> event_wait_list, cl_event * event) const;
-         void raw_migrate_mem_objects(const std::vector<MemoryObject> & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list, cl_event * event) const;
+         void raw_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list, cl_event * event) const;
 
          // These functions manage the life cycle of reference-counted command queues
          cl_uint reference_count() const { return raw_value_query<cl_uint>(CL_QUEUE_REFERENCE_COUNT); }
