@@ -142,6 +142,13 @@ namespace CLplusplus {
       return raw_create_command_queue(single_device_id, properties);
    }
 
+   Buffer Context::create_buffer(const cl_mem_flags flags, const size_t size, void * const host_ptr) {
+      cl_int error_code;
+      const auto buffer_id = clCreateBuffer(internal_id, flags, size, host_ptr, &error_code);
+      throw_if_failed(error_code);
+      return Buffer{buffer_id, false};
+   }
+
    Event Context::create_user_event() const {
       cl_int error_code;
       const auto event_id = clCreateUserEvent(internal_id, &error_code);

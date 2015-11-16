@@ -23,6 +23,7 @@
 
 #include <CL/cl.h>
 
+#include "buffer.hpp"
 #include "command_queue.hpp"
 #include "device.hpp"
 #include "event.hpp"
@@ -80,6 +81,11 @@ namespace CLplusplus {
          CommandQueue create_command_queue(const Device & device, const cl_command_queue_properties properties) const;
          CommandQueue create_command_queue(const cl_command_queue_properties properties) const;
          class AmbiguousDevice : WrapperException {};
+
+         // Although they are managed using command queues, buffers belong to a context.
+         Buffer create_buffer(const cl_mem_flags flags, const size_t size, void * const host_ptr = nullptr);
+
+         // TODO : The same is also true for images.
 
          // Within the boundaries of a context, one may also create user-triggered OpenCL events, so as to control the execution of asynchronous OpenCL code
          Event create_user_event() const;

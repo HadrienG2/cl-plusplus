@@ -37,6 +37,8 @@ namespace CLplusplus {
             throw DevicePartitionFailed();
          case CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST:
             throw ExecStatusErrorForEventsInWaitList();
+         case CL_INVALID_BUFFER_SIZE:
+            throw InvalidBufferSize();
          case CL_INVALID_COMMAND_QUEUE:
             throw InvalidCommandQueue();
          case CL_INVALID_CONTEXT:
@@ -51,6 +53,8 @@ namespace CLplusplus {
             throw InvalidEvent();
          case CL_INVALID_EVENT_WAIT_LIST:
             throw InvalidEventWaitList();
+         case CL_INVALID_HOST_PTR:
+            throw InvalidHostPtr();
          case CL_INVALID_MEM_OBJECT:
             throw InvalidMemObject();
          case CL_INVALID_OPERATION:
@@ -65,6 +69,8 @@ namespace CLplusplus {
             throw InvalidValue();
          case CL_MEM_OBJECT_ALLOCATION_FAILURE:
             throw MemObjectAllocationFailure();
+         case CL_MISALIGNED_SUB_BUFFER_OFFSET:
+            throw MisalignedSubBufferOffset();
          case CL_OUT_OF_HOST_MEMORY:
             throw OutOfHostMemory();
          case CL_OUT_OF_RESOURCES:
