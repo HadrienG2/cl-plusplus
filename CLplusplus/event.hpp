@@ -48,7 +48,7 @@ namespace CLplusplus {
          cl_context raw_context_id() const { return raw_value_query<cl_context>(CL_EVENT_CONTEXT); } // WARNING : Beware that trying to use this identifier in a Context can lead to callback memory leaks.
          cl_int raw_command_execution_status() const { return raw_value_query<cl_int>(CL_EVENT_COMMAND_EXECUTION_STATUS); }
 
-         // And unsupported memory object properties can be queried in a nearly pure OpenCL way, with some common-case usability optimizations
+         // And fully unsupported event properties can be queried in a nearly pure OpenCL way, with some common-case usability optimizations
          template<typename ValueType> ValueType raw_value_query(const cl_mem_info parameter_name) const {
             ValueType result;
             raw_query(parameter_name, sizeof(ValueType), &result);
