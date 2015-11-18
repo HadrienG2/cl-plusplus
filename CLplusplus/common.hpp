@@ -53,6 +53,8 @@ namespace CLplusplus {
       class InvalidProperty : public StandardException {};
       class InvalidQueueProperties : public StandardException {};
       class InvalidValue : public StandardException {};
+      class MapFailure : public StandardException {};
+      class MemCopyOverlap : public StandardException {};
       class MemObjectAllocationFailure : public StandardException {};
       class MisalignedSubBufferOffset : public StandardException {};
       class OutOfHostMemory : public StandardException {};

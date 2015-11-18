@@ -67,6 +67,10 @@ namespace CLplusplus {
             throw InvalidQueueProperties();
          case CL_INVALID_VALUE:
             throw InvalidValue();
+         case CL_MAP_FAILURE:
+            throw MapFailure();
+         case CL_MEM_COPY_OVERLAP:
+            throw MemCopyOverlap();
          case CL_MEM_OBJECT_ALLOCATION_FAILURE:
             throw MemObjectAllocationFailure();
          case CL_MISALIGNED_SUB_BUFFER_OFFSET:
