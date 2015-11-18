@@ -83,7 +83,7 @@ namespace CLplusplus {
          class AmbiguousDevice : WrapperException {};
 
          // Although they are managed using command queues, buffers belong to a context.
-         Buffer create_buffer(const cl_mem_flags flags, const size_t size, void * const host_ptr = nullptr);
+         Buffer create_buffer(const cl_mem_flags flags, const size_t size, void * const host_ptr = nullptr) const;
 
          // TODO : The same is also true for images.
 

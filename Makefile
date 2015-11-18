@@ -19,7 +19,7 @@ LIBS := -lOpenCL
 
 .PHONY: all clean
 
-ALL_EXECUTABLES := clpp_test.bin clpp_info.bin clpp_context.bin clpp_command_queue.bin
+ALL_EXECUTABLES := clpp_test.bin clpp_info.bin clpp_context.bin clpp_command_queue.bin clpp_buffer.bin
 all: $(ALL_EXECUTABLES) test
 
 test: clpp_test.bin
@@ -43,6 +43,10 @@ clpp_context.bin: $(CLPP_CONTEXT_OBJ) $(CL_PLUSPLUS_HEADERS)
 CLPP_COMMAND_QUEUE_OBJ := clpp_command_queue.o $(CL_PLUSPLUS_OBJ)
 clpp_command_queue.bin: $(CLPP_COMMAND_QUEUE_OBJ) $(CL_PLUSPLUS_HEADERS)
 	$(CPPLD) $(CLPP_COMMAND_QUEUE_OBJ) $(LIBS) -o clpp_command_queue.bin
+
+CLPP_BUFFER_OBJ := clpp_buffer.o $(CL_PLUSPLUS_OBJ)
+clpp_buffer.bin: $(CLPP_BUFFER_OBJ) $(CL_PLUSPLUS_HEADERS)
+	$(CPPLD) $(CLPP_BUFFER_OBJ) $(LIBS) -o clpp_buffer.bin
 
 clean:
 	rm -f $(CL_PLUSPLUS_DIR)/*.o
