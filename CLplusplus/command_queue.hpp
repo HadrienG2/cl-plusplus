@@ -22,6 +22,7 @@
 
 #include <CL/cl.h>
 
+#include "buffer.hpp"
 #include "device.hpp"
 #include "event.hpp"
 #include "memory_object.hpp"
@@ -31,6 +32,8 @@ namespace CLplusplus {
 
    class CommandQueue {
       public:
+         // === BASIC CLASS LIFECYCLE ===
+
          // Command queues can be created from a valid OpenCL identifier
          CommandQueue(const cl_command_queue identifier, const bool increment_reference_count);
 
@@ -38,6 +41,8 @@ namespace CLplusplus {
          CommandQueue(const CommandQueue & source);
          ~CommandQueue() { release(); }
          CommandQueue & operator=(const CommandQueue & source);
+
+         // === PROPERTIES ===
 
          // Command queue properties which are supported by the wrapper are directly accessible in a convenient, high-level fashion
          CLplusplus::Device device() const { return Device{raw_value_query<cl_device_id>(CL_QUEUE_DEVICE), true}; }
@@ -56,19 +61,38 @@ namespace CLplusplus {
          size_t raw_query_output_size(const cl_command_queue_info parameter_name) const;
          void raw_query(const cl_command_queue_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
 
+         // === DEVICE COMMANDS ===
+
+         // All device commands can wait for a list of events, which is specified using the following type
+         using EventWaitList = std::vector<Event>;
+
+         // Asynchronously or synchronously read from a buffer to host memory
+         void enqueue_read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const EventWaitList & event_wait_list) const;
+         Event enqueued_read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const EventWaitList & event_wait_list) const;
+         void read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const EventWaitList & event_wait_list) const;
+
+         // Asynchronously write from host memory to a buffer, possibly waiting until the host buffer is safe to modify again to before returning
+         // WARNING: Please understand that this is NOT the same as synchronously waiting for a device write to complete
+         void enqueue_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const;
+         Event enqueued_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const;
+
          // Asynchronously unmap a previously mapped memory object
-         void enqueue_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const std::vector<Event> event_wait_list) const;
-         Event enqueued_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const std::vector<Event> event_wait_list) const;
+         void enqueue_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list) const;
+         Event enqueued_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list) const;
 
          // Asynchronously migrate memory objects to the device represented by this command queue
-         void enqueue_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list) const;
-         Event enqueued_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list) const;
+         void enqueue_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list) const;
+         Event enqueued_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list) const;
 
          // TODO : Add kernel execution, etc.
+
+         // === SYNCHRONIZATION ===
 
          // In an OpenCL command queue, one can wait for some global command-related events
          void flush() const;  // Wait for all previously issued commands to be sent to the device
          void finish() const; // Wait for all previously issued commands to finish execution
+
+         // === RAW OPENCL ID ===
 
          // Finally, if the need arises, one can directly access the command queue identifier in order to perform raw OpenCL operations.
          // WARNING : Be very careful when you do this, as such raw identifiers will NOT be taken into account during reference counting !
@@ -79,8 +103,10 @@ namespace CLplusplus {
          cl_command_queue internal_id;
 
          // These are the raw OpenCL calls that higher-level functions make
-         void raw_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const std::vector<Event> event_wait_list, cl_event * event) const;
-         void raw_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list, cl_event * event) const;
+         void raw_read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const bool synchronous_read, const EventWaitList & event_wait_list, cl_event * event) const;
+         void raw_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list, cl_event * event) const;
+         void raw_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list, cl_event * event) const;
+         void raw_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list, cl_event * event) const;
 
          // These functions manage the life cycle of reference-counted command queues
          cl_uint reference_count() const { return raw_value_query<cl_uint>(CL_QUEUE_REFERENCE_COUNT); }

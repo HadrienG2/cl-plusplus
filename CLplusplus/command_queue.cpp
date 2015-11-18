@@ -37,21 +37,45 @@ namespace CLplusplus {
       throw_if_failed(clGetCommandQueueInfo(internal_id, parameter_name, output_storage_size, output_storage, actual_output_size));
    }
 
-   void CommandQueue::enqueue_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const std::vector<Event> event_wait_list) const {
+   void CommandQueue::enqueue_read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const EventWaitList & event_wait_list) const {
+      raw_read_buffer(source_buffer, offset, size, destination, false, event_wait_list, nullptr);
+   }
+
+   Event CommandQueue::enqueued_read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_read_buffer(source_buffer, offset, size, destination, false, event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const EventWaitList & event_wait_list) const {
+      raw_read_buffer(source_buffer, offset, size, destination, true, event_wait_list, nullptr);
+   }
+
+   void CommandQueue::enqueue_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const {
+      raw_write_buffer(source, wait_for_availability, dest_buffer, offset, size, event_wait_list, nullptr);
+   }
+
+   Event CommandQueue::enqueued_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_write_buffer(source, wait_for_availability, dest_buffer, offset, size, event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list) const {
       raw_unmap_mem_object(memobj, mapped_ptr, event_wait_list, nullptr);
    }
 
-   Event CommandQueue::enqueued_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const std::vector<Event> event_wait_list) const {
+   Event CommandQueue::enqueued_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list) const {
       cl_event event_id;
       raw_unmap_mem_object(memobj, mapped_ptr, event_wait_list, &event_id);
       return Event{event_id, false};
    }
 
-   void CommandQueue::enqueue_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list) const {
+   void CommandQueue::enqueue_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list) const {
       raw_migrate_mem_objects(mem_objects, flags, event_wait_list, nullptr);
    }
 
-   Event CommandQueue::enqueued_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list) const {
+   Event CommandQueue::enqueued_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list) const {
       cl_event event_id;
       raw_migrate_mem_objects(mem_objects, flags, event_wait_list, &event_id);
       return Event{event_id, false};
@@ -65,7 +89,33 @@ namespace CLplusplus {
       throw_if_failed(clFinish(internal_id));
    }
 
-   void CommandQueue::raw_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const std::vector<Event> event_wait_list, cl_event * event) const {
+   void CommandQueue::raw_read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const bool synchronous_read, const EventWaitList & event_wait_list, cl_event * event) const {
+      const auto num_events = event_wait_list.size();
+      if(num_events == 0) {
+         // If we are waiting for no event, null out the event wait list in final call
+         throw_if_failed(clEnqueueReadBuffer(internal_id, source_buffer.raw_identifier(), synchronous_read, offset, size, destination, 0, nullptr, event));
+      } else {
+         // Convert the event wait list to its OpenCL representation before calling
+         cl_event raw_event_ids[num_events];
+         for(size_t i = 0; i < num_events; ++i) raw_event_ids[i] = event_wait_list[i].raw_identifier();
+         throw_if_failed(clEnqueueReadBuffer(internal_id, source_buffer.raw_identifier(), synchronous_read, offset, size, destination, num_events, raw_event_ids, event));
+      }
+   }
+
+   void CommandQueue::raw_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list, cl_event * event) const {
+      const auto num_events = event_wait_list.size();
+      if(num_events == 0) {
+         // If we are waiting for no event, null out the event wait list in final call
+         throw_if_failed(clEnqueueWriteBuffer(internal_id, dest_buffer.raw_identifier(), wait_for_availability, offset, size, source, 0, nullptr, event));
+      } else {
+         // Convert the event wait list to its OpenCL representation before calling
+         cl_event raw_event_ids[num_events];
+         for(size_t i = 0; i < num_events; ++i) raw_event_ids[i] = event_wait_list[i].raw_identifier();
+         throw_if_failed(clEnqueueWriteBuffer(internal_id, dest_buffer.raw_identifier(), wait_for_availability, offset, size, source, num_events, raw_event_ids, event));
+      }
+   }
+
+   void CommandQueue::raw_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list, cl_event * event) const {
       const auto num_events = event_wait_list.size();
       if(num_events == 0) {
          // If we are waiting for no event, null out the event wait list in final call
@@ -78,7 +128,7 @@ namespace CLplusplus {
       }
    }
 
-   void CommandQueue::raw_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const std::vector<Event> event_wait_list, cl_event * event) const {
+   void CommandQueue::raw_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list, cl_event * event) const {
       // Convert the memory object list to its OpenCL representation
       const auto num_objects = mem_objects.size();
       cl_mem raw_object_ids[num_objects];
