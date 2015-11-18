@@ -25,7 +25,7 @@
 // This code unit defines high-level ways to manage OpenCL buffers
 namespace CLplusplus {
 
-   class Buffer : MemoryObject {
+   class Buffer : public MemoryObject {
       public:
          // Buffer objects can be created from a valid OpenCL identifier
          Buffer(const cl_mem identifier, const bool increment_reference_count) : MemoryObject{identifier, increment_reference_count} {}
