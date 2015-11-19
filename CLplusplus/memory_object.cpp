@@ -52,11 +52,14 @@ namespace CLplusplus {
    }
 
    MemoryObject::MemoryObject(const cl_mem identifier, const bool increment_reference_count) :
-      internal_id{identifier},
-      internal_callbacks_ptr{new std::vector<DestructorCallback>}
+      internal_id{identifier}
    {
       // Handle invalid memory object IDs
       if(internal_id == NULL) throw InvalidArgument();
+
+      // Prepare destructor storage, and a callback which will ultimately reclaim it.
+      internal_callbacks_ptr = new std::vector<DestructorCallback>;
+      throw_if_failed(clSetMemObjectDestructorCallback(internal_id, liberate_callback_list, static_cast<void *>(internal_callbacks_ptr)));
       
       // Unless asked not to do so, increment the memory object's reference count
       if(increment_reference_count) retain();
@@ -87,6 +90,12 @@ namespace CLplusplus {
       }
    }
 
+   void CL_CALLBACK MemoryObject::liberate_callback_list(cl_mem unused, void * actual_callbacks_ptr) {
+      // We cannot liberate the callback list in release(), because the buffer may live longer than that. We need to do it in a destructor callback.
+      const auto callback_list_ptr = static_cast<const std::vector<DestructorCallback> *>(actual_callbacks_ptr);
+      delete callback_list_ptr;
+   }
+
    void MemoryObject::copy_internal_data(const MemoryObject & source) {
       internal_id = source.internal_id;
       internal_callbacks_ptr = source.internal_callbacks_ptr;
@@ -97,9 +106,7 @@ namespace CLplusplus {
    }
 
    void MemoryObject::release() {
-      bool last_reference = (reference_count() == 1);
       throw_if_failed(clReleaseMemObject(internal_id));
-      if(last_reference && internal_callbacks_ptr) delete internal_callbacks_ptr;
    }
 
 }

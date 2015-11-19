@@ -56,8 +56,8 @@ namespace CLplusplus {
          size_t offset() const { return raw_size_query(CL_MEM_OFFSET); }
 
          // Unsupported property values may be queried in a lower-level way
-         cl_context raw_context_id() const { return raw_value_query<cl_context>(CL_QUEUE_CONTEXT); } // NOTE : Returning a Context here would lead to a circular dependency.
-                                                                                                     // WARNING : Beware that trying to use this identifier in a Context can lead to callback memory leaks.
+         cl_context raw_context_id() const { return raw_value_query<cl_context>(CL_MEM_CONTEXT); } // NOTE : Returning a Context here would lead to a circular dependency.
+                                                                                                   // WARNING : Beware that trying to use this identifier in a Context can lead to callback memory leaks.
          cl_mem raw_associated_memobject() const { return raw_value_query<cl_mem>(CL_MEM_ASSOCIATED_MEMOBJECT); }
 
          // And unsupported memory object properties can be queried in a nearly pure OpenCL way, with some common-case usability optimizations
@@ -92,6 +92,7 @@ namespace CLplusplus {
          std::vector<DestructorCallback> * internal_callbacks_ptr;
          void add_destructor_callback(const DestructorCallback & callback);
          static void CL_CALLBACK raw_callback(cl_mem memobj, void * actual_callbacks_ptr);
+         static void CL_CALLBACK liberate_callback_list(cl_mem unused, void * callbacks_ptr);
 
          // These functions manage the life cycle of reference-counted memory objects
          void copy_internal_data(const MemoryObject & source);

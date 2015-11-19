@@ -60,6 +60,7 @@ namespace CLplusplus {
 
          // It is possible to have a callback be invoked when the command associated to an event will be submitted (CL_SUBMIT), running (CL_RUNNING) or terminated (CL_COMPLETE).
          // Users of this functionality should keep in mind that the callback associated with CL_COMPLETE will also be invoked if a command terminates abnormally, with an error code as its argument.
+         // Another thing to keep in mind is that callbacks are stored within the Event object, so users should make sure that an Event with a callback has been either full processed or copied before leaving its scope.
          //
          // We accept native std::functions for this purpose, with and without user-defined data blocks.
          // We discourage the use of such data blocks in C++11 as lambdas and std::bind() usually provide a safer alternative, but they are needed for legacy C code compatibility.
