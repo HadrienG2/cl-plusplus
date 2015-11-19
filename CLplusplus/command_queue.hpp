@@ -67,16 +67,16 @@ namespace CLplusplus {
          using EventWaitList = std::vector<Event>;
 
          // Asynchronously or synchronously read from a buffer to host memory
-         void enqueue_read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const EventWaitList & event_wait_list) const;
          Event enqueued_read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const EventWaitList & event_wait_list) const;
+         void enqueue_read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const EventWaitList & event_wait_list) const;
          void read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const EventWaitList & event_wait_list) const;
 
          // TODO : Add an interface to ReadBufferRect
 
-         // Asynchronously write from host memory to a buffer, possibly waiting until the host buffer is safe to modify again to before returning
-         // WARNING: This does NOT mean synchronously waiting for a device write to complete. Memory may still be in flight to device memory after the end of this command.
-         void enqueue_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const;
+         // Asynchronously write from host memory to a buffer, possibly waiting until the host buffer is safe to modify again before returning
+         // WARNING : This does NOT mean synchronously waiting for a device write to complete. Data may still be in flight to device memory after the end of this function.
          Event enqueued_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const;
+         void enqueue_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const;
 
          // TODO : Add an interface to WriteBufferRect
 
@@ -87,12 +87,12 @@ namespace CLplusplus {
          // TODO : Add an interface to MapBuffer
 
          // Asynchronously unmap a previously mapped memory object
-         void enqueue_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list) const;
          Event enqueued_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list) const;
+         void enqueue_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list) const;
 
          // Asynchronously migrate memory objects to the device represented by this command queue
-         void enqueue_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list) const;
          Event enqueued_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list) const;
+         void enqueue_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list) const;
 
          // TODO : Add images, kernel execution, etc.
 
