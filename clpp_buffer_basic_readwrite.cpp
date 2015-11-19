@@ -135,15 +135,20 @@ int main() {
    cl_uchar input[buffer_size];
    for(size_t i = 0; i < buffer_size; ++i) input[i] = (255 - i) % 256;
 
-   // Schedule to send the input data to the buffer
+   // Schedule to send the input data to the buffer. Here, we use the "enqueued" syntax, which gives us access to the associated OpenCL event.
    auto send_event = command_queue.enqueued_write_buffer(static_cast<const void *>(input), false, buffer, 0, buffer_size, {});
    send_event.set_callback(CL_COMPLETE,
-      [](cl_event unused, cl_int unused2) {
-         std::cout << "Input data has been written to the buffer" << std::endl;
+      [](cl_event unused, cl_int command_status) {
+         if(command_status == CL_COMPLETE) {
+            std::cout << "Input data has been successfully written to the buffer" << std::endl;
+         } else {
+            std::cout << "An error occurred while sending input data" << std::endl;
+         }
       }
    );
 
-   // Schedule to get the data back
+   // Schedule to get the data back. Note that here, we use a different syntax ("enqueue") which does not give us access to the read event.
+   // This may be handy for quick coding, but the lack of error handling makes use of this variant somewhat unadvisable in production code.
    cl_uchar output[buffer_size];
    command_queue.enqueue_read_buffer(buffer, 0, buffer_size, static_cast<void *>(output), {send_event});
 
