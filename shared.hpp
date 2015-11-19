@@ -45,7 +45,15 @@ namespace Shared {
          throw NoSuitableDevice();
       }
 
-      // Construct and display a numbered list of suitable OpenCL devices
+      // If exactly one platform and device match our criteria, we'll use that
+      if((filtered_platforms.size() == 1) && (filtered_platforms[0].filtered_devices.size() == 1)) {
+         const auto & platform = filtered_platforms[0].platform;
+         const auto & device = filtered_platforms[0].filtered_devices[0];
+         std::cout << "Using device " << device.name() << " on platform " << platform.name() << std::endl << std::endl;
+         return PlatformAndDevice{platform, device};
+      }
+
+      // Otherwise, construct and display a numbered list of suitable OpenCL devices
       std::cout << "Please pick an OpenCL device:" << std::endl;
       size_t device_count = 0, device_number;
       std::vector<PlatformAndDevice> possible_devices;
