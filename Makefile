@@ -11,7 +11,7 @@ CL_PLUSPLUS_HEADERS := $(wildcard ${CL_PLUSPLUS_DIR}/*.hpp)
 CL_PLUSPLUS_SOURCE := $(wildcard ${CL_PLUSPLUS_DIR}/*.cpp)
 CL_PLUSPLUS_OBJ := $(patsubst %.cpp, %.o, ${CL_PLUSPLUS_SOURCE})
 
-CCFLAGS := -Wall -Werror -Wextra -O3 --std=c++11
+CCFLAGS := -Wall -Werror -O3 --std=c++11
 
 INC :=
 
@@ -25,7 +25,7 @@ all: $(ALL_EXECUTABLES) test
 test: clpp_test.bin
 	./clpp_test.bin
 
-%.o: %.cpp $(CL_PLUSPLUS_HEADERS)
+%.o: %.cpp $(CL_PLUSPLUS_HEADERS) Makefile
 	$(CPPC) $< $(INC) $(CCFLAGS) -o $@
 
 CLPP_TEST_OBJ := clpp_test.o $(CL_PLUSPLUS_OBJ)
