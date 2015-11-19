@@ -32,7 +32,6 @@ test: clpp_test.bin
 
 %.bin: %.o $(CL_PLUSPLUS_OBJ)
 	$(CPPLD) $< $(CL_PLUSPLUS_OBJ) $(LIBS) -o $@
-	rm $<
 
 clean:
 	rm -f $(CL_PLUSPLUS_DIR)/*.o
