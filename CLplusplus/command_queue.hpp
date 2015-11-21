@@ -91,10 +91,10 @@ namespace CLplusplus {
          // Asynchronously fill a buffer with a fixed pattern of a device-supported OpenCL type.
          // This functionality is available both in a high-level templatized form, and in a low-level form which matches the raw OpenCL API.
          template<typename PatternType> Event enqueued_fill_buffer(const PatternType pattern, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const {
-            return raw_enqueued_fill_buffer(static_cast<void *>(&pattern), sizeof(pattern), dest_buffer, offset, size, event_wait_list);
+            return raw_enqueued_fill_buffer(static_cast<const void *>(&pattern), sizeof(pattern), dest_buffer, offset, size, event_wait_list);
          }
          template<typename PatternType> void enqueue_fill_buffer(const PatternType pattern, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const {
-            raw_enqueue_fill_buffer(static_cast<void *>(&pattern), sizeof(pattern), dest_buffer, offset, size, event_wait_list);
+            raw_enqueue_fill_buffer(static_cast<const void *>(&pattern), sizeof(pattern), dest_buffer, offset, size, event_wait_list);
          }
          Event raw_enqueued_fill_buffer(const void * const pattern, const size_t pattern_size, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const;
          void raw_enqueue_fill_buffer(const void * const pattern, const size_t pattern_size, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const;
