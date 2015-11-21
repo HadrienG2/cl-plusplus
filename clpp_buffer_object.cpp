@@ -140,7 +140,7 @@ int main() {
    // Schedule to get the data back. Note that here, we use a different syntax ("enqueue") which does not give us access to the read event.
    // This may be handy for quick coding, but the lack of error handling makes use of this variant somewhat unadvisable in production code.
    cl_uchar output[buffer_size];
-   command_queue.enqueue_read_buffer(buffer, 0, buffer_size, static_cast<void *>(output), {send_event});
+   command_queue.enqueue_read_buffer(buffer, 0, static_cast<void *>(output), buffer_size, {send_event});
 
    // Wait for all pending commands to finish
    command_queue.finish();

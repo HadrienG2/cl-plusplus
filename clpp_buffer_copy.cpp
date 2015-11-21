@@ -84,7 +84,7 @@ int main() {
 
    // Read back the result in an output buffer
    cl_uchar output[buffer_size];
-   const auto read_event = command_queue.enqueued_read_buffer(output_buffer, 0, buffer_size, static_cast<void *>(output), {copy_event});
+   const auto read_event = command_queue.enqueued_read_buffer(output_buffer, 0, static_cast<void *>(output), buffer_size, {copy_event});
    std::cout << "Reading it back to host memory..." << std::endl << std::endl;
 
    // Wait for all the last read to finish

@@ -37,18 +37,18 @@ namespace CLplusplus {
       throw_if_failed(clGetCommandQueueInfo(internal_id, parameter_name, output_storage_size, output_storage, actual_output_size));
    }
 
-   Event CommandQueue::enqueued_read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const EventWaitList & event_wait_list) const {
+   Event CommandQueue::enqueued_read_buffer(const Buffer & source_buffer, const size_t offset, void * const destination, const size_t size, const EventWaitList & event_wait_list) const {
       cl_event event_id;
-      raw_read_buffer(source_buffer, offset, size, destination, false, event_wait_list, &event_id);
+      raw_read_buffer(source_buffer, offset, destination, size, false, event_wait_list, &event_id);
       return Event{event_id, false};
    }
 
-   void CommandQueue::enqueue_read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const EventWaitList & event_wait_list) const {
-      raw_read_buffer(source_buffer, offset, size, destination, false, event_wait_list, nullptr);
+   void CommandQueue::enqueue_read_buffer(const Buffer & source_buffer, const size_t offset, void * const destination, const size_t size, const EventWaitList & event_wait_list) const {
+      raw_read_buffer(source_buffer, offset, destination, size, false, event_wait_list, nullptr);
    }
 
-   void CommandQueue::read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const EventWaitList & event_wait_list) const {
-      raw_read_buffer(source_buffer, offset, size, destination, true, event_wait_list, nullptr);
+   void CommandQueue::read_buffer(const Buffer & source_buffer, const size_t offset, void * const destination, const size_t size, const EventWaitList & event_wait_list) const {
+      raw_read_buffer(source_buffer, offset, destination, size, true, event_wait_list, nullptr);
    }
 
    Event CommandQueue::enqueued_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const {
@@ -123,7 +123,7 @@ namespace CLplusplus {
       throw_if_failed(clFinish(internal_id));
    }
 
-   void CommandQueue::raw_read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const bool synchronous_read, const EventWaitList & event_wait_list, cl_event * event) const {
+   void CommandQueue::raw_read_buffer(const Buffer & source_buffer, const size_t offset, void * const destination, const size_t size, const bool synchronous_read, const EventWaitList & event_wait_list, cl_event * event) const {
       const auto num_events = event_wait_list.size();
       if(num_events == 0) {
          throw_if_failed(clEnqueueReadBuffer(internal_id, source_buffer.raw_identifier(), synchronous_read, offset, size, destination, 0, nullptr, event));
