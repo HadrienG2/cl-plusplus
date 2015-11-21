@@ -27,7 +27,6 @@
 #include "shared.hpp"
 
 // This program demonstrates buffer filling and mapping in CLplusplus
-// This program demonstrates buffer creation and basic handling in CLplusplus
 int main() {
    // Program parameters are defined here
    const cl_ulong buffer_size = 4096;
