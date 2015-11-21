@@ -83,8 +83,8 @@ int main() {
                                                                         buffer, no_offset, buffer_width,
                                                                         full_buffer_rect, {});
 
-   // Transform the pattern in a checkerboard manner, getting from A  C to A  B
-   //                                                              B  D    B  A
+   // Transform the pattern in a checkerboard manner, getting from   A  C   to   A  B
+   //                                                                B  D        B  A
    std::cout << "Transforming it in a checkerboard manner..." << std::endl;
    const size_t half_width {buffer_width / 2};
    const size_t half_height {buffer_height / 2};
