@@ -51,6 +51,46 @@ namespace CLplusplus {
       raw_read_buffer(source_buffer, offset, destination, size, true, event_wait_list, nullptr);
    }
 
+   Event CommandQueue::enqueued_read_buffer_rect_2d(const Buffer & source_buffer, const size_t source_offset[2], const size_t source_row_pitch,
+                                                    void * const destination, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                                    const size_t size[2], const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_read_buffer_rect_2d(source_buffer, source_offset, source_row_pitch, destination, dest_offset, dest_row_pitch, size, false, event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_read_buffer_rect_2d(const Buffer & source_buffer, const size_t source_offset[2], const size_t source_row_pitch,
+                                                  void * const destination, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                                  const size_t size[2], const EventWaitList & event_wait_list) const {
+      raw_read_buffer_rect_2d(source_buffer, source_offset, source_row_pitch, destination, dest_offset, dest_row_pitch, size, false, event_wait_list, nullptr);
+   }
+
+   void CommandQueue::read_buffer_rect_2d(const Buffer & source_buffer, const size_t source_offset[2], const size_t source_row_pitch,
+                                          void * const destination, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                          const size_t size[2], const EventWaitList & event_wait_list) const {
+      raw_read_buffer_rect_2d(source_buffer, source_offset, source_row_pitch, destination, dest_offset, dest_row_pitch, size, true, event_wait_list, nullptr);
+   }
+
+   Event CommandQueue::enqueued_read_buffer_rect_3d(const Buffer & source_buffer, const size_t source_offset[3], const size_t source_pitch[2],
+                                                    void * const destination, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                                    const size_t size[3], const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_read_buffer_rect_3d(source_buffer, source_offset, source_pitch, destination, dest_offset, dest_pitch, size, false, event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_read_buffer_rect_3d(const Buffer & source_buffer, const size_t source_offset[3], const size_t source_pitch[2],
+                                                  void * const destination, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                                  const size_t size[3], const EventWaitList & event_wait_list) const {
+      raw_read_buffer_rect_3d(source_buffer, source_offset, source_pitch, destination, dest_offset, dest_pitch, size, false, event_wait_list, nullptr);
+   }
+
+   void CommandQueue::read_buffer_rect_3d(const Buffer & source_buffer, const size_t source_offset[3], const size_t source_pitch[2],
+                                          void * const destination, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                          const size_t size[3], const EventWaitList & event_wait_list) const {
+      raw_read_buffer_rect_3d(source_buffer, source_offset, source_pitch, destination, dest_offset, dest_pitch, size, true, event_wait_list, nullptr);
+   }
+
    Event CommandQueue::enqueued_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const {
       cl_event event_id;
       raw_write_buffer(source, wait_for_availability, dest_buffer, offset, size, event_wait_list, &event_id);
@@ -61,6 +101,34 @@ namespace CLplusplus {
       raw_write_buffer(source, wait_for_availability, dest_buffer, offset, size, event_wait_list, nullptr);
    }
 
+   Event CommandQueue::enqueued_write_buffer_rect_2d(const void * const source, const size_t source_offset[2], const size_t source_row_pitch, const bool wait_for_availability,
+                                                     const Buffer & dest_buffer, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                                     const size_t size[2], const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_write_buffer_rect_2d(source, source_offset, source_row_pitch, wait_for_availability, dest_buffer, dest_offset, dest_row_pitch, size, event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_write_buffer_rect_2d(const void * const source, const size_t source_offset[2], const size_t source_row_pitch, const bool wait_for_availability,
+                                                   const Buffer & dest_buffer, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                                   const size_t size[2], const EventWaitList & event_wait_list) const {
+      raw_write_buffer_rect_2d(source, source_offset, source_row_pitch, wait_for_availability, dest_buffer, dest_offset, dest_row_pitch, size, event_wait_list, nullptr);
+   }
+
+   Event CommandQueue::enqueued_write_buffer_rect_3d(const void * const source, const size_t source_offset[3], const size_t source_pitch[2], const bool wait_for_availability,
+                                                     const Buffer & dest_buffer, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                                     const size_t size[3], const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_write_buffer_rect_3d(source, source_offset, source_pitch, wait_for_availability, dest_buffer, dest_offset, dest_pitch, size, event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_write_buffer_rect_3d(const void * const source, const size_t source_offset[3], const size_t source_pitch[2], const bool wait_for_availability,
+                                                   const Buffer & dest_buffer, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                                   const size_t size[3], const EventWaitList & event_wait_list) const {
+      raw_write_buffer_rect_3d(source, source_offset, source_pitch, wait_for_availability, dest_buffer, dest_offset, dest_pitch, size, event_wait_list, nullptr);
+   }
+
    Event CommandQueue::enqueued_copy_buffer(const Buffer & source_buffer, const size_t source_offset, const Buffer & dest_buffer, const size_t dest_offset, const size_t size, const EventWaitList & event_wait_list) const {
       cl_event event_id;
       raw_copy_buffer(source_buffer, source_offset, dest_buffer, dest_offset, size, event_wait_list, &event_id);
@@ -69,6 +137,34 @@ namespace CLplusplus {
 
    void CommandQueue::enqueue_copy_buffer(const Buffer & source_buffer, const size_t source_offset, const Buffer & dest_buffer, const size_t dest_offset, const size_t size, const EventWaitList & event_wait_list) const {
       raw_copy_buffer(source_buffer, source_offset, dest_buffer, dest_offset, size, event_wait_list, nullptr);
+   }
+
+   Event CommandQueue::enqueued_copy_buffer_rect_2d(const Buffer & source_buffer, const size_t source_offset[2], const size_t source_row_pitch,
+                                                    const Buffer & dest_buffer, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                                    const size_t size[2], const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_copy_buffer_rect_2d(source_buffer, source_offset, source_row_pitch, dest_buffer, dest_offset, dest_row_pitch, size, event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_copy_buffer_rect_2d(const Buffer & source_buffer, const size_t source_offset[2], const size_t source_row_pitch,
+                                                  const Buffer & dest_buffer, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                                  const size_t size[2], const EventWaitList & event_wait_list) const {
+      raw_copy_buffer_rect_2d(source_buffer, source_offset, source_row_pitch, dest_buffer, dest_offset, dest_row_pitch, size, event_wait_list, nullptr);
+   }
+
+   Event CommandQueue::enqueued_copy_buffer_rect_3d(const Buffer & source_buffer, const size_t source_offset[3], const size_t source_pitch[2],
+                                                    const Buffer & dest_buffer, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                                    const size_t size[3], const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_copy_buffer_rect_3d(source_buffer, source_offset, source_pitch, dest_buffer, dest_offset, dest_pitch, size, event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_copy_buffer_rect_3d(const Buffer & source_buffer, const size_t source_offset[3], const size_t source_pitch[2],
+                                                  const Buffer & dest_buffer, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                                  const size_t size[3], const EventWaitList & event_wait_list) const {
+      raw_copy_buffer_rect_3d(source_buffer, source_offset, source_pitch, dest_buffer, dest_offset, dest_pitch, size, event_wait_list, nullptr);
    }
 
    Event CommandQueue::raw_enqueued_fill_buffer(const void * const pattern, const size_t pattern_size, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const {
@@ -134,6 +230,36 @@ namespace CLplusplus {
       }
    }
 
+   void CommandQueue::raw_read_buffer_rect_2d(const Buffer & source_buffer, const size_t source_offset[2], const size_t source_row_pitch,
+                                              void * const destination, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                              const size_t size[2], const bool synchronous_read, const EventWaitList & event_wait_list, cl_event * event) const {
+      const size_t source_offset_3d[] {source_offset[0], source_offset[1], 0};
+      const size_t source_pitch_3d[] {source_row_pitch, 0};
+      const size_t dest_offset_3d[] {dest_offset[0], dest_offset[1], 0};
+      const size_t dest_pitch_3d[] {dest_row_pitch, 0};
+      const size_t size_3d[] {size[0], size[1], 1};
+      raw_read_buffer_rect_3d(source_buffer, source_offset_3d, source_pitch_3d, destination, dest_offset_3d, dest_pitch_3d, size_3d, synchronous_read, event_wait_list, event);
+   }
+
+   void CommandQueue::raw_read_buffer_rect_3d(const Buffer & source_buffer, const size_t source_offset[3], const size_t source_pitch[2],
+                                              void * const destination, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                              const size_t size[3], const bool synchronous_read, const EventWaitList & event_wait_list, cl_event * event) const {
+      const auto num_events = event_wait_list.size();
+      if(num_events == 0) {
+         throw_if_failed(clEnqueueReadBufferRect(internal_id, source_buffer.raw_identifier(), synchronous_read,
+                                                 source_offset, dest_offset, size,
+                                                 source_pitch[0], source_pitch[1], dest_pitch[0], dest_pitch[1],
+                                                 destination, 0, nullptr, event));
+      } else {
+         cl_event raw_event_ids[num_events];
+         for(size_t i = 0; i < num_events; ++i) raw_event_ids[i] = event_wait_list[i].raw_identifier();
+         throw_if_failed(clEnqueueReadBufferRect(internal_id, source_buffer.raw_identifier(), synchronous_read,
+                                                 source_offset, dest_offset, size,
+                                                 source_pitch[0], source_pitch[1], dest_pitch[0], dest_pitch[1],
+                                                 destination, num_events, raw_event_ids, event));
+      }
+   }
+
    void CommandQueue::raw_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list, cl_event * event) const {
       const auto num_events = event_wait_list.size();
       if(num_events == 0) {
@@ -145,6 +271,36 @@ namespace CLplusplus {
       }
    }
 
+   void CommandQueue::raw_write_buffer_rect_2d(const void * const source, const size_t source_offset[2], const size_t source_row_pitch, const bool wait_for_availability,
+                                               const Buffer & dest_buffer, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                               const size_t size[2], const EventWaitList & event_wait_list, cl_event * event) const {
+      const size_t source_offset_3d[] {source_offset[0], source_offset[1], 0};
+      const size_t source_pitch_3d[] {source_row_pitch, 0};
+      const size_t dest_offset_3d[] {dest_offset[0], dest_offset[1], 0};
+      const size_t dest_pitch_3d[] {dest_row_pitch, 0};
+      const size_t size_3d[] {size[0], size[1], 1};
+      raw_write_buffer_rect_3d(source, source_offset_3d, source_pitch_3d, wait_for_availability, dest_buffer, dest_offset_3d, dest_pitch_3d, size_3d, event_wait_list, event);
+   }
+
+   void CommandQueue::raw_write_buffer_rect_3d(const void * const source, const size_t source_offset[3], const size_t source_pitch[2], const bool wait_for_availability,
+                                               const Buffer & dest_buffer, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                               const size_t size[3], const EventWaitList & event_wait_list, cl_event * event) const {
+      const auto num_events = event_wait_list.size();
+      if(num_events == 0) {
+         throw_if_failed(clEnqueueWriteBufferRect(internal_id, dest_buffer.raw_identifier(), wait_for_availability,
+                                                  source_offset, dest_offset, size,
+                                                  source_pitch[0], source_pitch[1], dest_pitch[0], dest_pitch[1],
+                                                  source, 0, nullptr, event));
+      } else {
+         cl_event raw_event_ids[num_events];
+         for(size_t i = 0; i < num_events; ++i) raw_event_ids[i] = event_wait_list[i].raw_identifier();
+         throw_if_failed(clEnqueueWriteBufferRect(internal_id, dest_buffer.raw_identifier(), wait_for_availability,
+                                                  source_offset, dest_offset, size,
+                                                  source_pitch[0], source_pitch[1], dest_pitch[0], dest_pitch[1],
+                                                  source, num_events, raw_event_ids, event));
+      }
+   }
+
    void CommandQueue::raw_copy_buffer(const Buffer & source_buffer, const size_t source_offset, const Buffer & dest_buffer, const size_t dest_offset, const size_t size, const EventWaitList & event_wait_list, cl_event * event) const {
       const auto num_events = event_wait_list.size();
       if(num_events == 0) {
@@ -153,6 +309,36 @@ namespace CLplusplus {
          cl_event raw_event_ids[num_events];
          for(size_t i = 0; i < num_events; ++i) raw_event_ids[i] = event_wait_list[i].raw_identifier();
          throw_if_failed(clEnqueueCopyBuffer(internal_id, source_buffer.raw_identifier(), dest_buffer.raw_identifier(), source_offset, dest_offset, size, num_events, raw_event_ids, event));
+      }
+   }
+
+   void CommandQueue::raw_copy_buffer_rect_2d(const Buffer & source_buffer, const size_t source_offset[2], const size_t source_row_pitch,
+                                              const Buffer & dest_buffer, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                              const size_t size[2], const EventWaitList & event_wait_list, cl_event * event) const {
+      const size_t source_offset_3d[] {source_offset[0], source_offset[1], 0};
+      const size_t source_pitch_3d[] {source_row_pitch, 0};
+      const size_t dest_offset_3d[] {dest_offset[0], dest_offset[1], 0};
+      const size_t dest_pitch_3d[] {dest_row_pitch, 0};
+      const size_t size_3d[] {size[0], size[1], 1};
+      raw_copy_buffer_rect_3d(source_buffer, source_offset_3d, source_pitch_3d, dest_buffer, dest_offset_3d, dest_pitch_3d, size_3d, event_wait_list, event);
+   }
+
+   void CommandQueue::raw_copy_buffer_rect_3d(const Buffer & source_buffer, const size_t source_offset[3], const size_t source_pitch[2],
+                                              const Buffer & dest_buffer, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                              const size_t size[3], const EventWaitList & event_wait_list, cl_event * event) const {
+      const auto num_events = event_wait_list.size();
+      if(num_events == 0) {
+         throw_if_failed(clEnqueueCopyBufferRect(internal_id, source_buffer.raw_identifier(), dest_buffer.raw_identifier(),
+                                                 source_offset, dest_offset, size,
+                                                 source_pitch[0], source_pitch[1], dest_pitch[0], dest_pitch[1],
+                                                 0, nullptr, event));
+      } else {
+         cl_event raw_event_ids[num_events];
+         for(size_t i = 0; i < num_events; ++i) raw_event_ids[i] = event_wait_list[i].raw_identifier();
+         throw_if_failed(clEnqueueCopyBufferRect(internal_id, source_buffer.raw_identifier(), dest_buffer.raw_identifier(),
+                                                 source_offset, dest_offset, size,
+                                                 source_pitch[0], source_pitch[1], dest_pitch[0], dest_pitch[1],
+                                                 num_events, raw_event_ids, event));
       }
    }
 

@@ -75,24 +75,24 @@ namespace CLplusplus {
 
          // Asynchronously or synchronously read a 2D rectangle of buffer data.
          Event enqueued_read_buffer_rect_2d(const Buffer & source_buffer, const size_t source_offset[2], const size_t source_row_pitch,
-                                            void * destination, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                            void * const destination, const size_t dest_offset[2], const size_t dest_row_pitch,
                                             const size_t size[2], const EventWaitList & event_wait_list) const;
          void enqueue_read_buffer_rect_2d(const Buffer & source_buffer, const size_t source_offset[2], const size_t source_row_pitch,
-                                          void * destination, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                          void * const destination, const size_t dest_offset[2], const size_t dest_row_pitch,
                                           const size_t size[2], const EventWaitList & event_wait_list) const;
          void read_buffer_rect_2d(const Buffer & source_buffer, const size_t source_offset[2], const size_t source_row_pitch,
-                                  void * destination, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                  void * const destination, const size_t dest_offset[2], const size_t dest_row_pitch,
                                   const size_t size[2], const EventWaitList & event_wait_list) const;
 
          // Asynchronously or synchronously read a 3D parallelepipede of buffer data.
          Event enqueued_read_buffer_rect_3d(const Buffer & source_buffer, const size_t source_offset[3], const size_t source_pitch[2],
-                                            void * destination, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                            void * const destination, const size_t dest_offset[3], const size_t dest_pitch[2],
                                             const size_t size[3], const EventWaitList & event_wait_list) const;
          void enqueue_read_buffer_rect_3d(const Buffer & source_buffer, const size_t source_offset[3], const size_t source_pitch[2],
-                                          void * destination, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                          void * const destination, const size_t dest_offset[3], const size_t dest_pitch[2],
                                           const size_t size[3], const EventWaitList & event_wait_list) const;
          void read_buffer_rect_3d(const Buffer & source_buffer, const size_t source_offset[3], const size_t source_pitch[2],
-                                  void * destination, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                  void * const destination, const size_t dest_offset[3], const size_t dest_pitch[2],
                                   const size_t size[3], const EventWaitList & event_wait_list) const;
 
          // Asynchronously write from host memory to a buffer, possibly waiting until the host buffer is safe to modify again before returning.
@@ -100,13 +100,41 @@ namespace CLplusplus {
          Event enqueued_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const;
          void enqueue_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const;
 
-         // TODO : Add an interface to WriteBufferRect
+         // Asynchronously write to a 2D rectangle of buffer data, possibly waiting until the host buffer is safe to modify again
+         Event enqueued_write_buffer_rect_2d(const void * const source, const size_t source_offset[2], const size_t source_row_pitch, const bool wait_for_availability,
+                                             const Buffer & dest_buffer, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                             const size_t size[2], const EventWaitList & event_wait_list) const;
+         void enqueue_write_buffer_rect_2d(const void * const source, const size_t source_offset[2], const size_t source_row_pitch, const bool wait_for_availability,
+                                           const Buffer & dest_buffer, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                           const size_t size[2], const EventWaitList & event_wait_list) const;
+
+         // Asynchronously write to a 3D rectangle of buffer data, possibly waiting until the host buffer is safe to modify again
+         Event enqueued_write_buffer_rect_3d(const void * const source, const size_t source_offset[3], const size_t source_pitch[2], const bool wait_for_availability,
+                                             const Buffer & dest_buffer, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                             const size_t size[3], const EventWaitList & event_wait_list) const;
+         void enqueue_write_buffer_rect_3d(const void * const source, const size_t source_offset[3], const size_t source_pitch[2], const bool wait_for_availability,
+                                           const Buffer & dest_buffer, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                           const size_t size[3], const EventWaitList & event_wait_list) const;
 
          // Asynchronously copy data from one buffer to another.
          Event enqueued_copy_buffer(const Buffer & source_buffer, const size_t source_offset, const Buffer & dest_buffer, const size_t dest_offset, const size_t size, const EventWaitList & event_wait_list) const;
          void enqueue_copy_buffer(const Buffer & source_buffer, const size_t source_offset, const Buffer & dest_buffer, const size_t dest_offset, const size_t size, const EventWaitList & event_wait_list) const;
 
-         // TODO : Add an interface to CopyBufferRect
+         // Asynchronously copy a 2D rectangle from one buffer to another
+         Event enqueued_copy_buffer_rect_2d(const Buffer & source_buffer, const size_t source_offset[2], const size_t source_row_pitch,
+                                            const Buffer & dest_buffer, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                            const size_t size[2], const EventWaitList & event_wait_list) const;
+         void enqueue_copy_buffer_rect_2d(const Buffer & source_buffer, const size_t source_offset[2], const size_t source_row_pitch,
+                                          const Buffer & dest_buffer, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                          const size_t size[2], const EventWaitList & event_wait_list) const;
+
+         // Asynchronously copy a 3D parallelepipede from one buffer to another
+         Event enqueued_copy_buffer_rect_3d(const Buffer & source_buffer, const size_t source_offset[3], const size_t source_pitch[2],
+                                            const Buffer & dest_buffer, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                            const size_t size[3], const EventWaitList & event_wait_list) const;
+         void enqueue_copy_buffer_rect_3d(const Buffer & source_buffer, const size_t source_offset[3], const size_t source_pitch[2],
+                                          const Buffer & dest_buffer, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                          const size_t size[3], const EventWaitList & event_wait_list) const;
 
          // Asynchronously fill a buffer with a fixed pattern of a device-supported OpenCL type.
          // This functionality is available both in a high-level templatized form, and in a low-level form which matches the raw OpenCL API.
@@ -158,14 +186,35 @@ namespace CLplusplus {
 
          // These are the raw OpenCL calls that higher-level device commands make
          void raw_read_buffer(const Buffer & source_buffer, const size_t offset, void * const destination, const size_t size, const bool synchronous_read, const EventWaitList & event_wait_list, cl_event * event) const;
+         void raw_read_buffer_rect_2d(const Buffer & source_buffer, const size_t source_offset[2], const size_t source_row_pitch,
+                                      void * const destination, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                      const size_t size[2], const bool synchronous_read, const EventWaitList & event_wait_list, cl_event * event) const;
          void raw_read_buffer_rect_3d(const Buffer & source_buffer, const size_t source_offset[3], const size_t source_pitch[2],
-                                      void * destination, const size_t dest_offset[3], const size_t dest_pitch[2],
-                                      const size_t size[3], const bool synchronous_read, const EventWaitList & event_wait_list) const;
+                                      void * const destination, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                      const size_t size[3], const bool synchronous_read, const EventWaitList & event_wait_list, cl_event * event) const;
+
          void raw_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list, cl_event * event) const;
+         void raw_write_buffer_rect_2d(const void * const source, const size_t source_offset[2], const size_t source_row_pitch, const bool wait_for_availability,
+                                       const Buffer & dest_buffer, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                       const size_t size[2], const EventWaitList & event_wait_list, cl_event * event) const;
+         void raw_write_buffer_rect_3d(const void * const source, const size_t source_offset[3], const size_t source_pitch[2], const bool wait_for_availability,
+                                       const Buffer & dest_buffer, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                       const size_t size[3], const EventWaitList & event_wait_list, cl_event * event) const;
+
          void raw_copy_buffer(const Buffer & source_buffer, const size_t source_offset, const Buffer & dest_buffer, const size_t dest_offset, const size_t size, const EventWaitList & event_wait_list, cl_event * event) const;
+         void raw_copy_buffer_rect_2d(const Buffer & source_buffer, const size_t source_offset[2], const size_t source_row_pitch,
+                                      const Buffer & dest_buffer, const size_t dest_offset[2], const size_t dest_row_pitch,
+                                      const size_t size[2], const EventWaitList & event_wait_list, cl_event * event) const;
+         void raw_copy_buffer_rect_3d(const Buffer & source_buffer, const size_t source_offset[3], const size_t source_pitch[2],
+                                      const Buffer & dest_buffer, const size_t dest_offset[3], const size_t dest_pitch[2],
+                                      const size_t size[3], const EventWaitList & event_wait_list, cl_event * event) const;
+
          void raw_fill_buffer(const void * const pattern, const size_t pattern_size, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list, cl_event * event) const;
+
          void * raw_map_buffer(const Buffer & buffer, const size_t offset, const size_t size, const bool synchronous_map, const cl_map_flags map_flags, const EventWaitList & event_wait_list, cl_event * event) const;
+
          void raw_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list, cl_event * event) const;
+
          void raw_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list, cl_event * event) const;
 
          // These functions manage the life cycle of reference-counted command queues
