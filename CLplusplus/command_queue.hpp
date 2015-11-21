@@ -63,28 +63,52 @@ namespace CLplusplus {
 
          // === DEVICE COMMANDS ===
 
-         // All device commands can wait for a list of events, which is specified using the following type
+         // All device commands can wait for a list of events, which is specified using the following type.
          using EventWaitList = std::vector<Event>;
 
-         // Asynchronously or synchronously read from a buffer to host memory
+         // --- Buffer operations ---
+
+         // Asynchronously or synchronously read from a buffer to host memory.
          Event enqueued_read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const EventWaitList & event_wait_list) const;
          void enqueue_read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const EventWaitList & event_wait_list) const;
          void read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const EventWaitList & event_wait_list) const;
 
          // TODO : Add an interface to ReadBufferRect
 
-         // Asynchronously write from host memory to a buffer, possibly waiting until the host buffer is safe to modify again before returning
+         // Asynchronously write from host memory to a buffer, possibly waiting until the host buffer is safe to modify again before returning.
          // WARNING : This does NOT mean synchronously waiting for a device write to complete. Data may still be in flight to device memory after the end of this function.
          Event enqueued_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const;
          void enqueue_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const;
 
          // TODO : Add an interface to WriteBufferRect
 
-         // TODO : Add an interface to CopyBuffer and CopyBufferRect
+         // Asynchronously copy data from one buffer to another.
+         Event enqueued_copy_buffer(const Buffer & source_buffer, const size_t source_offset, const Buffer & dest_buffer, const size_t dest_offset, const size_t size, const EventWaitList & event_wait_list) const;
+         void enqueue_copy_buffer(const Buffer & source_buffer, const size_t source_offset, const Buffer & dest_buffer, const size_t dest_offset, const size_t size, const EventWaitList & event_wait_list) const;
 
-         // TODO : Add an interface to FillBuffer
+         // TODO : Add an interface to CopyBufferRect
 
-         // TODO : Add an interface to MapBuffer
+         // Asynchronously fill a buffer with a fixed pattern of a device-supported OpenCL type.
+         // This functionality is available both in a high-level templatized form, and in a low-level form which matches the raw OpenCL API.
+         template<typename PatternType> Event enqueued_fill_buffer(const PatternType pattern, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const {
+            return raw_enqueued_fill_buffer(static_cast<void *>(&pattern), sizeof(pattern), dest_buffer, offset, size, event_wait_list);
+         }
+         template<typename PatternType> void enqueue_fill_buffer(const PatternType pattern, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const {
+            raw_enqueue_fill_buffer(static_cast<void *>(&pattern), sizeof(pattern), dest_buffer, offset, size, event_wait_list);
+         }
+         Event raw_enqueued_fill_buffer(const void * const pattern, const size_t pattern_size, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const;
+         void raw_enqueue_fill_buffer(const void * const pattern, const size_t pattern_size, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const;
+
+         // Asynchronously or synchronously map a buffer to host memory.
+         // NOTE: For asynchronous mappings, unlike the raw OpenCL API, we prefer to put the focus on the asynchronous event, not the mapped pointer.
+         //       This is to highlight the fact that said pointer will only be valid if and when the mapping event associated to it will complete successfully.
+         Event enqueued_map_buffer(const Buffer & buffer, const size_t offset, const size_t size, const cl_map_flags map_flags, const EventWaitList & event_wait_list, void * & future_result) const;
+         void enqueue_map_buffer(const Buffer & buffer, const size_t offset, const size_t size, const cl_map_flags map_flags, const EventWaitList & event_wait_list, void * & future_result) const;
+         void * map_buffer(const Buffer & buffer, const size_t offset, const size_t size, const cl_map_flags map_flags, const EventWaitList & event_wait_list) const;
+
+         // TODO : Add image support
+
+         // --- Common memory object operations ---
 
          // Asynchronously unmap a previously mapped memory object
          Event enqueued_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list) const;
@@ -94,7 +118,7 @@ namespace CLplusplus {
          Event enqueued_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list) const;
          void enqueue_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list) const;
 
-         // TODO : Add images, kernel execution, etc.
+         // TODO : Add remaining features: kernel execution, etc.
 
          // === SYNCHRONIZATION ===
 
@@ -112,9 +136,12 @@ namespace CLplusplus {
          // This is the internal identifier that represents our command queue
          cl_command_queue internal_id;
 
-         // These are the raw OpenCL calls that higher-level functions make
+         // These are the raw OpenCL calls that higher-level device commands make
          void raw_read_buffer(const Buffer & source_buffer, const size_t offset, const size_t size, void * const destination, const bool synchronous_read, const EventWaitList & event_wait_list, cl_event * event) const;
          void raw_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list, cl_event * event) const;
+         void raw_copy_buffer(const Buffer & source_buffer, const size_t source_offset, const Buffer & dest_buffer, const size_t dest_offset, const size_t size, const EventWaitList & event_wait_list, cl_event * event) const;
+         void raw_fill_buffer(const void * const pattern, const size_t pattern_size, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list, cl_event * event) const;
+         void * raw_map_buffer(const Buffer & buffer, const size_t offset, const size_t size, const bool synchronous_map, const cl_map_flags map_flags, const EventWaitList & event_wait_list, cl_event * event) const;
          void raw_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list, cl_event * event) const;
          void raw_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list, cl_event * event) const;
 
