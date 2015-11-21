@@ -59,9 +59,9 @@ int main() {
    const auto command_queue = context.create_command_queue(CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE);
 
    // Start to fill the buffer with a constant pattern
+   std::cout << "Filling buffer..." << std::endl;
    const cl_uchar pattern = 0x42;
    const auto fill_event = command_queue.enqueued_fill_buffer(pattern, buffer, 0, buffer_size, {});
-   std::cout << "Filling buffer..." << std::endl;
 
    // Ask the buffer to be mapped to host memory once this is done, and synchronize on this event
    cl_uchar * const mapped_buffer = static_cast<cl_uchar *>(command_queue.map_buffer(buffer, 0, buffer_size, CL_MAP_READ, {fill_event}));
