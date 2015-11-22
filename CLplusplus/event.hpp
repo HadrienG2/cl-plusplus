@@ -31,6 +31,8 @@ namespace CLplusplus {
    // This class can directly manage any OpenCL event, including user events.
    class Event {
       public:
+         // === BASIC CLASS LIFECYCLE ===
+
          // Events can be created from a valid OpenCL identifier
          Event(const cl_event identifier, const bool increment_reference_count);
 
@@ -38,6 +40,8 @@ namespace CLplusplus {
          Event(const Event & source);
          ~Event() { release(); }
          Event & operator=(const Event & source);
+
+         // === PROPERTIES ===
 
          // Event properties which are supported by the wrapper are directly accessible in a convenient, high-level fashion
          cl_command_type command_type() const { return raw_value_query<cl_command_type>(CL_EVENT_COMMAND_TYPE); }
@@ -58,6 +62,8 @@ namespace CLplusplus {
          size_t raw_query_output_size(const cl_mem_info parameter_name) const;
          void raw_query(const cl_mem_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
 
+         // === CALLBACKS ===
+
          // It is possible to have a callback be invoked when the command associated to an event will be submitted (CL_SUBMIT), running (CL_RUNNING) or terminated (CL_COMPLETE).
          // Users of this functionality should keep in mind that the callback associated with CL_COMPLETE will also be invoked if a command terminates abnormally, with an error code as its argument.
          // Another thing to keep in mind is that callbacks are stored within the Event object, so users should make sure that an Event with a callback has been either full processed or copied before leaving its scope.
@@ -72,8 +78,12 @@ namespace CLplusplus {
          void set_callback(const cl_int command_exec_callback_type, const EventCallbackWithUserData & callback, void * const user_data);
          class UnsupportedCallbackType : WrapperException {};
 
+         // === USER EVENTS ===
+
          // User events can also have their status set to CL_COMPLETE or a negative error code exactly once in their lifetime
          void set_status(cl_int final_execution_status) const;
+
+         // === RAW OPENCL ID ===
 
          // Finally, if the need arises, one can directly access the event identifier in order to perform raw OpenCL operations.
          // WARNING : Be very careful when you do this, as such raw identifiers will NOT be taken into account during reference counting !

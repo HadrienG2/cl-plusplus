@@ -27,12 +27,16 @@ namespace CLplusplus {
 
    class Buffer : public MemoryObject {
       public:
+         // === BASIC CLASS LIFECYCLE ===
+
          // Buffer objects can be created from a valid OpenCL identifier
          Buffer(const cl_mem identifier, const bool increment_reference_count) : MemoryObject{identifier, increment_reference_count} {}
 
          // Buffer objects are reference counted using the following functions
          Buffer(const Buffer & source) : MemoryObject{source} {}
          Buffer & operator=(const Buffer & source);
+
+         // === SUB-BUFFER CREATION ===
 
          // If is possible to create sub-buffers from OpenCL buffers. For wrapper-supported sub-buffer types, this is clean and easy.
          Buffer create_sub_region(const cl_mem_flags flags, const cl_buffer_region & region) const;

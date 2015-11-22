@@ -29,6 +29,8 @@ namespace CLplusplus {
    // This class provides a high-level interface to all OpenCL memory objects
    class MemoryObject {
       public:
+         // === BASIC CLASS LIFECYCLE ===
+
          // Memory objects are reference counted using the following functions
          MemoryObject(const MemoryObject & source);
          virtual ~MemoryObject() { release(); }
@@ -43,6 +45,8 @@ namespace CLplusplus {
          // Here are the functions used to set such callbacks
          void set_destructor_callback(const DestructorCallback & callback);
          void set_destructor_callback(const DestructorCallbackWithUserData & callback, void * const user_data);
+
+         // === PROPERTIES ===
 
          // Memory object properties which are supported by the wrapper are directly accessible in a convenient, high-level fashion
          cl_mem_object_type type() const { return raw_value_query<cl_mem_object_type>(CL_MEM_TYPE); }
@@ -72,6 +76,8 @@ namespace CLplusplus {
 
          size_t raw_query_output_size(const cl_mem_info parameter_name) const;
          void raw_query(const cl_mem_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
+
+         // === RAW OPENCL ID ===
 
          // Finally, if the need arises, one can directly access the memory object identifier in order to perform raw OpenCL operations.
          // WARNING : Be very careful when you do this, as such raw identifiers will NOT be taken into account during reference counting !

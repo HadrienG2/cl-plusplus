@@ -40,6 +40,8 @@ namespace CLplusplus {
    // This class represents an OpenCL device that can be queried in a high-level way
    class Device {
       public:
+         // === BASIC CLASS LIFECYCLE ===
+
          // We need a valid OpenCL device ID in order to initialize this class
          Device(const cl_device_id identifier, const bool increment_reference_count);
 
@@ -47,6 +49,8 @@ namespace CLplusplus {
          Device(const Device & source);
          ~Device() { release(); }
          Device & operator=(const Device & source);
+
+         // === PROPERTIES ===
 
          // Device properties which are supported by the wrapper are directly accessible in a convenient, high-level fashion
          cl_device_type type() const { return raw_value_query<cl_device_type>(CL_DEVICE_TYPE); }
@@ -173,8 +177,12 @@ namespace CLplusplus {
          size_t raw_query_output_size(const cl_device_info parameter_name) const;
          void raw_query(const cl_device_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
 
+         // === DEVICE PARTITIONING ===
+
          // It is possible to partition some devices into subdevices. For this purpose, we wrap clCreateSubDevices into a cleaner interface.
          std::vector<Device> create_sub_devices(PartitionProperties & properties);
+
+         // === RAW OPENCL ID ===
 
          // Finally, if the need arises, one can directly access the device identifier in order to perform raw OpenCL operations.
          // WARNING : Be very careful when you do this with subdevices, as such identifiers will NOT be taken into account during reference counting !

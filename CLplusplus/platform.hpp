@@ -36,8 +36,12 @@ namespace CLplusplus {
    // This class represents an OpenCL platform that can be queried in a high-level way.
    class Platform {
       public:
+         // === BASIC CLASS LIFECYCLE ===
+
          // We need a valid OpenCL platform ID in order to initialize this class
          Platform(const cl_platform_id identifier);
+
+         // === PROPERTIES ===
 
          // Platform properties which are supported by the wrapper are directly accessible in a convenient, high-level fashion
          CLplusplus::Profile profile() const { return decode_profile_string(raw_profile_string()); }
@@ -58,6 +62,8 @@ namespace CLplusplus {
          std::string raw_string_query(const cl_platform_info parameter_name) const;
          size_t raw_query_output_size(const cl_platform_info parameter_name) const;
          void raw_query(const cl_platform_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
+
+         // === RAW OPENCL ID ===
 
          // Finally, if the need arises, one can directly access the platform identifier in order to perform raw OpenCL operations
          cl_platform_id raw_identifier() const { return internal_id; }
