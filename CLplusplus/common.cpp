@@ -37,6 +37,8 @@ namespace CLplusplus {
             throw DevicePartitionFailed();
          case CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST:
             throw ExecStatusErrorForEventsInWaitList();
+         case CL_INVALID_BINARY:
+            throw InvalidBinary();
          case CL_INVALID_BUFFER_SIZE:
             throw InvalidBufferSize();
          case CL_INVALID_COMMAND_QUEUE:
@@ -61,6 +63,8 @@ namespace CLplusplus {
             throw InvalidOperation();
          case CL_INVALID_PLATFORM:
             throw InvalidPlatform();
+         case CL_INVALID_PROGRAM:
+            throw InvalidProgram();
          case CL_INVALID_PROPERTY:
             throw InvalidProperty();
          case CL_INVALID_QUEUE_PROPERTIES:
