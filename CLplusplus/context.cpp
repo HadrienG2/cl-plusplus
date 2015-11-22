@@ -15,7 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with CLplusplus.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <algorithm>
 #include <functional>
+#include <fstream>
 
 #include "common.hpp"
 #include "context.hpp"
@@ -130,11 +132,11 @@ namespace CLplusplus {
       throw_if_failed(clGetContextInfo(internal_id, parameter_name, output_storage_size, output_storage, actual_output_size));
    }
 
-   CommandQueue Context::create_command_queue(const Device & device, const cl_command_queue_properties properties) const {
+   CLplusplus::CommandQueue Context::create_command_queue(const Device & device, const cl_command_queue_properties properties) const {
       return raw_create_command_queue(device.raw_identifier(), properties);
    }
 
-   CommandQueue Context::create_command_queue(const cl_command_queue_properties properties) const {
+   CLplusplus::CommandQueue Context::create_command_queue(const cl_command_queue_properties properties) const {
       // If our context was created, or could have been created, with more than one device, then this call is invalid
       if(single_device_id == NULL) throw AmbiguousDevice();
 
@@ -142,11 +144,67 @@ namespace CLplusplus {
       return raw_create_command_queue(single_device_id, properties);
    }
 
-   Buffer Context::create_buffer(const cl_mem_flags flags, const size_t size, void * const host_ptr) const {
+   CLplusplus::Buffer Context::create_buffer(const cl_mem_flags flags, const size_t size, void * const host_ptr) const {
       cl_int error_code;
       const auto buffer_id = clCreateBuffer(internal_id, flags, size, host_ptr, &error_code);
       throw_if_failed(error_code);
       return Buffer{buffer_id, false};
+   }
+
+   CLplusplus::Program Context::create_program_with_source(const std::string & source_code) const {
+      cl_int error_code;
+      const size_t source_code_length = source_code.size();
+      const char * source_code_str = &(source_code[0]);
+      const auto program_id = clCreateProgramWithSource(internal_id, 1, &source_code_str, &source_code_length, &error_code);
+      throw_if_failed(error_code);
+      return Program{program_id, false};
+   }
+
+   CLplusplus::Program Context::create_program_with_source_file(const std::string & source_code_filename) const {
+      // Open source file and determine its size
+      std::ifstream input_file(source_code_filename, std::ios_base::in | std::ios_base::ate);
+      const auto file_size = input_file.tellg();
+      input_file.seekg(0);
+
+      // Create a string large enough to store the file's contents
+      std::string source_code;
+      source_code.resize(file_size);
+
+      // Load the source file's contents into the string
+      input_file.read(&(source_code[0]), file_size);
+
+      // Proceed in the normal way for source strings
+      return create_program_with_source(source_code);
+   }
+
+   CLplusplus::Program Context::create_program_with_binary(const std::vector<Device> & device_list, const std::vector<ProgramBinary> & binaries, cl_int * const binaries_status) const {
+      const size_t num_devices = device_list.size();
+      cl_device_id raw_device_ids[num_devices];
+      for(size_t i = 0; i < num_devices; ++i) raw_device_ids[i] = device_list[i].raw_identifier();
+      return raw_create_program_with_binary(num_devices, raw_device_ids, binaries, binaries_status);
+   }
+
+   CLplusplus::Program Context::create_program_with_binary(const ProgramBinary & binary) const {
+      // If our context was created, or could have been created, with more than one device, then this call is invalid
+      if(single_device_id == NULL) throw AmbiguousDevice();
+
+      // Otherwise, create the program using the previously stored device id
+      return raw_create_program_with_binary(1, &single_device_id, {binary}, nullptr);
+   }
+
+   CLplusplus::Program Context::create_program_with_built_in_kernels(const std::vector<Device> & device_list, const std::vector<std::string> & kernel_names) const {
+      const size_t num_devices = device_list.size();
+      cl_device_id raw_device_ids[num_devices];
+      for(size_t i = 0; i < num_devices; ++i) raw_device_ids[i] = device_list[i].raw_identifier();
+      return raw_create_program_with_built_in_kernels(num_devices, raw_device_ids, kernel_names);
+   }
+
+   CLplusplus::Program Context::create_program_with_built_in_kernels(const std::vector<std::string> & kernel_names) const {
+      // If our context was created, or could have been created, with more than one device, then this call is invalid
+      if(single_device_id == NULL) throw AmbiguousDevice();
+
+      // Otherwise, create the program using the previously stored device id
+      return raw_create_program_with_built_in_kernels(1, &single_device_id, kernel_names);
    }
 
    Event Context::create_user_event() const {
@@ -196,6 +254,48 @@ namespace CLplusplus {
       if(error_code != 0) throw_standard_exception(error_code);
    }
 
+   CommandQueue Context::raw_create_command_queue(const cl_device_id device_id, const cl_command_queue_properties properties) const {
+      cl_int error_code;
+      const auto command_queue_id = clCreateCommandQueue(internal_id, device_id, properties, &error_code);
+      throw_if_failed(error_code);
+      return CommandQueue{command_queue_id, false};
+   }
+
+   Program Context::raw_create_program_with_binary(const size_t num_devices, const cl_device_id * const raw_device_ids, const std::vector<ProgramBinary> & binaries, cl_int * const binaries_status) const {
+      // Create a C-compatible representation of the binary list
+      size_t binary_lengths[num_devices];
+      for(size_t i = 0; i < num_devices; ++i) binary_lengths[i] = binaries[i].size();
+      const unsigned char * raw_binaries[num_devices];
+      for(size_t i = 0; i < num_devices; ++i) raw_binaries[i] = &(binaries[i][0]);
+
+      // Create the program
+      cl_int error_code;
+      const auto program_id = clCreateProgramWithBinary(internal_id, num_devices, raw_device_ids, binary_lengths, raw_binaries, binaries_status, &error_code);
+      throw_if_failed(error_code);
+      return Program{program_id, false};
+   }
+
+   Program Context::raw_create_program_with_built_in_kernels(const size_t num_devices, const cl_device_id * const raw_device_ids, const std::vector<std::string> & kernel_names) const {
+      // Determine how long a semicolon-separated kernel list should be
+      size_t kernel_list_size = kernel_names.size() - 1;
+      for(const auto & kernel_name : kernel_names) kernel_list_size += kernel_name.length();
+
+      // Build such a kernel list
+      std::string kernel_list;
+      kernel_list.reserve(kernel_list_size);
+      for(size_t i = 0; i < num_devices - 1; ++i) {
+         kernel_list.append(kernel_names[i]);
+         kernel_list.push_back(';');
+      }
+      kernel_list.append(kernel_names[num_devices - 1]);
+
+      // Create the program
+      cl_int error_code;
+      const auto program_id = clCreateProgramWithBuiltInKernels(internal_id, num_devices, raw_device_ids, &(kernel_list[0]), &error_code);
+      throw_if_failed(error_code);
+      return Program{program_id, false};
+   }
+
    void Context::copy_internal_data(const Context & source) {
       internal_id = source.internal_id;
       single_device_id = source.single_device_id;
@@ -210,13 +310,6 @@ namespace CLplusplus {
       bool last_reference = (reference_count() == 1);
       throw_if_failed(clReleaseContext(internal_id));
       if(last_reference && internal_callback_ptr) delete internal_callback_ptr;
-   }
-
-   CommandQueue Context::raw_create_command_queue(const cl_device_id device_id, const cl_command_queue_properties properties) const {
-      cl_int error_code;
-      const auto command_queue_id = clCreateCommandQueue(internal_id, device_id, properties, &error_code);
-      throw_if_failed(error_code);
-      return CommandQueue{command_queue_id, false};
    }
 
 }
