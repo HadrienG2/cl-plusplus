@@ -91,29 +91,29 @@ namespace CLplusplus {
    }
 
    std::vector<Device> Context::devices() const {
-      // Check how many devices are available on the platform and allocate storage accordingly
+      // Check how many devices are connected to the context and allocate storage accordingly
       const auto device_amount = num_devices();
-      cl_device_id opencl_devices[device_amount];
+      cl_device_id raw_device_ids[device_amount];
 
       // Request the context to provide a device ID list
-      raw_query(CL_CONTEXT_DEVICES, device_amount * sizeof(cl_device_id), (void *)opencl_devices);
+      raw_query(CL_CONTEXT_DEVICES, device_amount * sizeof(cl_device_id), static_cast<void *>(raw_device_ids));
 
       // Convert it into high-level output
       std::vector<Device> result;
-      for(unsigned int i = 0; i < device_amount; ++i) result.emplace_back(Device{opencl_devices[i], true});
+      for(unsigned int i = 0; i < device_amount; ++i) result.emplace_back(Device{raw_device_ids[i], true});
       return result;
    }
 
    ContextProperties Context::properties() const {
       // Check the length of the null-terminated OpenCL property list and allocate storage accordingly
       const auto property_list_length = raw_query_output_size(CL_CONTEXT_PROPERTIES) / sizeof(cl_context_properties);
-      cl_context_properties opencl_properties[property_list_length];
+      cl_context_properties raw_properties[property_list_length];
 
       // Request the context to provide the property list
-      raw_query(CL_CONTEXT_PROPERTIES, property_list_length * sizeof(cl_context_properties), (void *)opencl_properties);
+      raw_query(CL_CONTEXT_PROPERTIES, property_list_length * sizeof(cl_context_properties), (void *)raw_properties);
 
       // Convert it into high-level output
-      return ContextProperties{opencl_properties};
+      return ContextProperties{raw_properties};
    }
 
    cl_uint Context::raw_uint_query(const cl_context_info parameter_name) const {

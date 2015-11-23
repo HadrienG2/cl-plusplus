@@ -69,7 +69,7 @@ namespace CLplusplus {
       
       // Fetch the output string
       char output_string[output_string_length];
-      raw_query(parameter_name, output_string_length, (void *)output_string);
+      raw_query(parameter_name, output_string_length, static_cast<void *>(output_string));
 
       // Return the result
       return std::string(output_string);
