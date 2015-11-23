@@ -19,12 +19,14 @@
 #define INCLUDE_CL_PLUSPLUS_PROGRAM
 
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <CL/cl.h>
 
 #include "common.hpp"
 #include "device.hpp"
+#include "event.hpp"
 
 // This code unit provides a high-level way to manage OpenCL program objects
 namespace CLplusplus {
@@ -46,6 +48,8 @@ namespace CLplusplus {
          Program & operator=(const Program & source);
 
          // === PROPERTIES ===
+
+         // --- Global program object properties ---
 
          // Program properties which are supported by the wrapper are directly accessible in a convenient, high-level fashion
          cl_uint num_devices() const { return raw_uint_query(CL_PROGRAM_NUM_DEVICES); }
@@ -77,6 +81,46 @@ namespace CLplusplus {
          size_t raw_query_output_size(const cl_program_info parameter_name) const;
          void raw_query(const cl_program_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
 
+         // --- Per-device program build info ---
+
+         // Program build info which is supported by the wrapper is directly accessible in a convenient, high-level fashion
+         cl_build_status build_status(const Device & device) const { return raw_build_info_value_query<cl_build_status>(device, CL_PROGRAM_BUILD_STATUS); }
+         std::string build_options(const Device & device) const { return raw_build_info_string_query(device, CL_PROGRAM_BUILD_OPTIONS); }
+         std::string build_log(const Device & device) const { return raw_build_info_string_query(device, CL_PROGRAM_BUILD_LOG); }
+         cl_program_binary_type binary_type(const Device & device) const { return raw_build_info_value_query<cl_program_binary_type>(device, CL_PROGRAM_BINARY_TYPE); }
+
+         // And fully unsupported program build info can be queried in a nearly pure OpenCL way, with some common-case usability optimizations
+         std::string raw_build_info_string_query(const Device & device, const cl_program_build_info parameter_name) const;
+
+         template<typename ValueType> ValueType raw_build_info_value_query(const Device & device, const cl_program_build_info parameter_name) const {
+            ValueType result;
+            raw_build_info_query(device, parameter_name, sizeof(ValueType), &result);
+            return result;
+         }
+
+         size_t raw_build_info_query_output_size(const Device & device, const cl_program_build_info parameter_name) const;
+         void raw_build_info_query(const Device & device, const cl_program_build_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
+
+         // === BUILDING EXECUTABLES ===
+
+         // For all program building commands, we accept native std::functions as callbacks, with and without user-defined data blocks.
+         // We discourage the use of such data blocks in C++11 as lambdas and std::bind() usually provide a safer alternative, but they are needed for legacy C code compatibility.
+         // Another thing to keep in mind is that callbacks are stored within the Program object, so users should make sure that a Program with a callback has been either built or copied before leaving its scope.
+         //
+         // Finally, please consider using our event-based asynchronous build functionality instead of callbacks. It's built on top of them, but more idiomatic OpenCL and less error-prone to use.
+         using BuildCallback = std::function<void(cl_program)>;
+         using BuildCallbackWithUserData = std::function<void(cl_program, void *)>;
+
+         // One can build programs either for all associated devices...
+         CLplusplus::Event build_with_event(const std::string & options);
+         void build(const std::string & options, const BuildCallback & callback = nullptr);
+         void build(const std::string & options, const BuildCallbackWithUserData & callback, void * const user_data);
+
+         // ...or for a selection of devices only
+         CLplusplus::Event build_with_event(const std::vector<Device> & device_list, const std::string & options);
+         void build(const std::vector<Device> & device_list, const std::string & options, const BuildCallback & callback = nullptr);
+         void build(const std::vector<Device> & device_list, const std::string & options, const BuildCallbackWithUserData & callback, void * const user_data);
+
          // === RAW OPENCL ID ===
 
          // Finally, if the need arises, one can directly access the program object identifier in order to perform raw OpenCL operations.
@@ -87,7 +131,22 @@ namespace CLplusplus {
          // This is the internal identifier that represents our program object
          cl_program internal_id;
 
+         // In general, we DO NOT want to deal with multiple kinds of callbacks, so the user data version is converted to a regular callback as soon as possible
+         static BuildCallback make_build_callback(const BuildCallbackWithUserData & callback, void * const user_data);
+
+         // Similarly, event-based asynchronous builds actually use a callback, which is defined here
+         class UnsupportedBuildStatus : public WrapperException {};
+         std::pair<Event, BuildCallback> make_build_event_callback() const;
+
+         // High-level context callbacks are stored here. They will be called by a lower-level static function which follows OpenCL's linkage conventions.
+         BuildCallback * internal_callback_ptr;
+         static void CL_CALLBACK raw_callback(cl_program program, void * actual_callback_ptr);
+
+         // This lower-level function eliminates code duplication in program build code
+         void raw_build_program(const std::vector<Device> * const device_list, const std::string & options, const BuildCallback & callback);
+
          // These functions manage the life cycle of reference-counted program objects
+         void copy_internal_data(const Program & source);
          cl_uint reference_count() const { return raw_uint_query(CL_PROGRAM_REFERENCE_COUNT); }
          void retain() const;
          void release();
