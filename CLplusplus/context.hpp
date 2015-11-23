@@ -58,7 +58,7 @@ namespace CLplusplus {
 
          // When a context is created from a single device, that device argument may be omitted in many calls.
          // If this is done when a context is NOT created from a single device, or could have been created from multiple devices, this exception will be thrown.
-         class AmbiguousDevice : WrapperException {};
+         class AmbiguousDevice : public WrapperException {};
 
          // Create a context from multiple devices -- wraps clCreateContext
          Context(ContextProperties & properties, const std::vector<Device> & devices, const ContextCallback & callback = nullptr);
