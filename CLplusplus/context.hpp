@@ -110,7 +110,6 @@ namespace CLplusplus {
 
          // To avoid going through compilation overhead on every run, a device-specific binary program may also be loaded.
          // As is the case with command queues, the device list may be omitted in the case of single-device contexts.
-         using ProgramBinary = std::vector<unsigned char>;
          CLplusplus::Program create_program_with_binary(const std::vector<Device> & device_list, const std::vector<ProgramBinary> & binaries, cl_int * const binaries_status = nullptr) const;
          CLplusplus::Program create_program_with_binary(const ProgramBinary & binary) const;
 

@@ -18,11 +18,21 @@
 #ifndef INCLUDE_CL_PLUSPLUS_PROGRAM
 #define INCLUDE_CL_PLUSPLUS_PROGRAM
 
+#include <string>
+#include <vector>
+
 #include <CL/cl.h>
+
+#include "common.hpp"
+#include "device.hpp"
 
 // This code unit provides a high-level way to manage OpenCL program objects
 namespace CLplusplus {
 
+   // To avoid going through a slow compilation process, programs can be provided in a binary form. This is said form.
+   using ProgramBinary = std::vector<unsigned char>;
+
+   // This class represents an OpenCL program object, that can be queried in a high-level way.
    class Program {
       public:
          // === BASIC CLASS LIFECYCLE ===
@@ -37,9 +47,25 @@ namespace CLplusplus {
 
          // === PROPERTIES ===
 
-         // TODO : Implement high-level access to program properties
+         // Program properties which are supported by the wrapper are directly accessible in a convenient, high-level fashion
+         cl_uint num_devices() const { return raw_uint_query(CL_PROGRAM_NUM_DEVICES); }
+         std::vector<CLplusplus::Device> devices() const;
+
+         std::string source() const { return raw_string_query(CL_PROGRAM_SOURCE); }
+
+         std::vector<size_t> binary_sizes() const;
+         std::vector<ProgramBinary> binaries() const;
+
+         size_t num_kernels() const { return raw_value_query<size_t>(CL_PROGRAM_NUM_KERNELS); }
+         std::vector<std::string> kernel_names() const { return decode_opencl_list(raw_string_query(CL_PROGRAM_KERNEL_NAMES), ';'); }
+
+         // Unsupported property values may be queried in a lower-level way
+         cl_context raw_context_id() const { return raw_value_query<cl_context>(CL_PROGRAM_CONTEXT); } // NOTE : Returning a Context here would lead to a circular dependency.
+                                                                                                       // WARNING : Beware that trying to use this identifier in a Context can lead to callback memory leaks.
+         void raw_get_binaries(const size_t device_amount, unsigned char * dest_storage[]) const;
 
          // And fully unsupported program properties can be queried in a nearly pure OpenCL way, with some common-case usability optimizations
+         std::string raw_string_query(const cl_program_info parameter_name) const;
          cl_uint raw_uint_query(const cl_program_info parameter_name) const { return raw_value_query<cl_uint>(parameter_name); }
 
          template<typename ValueType> ValueType raw_value_query(const cl_program_info parameter_name) const {
