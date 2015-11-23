@@ -29,6 +29,10 @@ namespace CLplusplus {
       using namespace StandardExceptions;
       
       switch(error_code) {
+         case CL_BUILD_PROGRAM_FAILURE:
+            throw BuildProgramFailure();
+         case CL_COMPILER_NOT_AVAILABLE:
+            throw CompilerNotAvailable();
          case CL_DEVICE_NOT_AVAILABLE:
             throw DeviceNotAvailable();
          case CL_DEVICE_NOT_FOUND:
@@ -41,6 +45,8 @@ namespace CLplusplus {
             throw InvalidBinary();
          case CL_INVALID_BUFFER_SIZE:
             throw InvalidBufferSize();
+         case CL_INVALID_BUILD_OPTIONS:
+            throw InvalidBuildOptions();
          case CL_INVALID_COMMAND_QUEUE:
             throw InvalidCommandQueue();
          case CL_INVALID_CONTEXT:

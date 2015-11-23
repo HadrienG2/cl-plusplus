@@ -34,12 +34,15 @@ namespace CLplusplus {
 
    // To avoid namespace clashes, these exceptions are defined in a separate namespace
    namespace StandardExceptions {
+      class BuildProgramFailure : public StandardException {};
+      class CompilerNotAvailable : public StandardException {};
       class DeviceNotAvailable : public StandardException {};
       class DeviceNotFound : public StandardException {};
       class DevicePartitionFailed : public StandardException {};
       class ExecStatusErrorForEventsInWaitList : public StandardException {};
       class InvalidBinary : public StandardException {};
       class InvalidBufferSize : public StandardException {};
+      class InvalidBuildOptions : public StandardException {};
       class InvalidCommandQueue : public StandardException {};
       class InvalidContext : public StandardException {};
       class InvalidDevice : public StandardException {};
