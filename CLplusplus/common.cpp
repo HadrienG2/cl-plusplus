@@ -65,6 +65,8 @@ namespace CLplusplus {
             throw InvalidPlatform();
          case CL_INVALID_PROGRAM:
             throw InvalidProgram();
+         case CL_INVALID_PROGRAM_EXECUTABLE:
+            throw InvalidProgramExecutable();
          case CL_INVALID_PROPERTY:
             throw InvalidProperty();
          case CL_INVALID_QUEUE_PROPERTIES:

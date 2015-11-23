@@ -52,6 +52,7 @@ namespace CLplusplus {
       class InvalidOperation : public StandardException {};
       class InvalidPlatform : public StandardException {};
       class InvalidProgram : public StandardException {};
+      class InvalidProgramExecutable : public StandardException {};
       class InvalidProperty : public StandardException {};
       class InvalidQueueProperties : public StandardException {};
       class InvalidValue : public StandardException {};
