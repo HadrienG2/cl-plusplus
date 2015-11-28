@@ -23,6 +23,7 @@
 #include <vector>
 
 #include <CL/cl.h>
+#include <CL/cl_ext.h>
 
 // This code unit defines declarations which are common to multiple parts of the wrapper
 namespace CLplusplus {
@@ -65,6 +66,9 @@ namespace CLplusplus {
       class MisalignedSubBufferOffset : public StandardException {};
       class OutOfHostMemory : public StandardException {};
       class OutOfResources : public StandardException {};
+#ifdef CL_PLATFORM_NOT_FOUND_KHR
+      class PlatformNotFoundKhr : public StandardException {};
+#endif
    }
 
    // This function raises the standard exception associated to an error code, or UnknownStandardException if it is not aware of the error that occured.

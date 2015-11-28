@@ -91,6 +91,10 @@ namespace CLplusplus {
             throw OutOfHostMemory();
          case CL_OUT_OF_RESOURCES:
             throw OutOfResources();
+#ifdef CL_PLATFORM_NOT_FOUND_KHR
+         case CL_PLATFORM_NOT_FOUND_KHR:
+            throw PlatformNotFoundKhr();
+#endif
          default:
             throw UnknownStandardException();
       }
