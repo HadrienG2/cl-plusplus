@@ -136,14 +136,14 @@ namespace CLplusplus {
 
          // Similarly, event-based asynchronous builds actually use a callback, which is defined here
          class UnsupportedBuildStatus : public WrapperException {};
-         std::pair<Event, BuildCallback> make_build_event_callback() const;
+         std::pair<Event, BuildCallback> make_build_event_callback(const std::vector<Device> * const device_list_ptr) const;
 
          // High-level context callbacks are stored here. They will be called by a lower-level static function which follows OpenCL's linkage conventions.
          BuildCallback * internal_callback_ptr;
-         static void CL_CALLBACK raw_callback(cl_program program, void * actual_callback_ptr);
+         static void CL_CALLBACK raw_callback(cl_program program, void * program_object);
 
          // This lower-level function eliminates code duplication in program build code
-         void raw_build_program(const std::vector<Device> * const device_list, const std::string & options, const BuildCallback & callback);
+         void raw_build_program(const std::vector<Device> * const device_list_ptr, const std::string & options, const BuildCallback & callback);
 
          // These functions manage the life cycle of reference-counted program objects
          void copy_internal_data(const Program & source);

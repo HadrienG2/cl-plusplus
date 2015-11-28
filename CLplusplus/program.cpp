@@ -136,7 +136,7 @@ namespace CLplusplus {
    }
 
    CLplusplus::Event Program::build_with_event(const std::string & options) {
-      const auto event_and_callback = make_build_event_callback();
+      const auto event_and_callback = make_build_event_callback(nullptr);
       raw_build_program(nullptr, options, event_and_callback.second);
       return event_and_callback.first;
    }
@@ -150,7 +150,7 @@ namespace CLplusplus {
    }
 
    CLplusplus::Event Program::build_with_event(const std::vector<Device> & device_list, const std::string & options) {
-      const auto event_and_callback = make_build_event_callback();
+      const auto event_and_callback = make_build_event_callback(&device_list);
       raw_build_program(&device_list, options, event_and_callback.second);
       return event_and_callback.first;
    }
@@ -168,17 +168,17 @@ namespace CLplusplus {
       return BuildCallback{std::bind(callback, _1, user_data)};
    }
 
-   std::pair<Event, Program::BuildCallback> Program::make_build_event_callback() const {
+   std::pair<Event, Program::BuildCallback> Program::make_build_event_callback(const std::vector<Device> * const device_list_ptr) const {
+      // Save the list of devices that our asynchronous build process will be concerned about
+      const auto device_list = (device_list_ptr) ? (*device_list_ptr) : devices();
+
       // Create a user event within the context that our program belongs to
       const auto context = Context{raw_context_id(), true};
       const auto user_event = context.create_user_event();
 
       // Prepare a callback that will set the user event according to the program build status
       const auto active_program_reference = *this;
-      const auto callback = [user_event, active_program_reference](cl_program unused) {
-         // Build a list of the devices associated to the program object
-         const auto device_list = active_program_reference.devices();
-
+      const auto callback = [user_event, device_list, active_program_reference](cl_program unused) {
          // For each device, check if the build went well. If not, notify the event users and abort.
          for(const auto & device : device_list) {
             const auto build_status = active_program_reference.build_status(device);
@@ -200,15 +200,23 @@ namespace CLplusplus {
       return {user_event, callback};
    }
 
-   void CL_CALLBACK Program::raw_callback(cl_program program, void * actual_callback_ptr) {
-      // Call the previously saved build callback object, then delete it
-      const auto callback_ptr = static_cast<const BuildCallback *>(actual_callback_ptr);
-      const auto actual_callback = *callback_ptr;
+   void CL_CALLBACK Program::raw_callback(cl_program program, void * program_object_ptr) {
+      // Fetch our program object
+      auto program_object = *(static_cast<Program *>(program_object_ptr));
+      
+      // Call its previously saved build callback
+      const auto actual_callback = *(program_object.internal_callback_ptr);
       actual_callback(program);
-      delete callback_ptr;
+
+      // Delete and NULL-out the build callback
+      delete program_object.internal_callback_ptr;
+      program_object.internal_callback_ptr = nullptr;
    }
 
    void Program::raw_build_program(const std::vector<Device> * const device_list_ptr, const std::string & options, const BuildCallback & callback) {
+      // To avoid callback memory leaks, raise InvalidOperation ourselves if a build is already occuring (rather than having OpenCL do it for us)
+      if(internal_callback_ptr) throw StandardExceptions::InvalidOperation();
+
       // Save the program build callback, if any
       if(callback) {
          internal_callback_ptr = new BuildCallback{callback};
@@ -217,7 +225,7 @@ namespace CLplusplus {
       // Build the program, creating an OpenCL-compatible view of the device list if necessary
       if(device_list_ptr == nullptr) {
          if(callback) {
-            throw_if_failed(clBuildProgram(internal_id, 0, nullptr, options.c_str(), raw_callback, (void *)internal_callback_ptr));
+            throw_if_failed(clBuildProgram(internal_id, 0, nullptr, options.c_str(), raw_callback, (void *)this));
          } else {
             throw_if_failed(clBuildProgram(internal_id, 0, nullptr, options.c_str(), nullptr, nullptr));
          }
@@ -227,7 +235,7 @@ namespace CLplusplus {
          cl_device_id raw_device_ids[num_devices];
          for(size_t i = 0; i < num_devices; ++i) raw_device_ids[i] = device_list[i].raw_identifier();
          if(callback) {
-            throw_if_failed(clBuildProgram(internal_id, num_devices, raw_device_ids, options.c_str(), raw_callback, (void *)internal_callback_ptr));
+            throw_if_failed(clBuildProgram(internal_id, num_devices, raw_device_ids, options.c_str(), raw_callback, (void *)this));
          } else {
             throw_if_failed(clBuildProgram(internal_id, num_devices, raw_device_ids, options.c_str(), nullptr, nullptr));
          }
@@ -246,7 +254,7 @@ namespace CLplusplus {
    void Program::release() {
       bool last_reference = (reference_count() == 1);
       throw_if_failed(clReleaseProgram(internal_id));
-      if(last_reference && internal_callback_ptr) delete internal_callback_ptr; // NOTE : This is likely to cause a segmentation fault, but hey, user's fault in this case.
+      if(last_reference && internal_callback_ptr) delete internal_callback_ptr; // NOTE : This should never happen and is likely to cause a segmentation fault, but hey, user's fault in this case.
    }
 
 }
