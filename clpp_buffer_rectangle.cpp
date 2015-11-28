@@ -37,10 +37,8 @@ int main() {
    // Minimal platform and device parameters are specified here
    const CLplusplus::Version target_version = CLplusplus::version_1p2;
    const cl_ulong min_mem_alloc_size = buffer_size;
-   const cl_ulong min_local_mem_size = 16 * 1024; // TODO : Simplify this away
 
    // Have the user select a suitable device, according to some criteria (see shared.hpp for more details)
-   // TODO : Transfer some of this complexity to more advanced CLplusplus examples
    const auto selected_platform_and_device = Shared::select_device(
       [&](const CLplusplus::Platform & platform) -> bool {
          return (platform.version() >= target_version);                       // Platform OpenCL version is recent enough
@@ -48,17 +46,11 @@ int main() {
       [&](const CLplusplus::Device & device) -> bool {
          if(device.version() < target_version) return false;                  // OpenCL platforms may support older-generation devices, which we need to eliminate
          const bool device_supports_ooe_execution = device.queue_properties() & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
-         const auto device_double_config = device.double_fp_config();
          return device.available() &&                                         // Device is available for compute purposes
-                device.endian_little() &&                                     // Device is little-endian
                 (device.execution_capabilities() & CL_EXEC_KERNEL) &&         // Device can execute OpenCL kernels
                 device_supports_ooe_execution &&                              // Device can execute OpenCL commands out of order
                 device.compiler_available() && device.linker_available() &&   // Implementation has an OpenCL C compiler and linker for this device
-                (device.max_mem_alloc_size() >= min_mem_alloc_size) &&        // Device accepts large enough global memory allocations
-                (device.local_mem_type() == CL_LOCAL) &&                      // Device has local memory support, with dedicated storage
-                (device.local_mem_size() >= min_local_mem_size) &&            // Device has a large enough local memory
-                (device_double_config != 0) &&                                // Doubles are supported
-                ((device_double_config & CL_FP_SOFT_FLOAT) == 0);             // Doubles are not emulated in software
+                (device.max_mem_alloc_size() >= min_mem_alloc_size);          // Device accepts large enough global memory allocations
       }
    );
 
