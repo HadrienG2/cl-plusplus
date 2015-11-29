@@ -42,6 +42,7 @@ namespace CLplusplus {
       class DevicePartitionFailed : public StandardException {};
       class ExecStatusErrorForEventsInWaitList : public StandardException {};
       class InvalidArgIndex : public StandardException {};
+      class InvalidArgValue : public StandardException {};
       class InvalidBinary : public StandardException {};
       class InvalidBufferSize : public StandardException {};
       class InvalidBuildOptions : public StandardException {};
@@ -62,6 +63,7 @@ namespace CLplusplus {
       class InvalidProgram : public StandardException {};
       class InvalidProgramExecutable : public StandardException {};
       class InvalidProperty : public StandardException {};
+      class InvalidSampler : public StandardException {};
       class InvalidQueueProperties : public StandardException {};
       class InvalidValue : public StandardException {};
       class KernelArgInfoNotAvailable : public StandardException {};

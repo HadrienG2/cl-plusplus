@@ -43,6 +43,10 @@ namespace CLplusplus {
             throw ExecStatusErrorForEventsInWaitList();
          case CL_INVALID_ARG_INDEX:
             throw InvalidArgIndex();
+         case CL_INVALID_ARG_SIZE:
+            throw InvalidArgSize();
+         case CL_INVALID_ARG_VALUE:
+            throw InvalidArgValue();
          case CL_INVALID_BINARY:
             throw InvalidBinary();
          case CL_INVALID_BUFFER_SIZE:
@@ -85,6 +89,8 @@ namespace CLplusplus {
             throw InvalidProperty();
          case CL_INVALID_QUEUE_PROPERTIES:
             throw InvalidQueueProperties();
+         case CL_INVALID_SAMPLER:
+            throw InvalidSampler();
          case CL_INVALID_VALUE:
             throw InvalidValue();
          case CL_KERNEL_ARG_INFO_NOT_AVAILABLE:
