@@ -43,6 +43,7 @@ namespace CLplusplus {
       class ExecStatusErrorForEventsInWaitList : public StandardException {};
       class InvalidArgIndex : public StandardException {};
       class InvalidArgValue : public StandardException {};
+      class InvalidArgSize : public StandardException {};
       class InvalidBinary : public StandardException {};
       class InvalidBufferSize : public StandardException {};
       class InvalidBuildOptions : public StandardException {};

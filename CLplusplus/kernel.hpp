@@ -23,6 +23,7 @@
 
 #include <CL/cl.h>
 
+#include "buffer.hpp"
 #include "device.hpp"
 
 // This code unit provides a high-level way to manage OpenCL kernels
@@ -113,8 +114,29 @@ namespace CLplusplus {
 
          // === KERNEL ARGUMENT SETUP ===
 
-         // TODO : Implement a high-level, user-friendly interface above clSetKernelArg()
-         // TODO : Also give access to the raw versions for fearless C developers
+         // Argument values which are supported by the wrapper may be set in a convenient, high-level fashion
+         void set_buffer_argument(const cl_uint arg_index, const Buffer * arg_value) const;
+         void set_local_argument(const cl_uint arg_index, const size_t arg_size) const { raw_set_argument(arg_index, arg_size, nullptr); }
+
+         // TODO : Add support for image and sampler arguments, once available
+
+         void set_char_argument(const cl_uint arg_index, const cl_char arg_value) const { raw_set_value_argument<cl_char>(arg_index, arg_value); }
+         void set_uchar_argument(const cl_uint arg_index, const cl_uchar arg_value) const { raw_set_value_argument<cl_uchar>(arg_index, arg_value); }
+         void set_short_argument(const cl_uint arg_index, const cl_short arg_value) const { raw_set_value_argument<cl_short>(arg_index, arg_value); }
+         void set_ushort_argument(const cl_uint arg_index, const cl_ushort arg_value) const { raw_set_value_argument<cl_ushort>(arg_index, arg_value); }
+         void set_int_argument(const cl_uint arg_index, const cl_int arg_value) const { raw_set_value_argument<cl_int>(arg_index, arg_value); }
+         void set_uint_argument(const cl_uint arg_index, const cl_uint arg_value) const { raw_set_value_argument<cl_uint>(arg_index, arg_value); }
+         void set_long_argument(const cl_uint arg_index, const cl_long arg_value) const { raw_set_value_argument<cl_long>(arg_index, arg_value); }
+         void set_ulong_argument(const cl_uint arg_index, const cl_ulong arg_value) const { raw_set_value_argument<cl_ulong>(arg_index, arg_value); }
+
+         void set_float_argument(const cl_uint arg_index, const cl_float arg_value) const { raw_set_value_argument<cl_float>(arg_index, arg_value); }
+         void set_double_argument(const cl_uint arg_index, const cl_double arg_value) const { raw_set_value_argument<cl_double>(arg_index, arg_value); }
+         void set_half_argument(const cl_uint arg_index, const cl_half arg_value) const { raw_set_value_argument<cl_half>(arg_index, arg_value); }
+
+         // And unsupported argument values may be set in a nearly pure OpenCL way, with some common-case usability optimizations
+         template<typename ValueType> void raw_set_value_argument(const cl_uint arg_index, const ValueType & value) const { raw_set_argument(arg_index, sizeof(ValueType), static_cast<const void *>(&value)); }
+
+         void raw_set_argument(const cl_uint arg_index, const size_t arg_size, const void * const arg_value) const;
 
          // === RAW OPENCL ID ===
 

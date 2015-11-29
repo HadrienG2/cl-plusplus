@@ -104,6 +104,19 @@ namespace CLplusplus {
       throw_if_failed(clGetKernelArgInfo(internal_id, arg_indx, parameter_name, output_storage_size, output_storage, actual_output_size));
    }
 
+   void Kernel::set_buffer_argument(const cl_uint arg_index, const Buffer * arg_value) const {
+      if(arg_value) {
+         const auto buffer_id = arg_value->raw_identifier();
+         raw_set_argument(arg_index, sizeof(cl_mem), static_cast<const void *>(&buffer_id));
+      } else {
+         raw_set_argument(arg_index, sizeof(cl_mem), nullptr);
+      }
+   }
+
+   void Kernel::raw_set_argument(const cl_uint arg_index, const size_t arg_size, const void * const arg_value) const {
+      throw_if_failed(clSetKernelArg(internal_id, arg_index, arg_size, arg_value));
+   }
+
    void Kernel::retain() const {
       throw_if_failed(clRetainKernel(internal_id));
    }
