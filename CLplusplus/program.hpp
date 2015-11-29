@@ -27,6 +27,7 @@
 #include "common.hpp"
 #include "device.hpp"
 #include "event.hpp"
+#include "kernel.hpp"
 
 // This code unit provides a high-level way to manage OpenCL program objects
 namespace CLplusplus {
@@ -111,6 +112,8 @@ namespace CLplusplus {
          using BuildCallback = std::function<void(cl_program)>;
          using BuildCallbackWithUserData = std::function<void(cl_program, void *)>;
 
+         // --- Direct program compilation ---
+
          // One can build programs either for all associated devices...
          CLplusplus::Event build_with_event(const std::string & options);
          void build(const std::string & options, const BuildCallback & callback = nullptr);
@@ -120,6 +123,18 @@ namespace CLplusplus {
          CLplusplus::Event build_with_event(const std::vector<Device> & device_list, const std::string & options);
          void build(const std::vector<Device> & device_list, const std::string & options, const BuildCallback & callback = nullptr);
          void build(const std::vector<Device> & device_list, const std::string & options, const BuildCallbackWithUserData & callback, void * const user_data);
+
+         // --- Separate compilation and linking ---
+
+         // TODO : Implement separate program compilation and linking
+
+         // === KERNEL OBJECT CREATION ===
+
+         // A kernel object may be created from any __kernel function of a successfully built OpenCL program
+         CLplusplus::Kernel create_kernel(const std::string & kernel_name) const;
+
+         // Alternatively, the implementation may create one kernel object for all such function
+         std::vector<CLplusplus::Kernel> create_kernels_in_program() const;
 
          // === RAW OPENCL ID ===
 

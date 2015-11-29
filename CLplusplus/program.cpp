@@ -55,6 +55,7 @@ namespace CLplusplus {
 
       // Convert it into high-level output
       std::vector<Device> result;
+      result.reserve(device_amount);
       for(unsigned int i = 0; i < device_amount; ++i) result.emplace_back(Device{raw_device_ids[i], true});
       return result;
    }
@@ -161,6 +162,29 @@ namespace CLplusplus {
 
    void Program::build(const std::vector<Device> & device_list, const std::string & options, const BuildCallbackWithUserData & callback, void * const user_data) {
       raw_build_program(&device_list, options, make_build_callback(callback, user_data));
+   }
+
+   CLplusplus::Kernel Program::create_kernel(const std::string & kernel_name) const {
+      cl_int error_code;
+      const auto kernel_id = clCreateKernel(internal_id, kernel_name.c_str(), &error_code);
+      throw_if_failed(error_code);
+      return Kernel{kernel_id, false};
+   }
+
+   std::vector<CLplusplus::Kernel> Program::create_kernels_in_program() const {
+      // Determine how many kernels we are going to generate
+      cl_uint num_kernels;
+      throw_if_failed(clCreateKernelsInProgram(internal_id, 0, nullptr, &num_kernels));
+
+      // Fetch the associated raw kernel identifiers
+      cl_kernel kernel_ids[num_kernels];
+      throw_if_failed(clCreateKernelsInProgram(internal_id, num_kernels, kernel_ids, nullptr));
+
+      // Build a table of high-level kernel objects from these identifiers
+      std::vector<Kernel> result;
+      result.reserve(num_kernels);
+      for(size_t i = 0; i < num_kernels; ++i) result.emplace_back(Kernel{kernel_ids[i], false});
+      return result;
    }
 
    Program::BuildCallback Program::make_build_callback(const BuildCallbackWithUserData & callback, void * const user_data) {
