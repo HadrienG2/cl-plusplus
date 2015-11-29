@@ -82,6 +82,28 @@ namespace CLplusplus {
       throw_if_failed(clGetKernelWorkGroupInfo(internal_id, device.raw_identifier(), parameter_name, output_storage_size, output_storage, actual_output_size));
    }
 
+   std::string Kernel::raw_argument_string_query(const cl_uint arg_indx, const cl_kernel_arg_info parameter_name) const {
+      // Check how long the output string should be
+      size_t output_string_length = raw_query_output_size(parameter_name);
+      
+      // Fetch the output string
+      char output_string[output_string_length];
+      raw_argument_query(arg_indx, parameter_name, output_string_length, static_cast<void *>(output_string));
+
+      // Return the result
+      return std::string(output_string);
+   }
+
+   size_t Kernel::raw_argument_query_output_size(const cl_uint arg_indx, const cl_kernel_arg_info parameter_name) const {
+      size_t result;
+      raw_argument_query(arg_indx, parameter_name, 0, nullptr, &result);
+      return result;
+   }
+
+   void Kernel::raw_argument_query(const cl_uint arg_indx, const cl_kernel_arg_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size) const {
+      throw_if_failed(clGetKernelArgInfo(internal_id, arg_indx, parameter_name, output_storage_size, output_storage, actual_output_size));
+   }
+
    void Kernel::retain() const {
       throw_if_failed(clRetainKernel(internal_id));
    }

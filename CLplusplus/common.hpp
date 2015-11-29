@@ -41,6 +41,7 @@ namespace CLplusplus {
       class DeviceNotFound : public StandardException {};
       class DevicePartitionFailed : public StandardException {};
       class ExecStatusErrorForEventsInWaitList : public StandardException {};
+      class InvalidArgIndex : public StandardException {};
       class InvalidBinary : public StandardException {};
       class InvalidBufferSize : public StandardException {};
       class InvalidBuildOptions : public StandardException {};
@@ -63,6 +64,7 @@ namespace CLplusplus {
       class InvalidProperty : public StandardException {};
       class InvalidQueueProperties : public StandardException {};
       class InvalidValue : public StandardException {};
+      class KernelArgInfoNotAvailable : public StandardException {};
       class MapFailure : public StandardException {};
       class MemCopyOverlap : public StandardException {};
       class MemObjectAllocationFailure : public StandardException {};

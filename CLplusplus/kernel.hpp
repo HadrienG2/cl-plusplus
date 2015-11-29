@@ -90,11 +90,31 @@ namespace CLplusplus {
          size_t raw_work_group_query_output_size(const Device & device, const cl_kernel_work_group_info parameter_name) const;
          void raw_work_group_query(const Device & device, const cl_kernel_work_group_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
 
-         // --- TODO : Kernel argument properties ---
+         // --- Kernel argument properties ---  (NOTE : These are only available in very specific circumstances, and thus to be used with caution in production code)
+
+         // Argument properties which are supported by the wrapper are directly accessible in a convenient, high-level fashion
+         cl_kernel_arg_address_qualifier arg_address_qualifier(const cl_uint arg_indx) const { return raw_argument_value_query<cl_kernel_arg_address_qualifier>(arg_indx, CL_KERNEL_ARG_ADDRESS_QUALIFIER); }
+         cl_kernel_arg_access_qualifier arg_access_qualifier(const cl_uint arg_indx) const { return raw_argument_value_query<cl_kernel_arg_address_qualifier>(arg_indx, CL_KERNEL_ARG_ACCESS_QUALIFIER); }
+         std::string arg_type_name(const cl_uint arg_indx) const { return raw_argument_string_query(arg_indx, CL_KERNEL_ARG_TYPE_NAME); }
+         cl_kernel_arg_type_qualifier arg_type_qualifier(const cl_uint arg_indx) const { return raw_argument_value_query<cl_kernel_arg_type_qualifier>(arg_indx, CL_KERNEL_ARG_TYPE_QUALIFIER); }
+         std::string arg_name(const cl_uint arg_indx) const { return raw_argument_string_query(arg_indx, CL_KERNEL_ARG_NAME); }
+
+         // And fully unsupported argument properties can be queried in a nearly pure OpenCL way, with some common-case usability optimizations
+         std::string raw_argument_string_query(const cl_uint arg_indx, const cl_kernel_arg_info parameter_name) const;
+
+         template<typename ValueType> ValueType raw_argument_value_query(const cl_uint arg_indx, const cl_kernel_arg_info parameter_name) const {
+            ValueType result;
+            raw_argument_query(arg_indx, parameter_name, sizeof(ValueType), &result);
+            return result;
+         }
+
+         size_t raw_argument_query_output_size(const cl_uint arg_indx, const cl_kernel_arg_info parameter_name) const;
+         void raw_argument_query(const cl_uint arg_indx, const cl_kernel_arg_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
 
          // === KERNEL ARGUMENT SETUP ===
 
          // TODO : Implement a high-level, user-friendly interface above clSetKernelArg()
+         // TODO : Also give access to the raw versions for fearless C developers
 
          // === RAW OPENCL ID ===
 

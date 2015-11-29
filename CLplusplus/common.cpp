@@ -41,6 +41,8 @@ namespace CLplusplus {
             throw DevicePartitionFailed();
          case CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST:
             throw ExecStatusErrorForEventsInWaitList();
+         case CL_INVALID_ARG_INDEX:
+            throw InvalidArgIndex();
          case CL_INVALID_BINARY:
             throw InvalidBinary();
          case CL_INVALID_BUFFER_SIZE:
@@ -85,6 +87,8 @@ namespace CLplusplus {
             throw InvalidQueueProperties();
          case CL_INVALID_VALUE:
             throw InvalidValue();
+         case CL_KERNEL_ARG_INFO_NOT_AVAILABLE:
+            throw KernelArgInfoNotAvailable();
          case CL_MAP_FAILURE:
             throw MapFailure();
          case CL_MEM_COPY_OVERLAP:
