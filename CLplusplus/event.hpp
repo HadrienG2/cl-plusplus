@@ -83,6 +83,11 @@ namespace CLplusplus {
          // User events can also have their status set to CL_COMPLETE or a negative error code exactly once in their lifetime
          void set_status(cl_int final_execution_status) const;
 
+         // === PROFILING ===
+
+         // Non-user events may be queried for profiling info on any command queue which has CL_QUEUE_PROFILING_ENABLE set, after they reach completion.
+         // TODO : Implement the general profiling event info query, a specialization for ulong, and further specializations for all currently profile-able statuses
+
          // === RAW OPENCL ID ===
 
          // Finally, if the need arises, one can directly access the event identifier in order to perform raw OpenCL operations.
