@@ -77,24 +77,30 @@ namespace CLplusplus {
          // Asynchronously or synchronously read a 2D rectangle of buffer data.
          Event enqueued_read_buffer_rect_2d(const Buffer & source_buffer, const std::array<size_t, 2> source_offset, const size_t source_row_pitch,
                                             void * const destination, const std::array<size_t, 2> dest_offset, const size_t dest_row_pitch,
-                                            const std::array<size_t, 2> size, const EventWaitList & event_wait_list) const;
+                                            const std::array<size_t, 2> size,
+                                            const EventWaitList & event_wait_list) const;
          void enqueue_read_buffer_rect_2d(const Buffer & source_buffer, const std::array<size_t, 2> source_offset, const size_t source_row_pitch,
                                           void * const destination, const std::array<size_t, 2> dest_offset, const size_t dest_row_pitch,
-                                          const std::array<size_t, 2> size, const EventWaitList & event_wait_list) const;
+                                          const std::array<size_t, 2> size,
+                                          const EventWaitList & event_wait_list) const;
          void read_buffer_rect_2d(const Buffer & source_buffer, const std::array<size_t, 2> source_offset, const size_t source_row_pitch,
                                   void * const destination, const std::array<size_t, 2> dest_offset, const size_t dest_row_pitch,
-                                  const std::array<size_t, 2> size, const EventWaitList & event_wait_list) const;
+                                  const std::array<size_t, 2> size,
+                                  const EventWaitList & event_wait_list) const;
 
          // Asynchronously or synchronously read a 3D parallelepipede of buffer data.
          Event enqueued_read_buffer_rect_3d(const Buffer & source_buffer, const std::array<size_t, 3> source_offset, const std::array<size_t, 2> source_pitch,
                                             void * const destination, const std::array<size_t, 3> dest_offset, const std::array<size_t, 2> dest_pitch,
-                                            const std::array<size_t, 3> size, const EventWaitList & event_wait_list) const;
+                                            const std::array<size_t, 3> size,
+                                            const EventWaitList & event_wait_list) const;
          void enqueue_read_buffer_rect_3d(const Buffer & source_buffer, const std::array<size_t, 3> source_offset, const std::array<size_t, 2> source_pitch,
                                           void * const destination, const std::array<size_t, 3> dest_offset, const std::array<size_t, 2> dest_pitch,
-                                          const std::array<size_t, 3> size, const EventWaitList & event_wait_list) const;
+                                          const std::array<size_t, 3> size,
+                                          const EventWaitList & event_wait_list) const;
          void read_buffer_rect_3d(const Buffer & source_buffer, const std::array<size_t, 3> source_offset, const std::array<size_t, 2> source_pitch,
                                   void * const destination, const std::array<size_t, 3> dest_offset, const std::array<size_t, 2> dest_pitch,
-                                  const std::array<size_t, 3> size, const EventWaitList & event_wait_list) const;
+                                  const std::array<size_t, 3> size,
+                                  const EventWaitList & event_wait_list) const;
 
          // Asynchronously write from host memory to a buffer, possibly waiting until the host buffer is safe to modify again before returning.
          // WARNING : This does NOT mean synchronously waiting for a device write to complete. Data may still be in flight to device memory after the end of this function.
@@ -104,18 +110,22 @@ namespace CLplusplus {
          // Asynchronously write to a 2D rectangle of buffer data, possibly waiting until the host buffer is safe to modify again
          Event enqueued_write_buffer_rect_2d(const void * const source, const std::array<size_t, 2> source_offset, const size_t source_row_pitch, const bool wait_for_availability,
                                              const Buffer & dest_buffer, const std::array<size_t, 2> dest_offset, const size_t dest_row_pitch,
-                                             const std::array<size_t, 2> size, const EventWaitList & event_wait_list) const;
+                                             const std::array<size_t, 2> size,
+                                             const EventWaitList & event_wait_list) const;
          void enqueue_write_buffer_rect_2d(const void * const source, const std::array<size_t, 2> source_offset, const size_t source_row_pitch, const bool wait_for_availability,
                                            const Buffer & dest_buffer, const std::array<size_t, 2> dest_offset, const size_t dest_row_pitch,
-                                           const std::array<size_t, 2> size, const EventWaitList & event_wait_list) const;
+                                           const std::array<size_t, 2> size,
+                                           const EventWaitList & event_wait_list) const;
 
          // Asynchronously write to a 3D rectangle of buffer data, possibly waiting until the host buffer is safe to modify again
          Event enqueued_write_buffer_rect_3d(const void * const source, const std::array<size_t, 3> source_offset, const std::array<size_t, 2> source_pitch, const bool wait_for_availability,
                                              const Buffer & dest_buffer, const std::array<size_t, 3> dest_offset, const std::array<size_t, 2> dest_pitch,
-                                             const std::array<size_t, 3> size, const EventWaitList & event_wait_list) const;
+                                             const std::array<size_t, 3> size,
+                                             const EventWaitList & event_wait_list) const;
          void enqueue_write_buffer_rect_3d(const void * const source, const std::array<size_t, 3> source_offset, const std::array<size_t, 2> source_pitch, const bool wait_for_availability,
                                            const Buffer & dest_buffer, const std::array<size_t, 3> dest_offset, const std::array<size_t, 2> dest_pitch,
-                                           const std::array<size_t, 3> size, const EventWaitList & event_wait_list) const;
+                                           const std::array<size_t, 3> size,
+                                           const EventWaitList & event_wait_list) const;
 
          // Asynchronously copy data from one buffer to another.
          Event enqueued_copy_buffer(const Buffer & source_buffer, const size_t source_offset, const Buffer & dest_buffer, const size_t dest_offset, const size_t size, const EventWaitList & event_wait_list) const;
@@ -124,18 +134,22 @@ namespace CLplusplus {
          // Asynchronously copy a 2D rectangle from one buffer to another
          Event enqueued_copy_buffer_rect_2d(const Buffer & source_buffer, const std::array<size_t, 2> source_offset, const size_t source_row_pitch,
                                             const Buffer & dest_buffer, const std::array<size_t, 2> dest_offset, const size_t dest_row_pitch,
-                                            const std::array<size_t, 2> size, const EventWaitList & event_wait_list) const;
+                                            const std::array<size_t, 2> size,
+                                            const EventWaitList & event_wait_list) const;
          void enqueue_copy_buffer_rect_2d(const Buffer & source_buffer, const std::array<size_t, 2> source_offset, const size_t source_row_pitch,
                                           const Buffer & dest_buffer, const std::array<size_t, 2> dest_offset, const size_t dest_row_pitch,
-                                          const std::array<size_t, 2> size, const EventWaitList & event_wait_list) const;
+                                          const std::array<size_t, 2> size,
+                                          const EventWaitList & event_wait_list) const;
 
          // Asynchronously copy a 3D parallelepipede from one buffer to another
          Event enqueued_copy_buffer_rect_3d(const Buffer & source_buffer, const std::array<size_t, 3> source_offset, const std::array<size_t, 2> source_pitch,
                                             const Buffer & dest_buffer, const std::array<size_t, 3> dest_offset, const std::array<size_t, 2> dest_pitch,
-                                            const std::array<size_t, 3> size, const EventWaitList & event_wait_list) const;
+                                            const std::array<size_t, 3> size,
+                                            const EventWaitList & event_wait_list) const;
          void enqueue_copy_buffer_rect_3d(const Buffer & source_buffer, const std::array<size_t, 3> source_offset, const std::array<size_t, 2> source_pitch,
                                           const Buffer & dest_buffer, const std::array<size_t, 3> dest_offset, const std::array<size_t, 2> dest_pitch,
-                                          const std::array<size_t, 3> size, const EventWaitList & event_wait_list) const;
+                                          const std::array<size_t, 3> size,
+                                          const EventWaitList & event_wait_list) const;
 
          // Asynchronously fill a buffer with a fixed pattern of a device-supported OpenCL type.
          // This functionality is available both in a high-level templatized form, and in a low-level form which matches the raw OpenCL API.
