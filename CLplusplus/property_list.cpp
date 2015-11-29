@@ -201,7 +201,8 @@ namespace CLplusplus {
          case CL_CONTEXT_PLATFORM: return PropertyTag::Scalar;
          case CL_CONTEXT_INTEROP_USER_SYNC: return PropertyTag::Scalar;
 
-         // TODO : Fill this database with other OpenCL property values
+         // WARNING : This database must be kept up to date as new properties are added to OpenCL
+
          default: throw UnsupportedProperty{};
       }
    }
