@@ -100,6 +100,7 @@ namespace CLplusplus {
 
       // Convert it into high-level output
       std::vector<Device> result;
+      result.reserve(device_amount);
       for(unsigned int i = 0; i < device_amount; ++i) result.emplace_back(Device{raw_device_ids[i], true});
       return result;
    }
