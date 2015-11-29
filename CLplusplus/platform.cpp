@@ -85,4 +85,8 @@ namespace CLplusplus {
       throw_if_failed(clGetPlatformInfo(internal_id, parameter_name, output_storage_size, output_storage, actual_output_size));
    }
 
+   void Platform::unload_compiler() const {
+      throw_if_failed(clUnloadPlatformCompiler(internal_id));
+   }
+
 }

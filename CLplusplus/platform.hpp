@@ -24,7 +24,6 @@
 
 #include <CL/cl.h>
 
-#include "common.hpp"
 #include "device.hpp"
 #include "extensions.hpp"
 #include "profile.hpp"
@@ -62,6 +61,11 @@ namespace CLplusplus {
          std::string raw_string_query(const cl_platform_info parameter_name) const;
          size_t raw_query_output_size(const cl_platform_info parameter_name) const;
          void raw_query(const cl_platform_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
+
+         // === OPENCL C COMPILER UNLOAD HINT ===
+
+         // Allow the implementation to unload the resources associated to the OpenCL C compiler
+         void unload_compiler() const;
 
          // === RAW OPENCL ID ===
 
