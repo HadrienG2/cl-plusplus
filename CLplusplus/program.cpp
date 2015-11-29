@@ -171,6 +171,11 @@ namespace CLplusplus {
       return Kernel{kernel_id, false};
    }
 
+   CLplusplus::Kernel Program::create_kernel(const std::string & kernel_name, const Event & program_build_event) const {
+      wait_for_events({program_build_event});
+      return create_kernel(kernel_name);
+   }
+
    std::vector<CLplusplus::Kernel> Program::create_kernels_in_program() const {
       // Determine how many kernels we are going to generate
       cl_uint num_kernels;
@@ -185,6 +190,11 @@ namespace CLplusplus {
       result.reserve(num_kernels);
       for(size_t i = 0; i < num_kernels; ++i) result.emplace_back(Kernel{kernel_ids[i], false});
       return result;
+   }
+
+   std::vector<CLplusplus::Kernel> Program::create_kernels_in_program(const Event & program_build_event) const {
+      wait_for_events({program_build_event});
+      return create_kernels_in_program();
    }
 
    Program::BuildCallback Program::make_build_callback(const BuildCallbackWithUserData & callback, void * const user_data) {
@@ -226,7 +236,7 @@ namespace CLplusplus {
 
    void CL_CALLBACK Program::raw_callback(cl_program program, void * program_object_ptr) {
       // Fetch our program object
-      auto program_object = *(static_cast<Program *>(program_object_ptr));
+      auto & program_object = *(static_cast<Program *>(program_object_ptr));
       
       // Call its previously saved build callback
       const auto actual_callback = *(program_object.internal_callback_ptr);
@@ -241,28 +251,31 @@ namespace CLplusplus {
       // To avoid callback memory leaks, raise InvalidOperation ourselves if a build is already occuring (rather than having OpenCL do it for us)
       if(internal_callback_ptr) throw StandardExceptions::InvalidOperation();
 
-      // Save the program build callback, if any
-      if(callback) {
-         internal_callback_ptr = new BuildCallback{callback};
-      }
+      // Save the program build callback and build event, if any
+      if(callback) internal_callback_ptr = new BuildCallback{callback};
 
       // Build the program, creating an OpenCL-compatible view of the device list if necessary
-      if(device_list_ptr == nullptr) {
-         if(callback) {
-            throw_if_failed(clBuildProgram(internal_id, 0, nullptr, options.c_str(), raw_callback, (void *)this));
+      try {
+         if(device_list_ptr == nullptr) {
+            if(callback) {
+               throw_if_failed(clBuildProgram(internal_id, 0, nullptr, options.c_str(), raw_callback, (void *)this));
+            } else {
+               throw_if_failed(clBuildProgram(internal_id, 0, nullptr, options.c_str(), nullptr, nullptr));
+            }
          } else {
-            throw_if_failed(clBuildProgram(internal_id, 0, nullptr, options.c_str(), nullptr, nullptr));
+            const auto & device_list = *device_list_ptr;
+            const auto num_devices = device_list.size();
+            cl_device_id raw_device_ids[num_devices];
+            for(size_t i = 0; i < num_devices; ++i) raw_device_ids[i] = device_list[i].raw_identifier();
+            if(callback) {
+               throw_if_failed(clBuildProgram(internal_id, num_devices, raw_device_ids, options.c_str(), raw_callback, (void *)this));
+            } else {
+               throw_if_failed(clBuildProgram(internal_id, num_devices, raw_device_ids, options.c_str(), nullptr, nullptr));
+            }
          }
-      } else {
-         const auto & device_list = *device_list_ptr;
-         const auto num_devices = device_list.size();
-         cl_device_id raw_device_ids[num_devices];
-         for(size_t i = 0; i < num_devices; ++i) raw_device_ids[i] = device_list[i].raw_identifier();
-         if(callback) {
-            throw_if_failed(clBuildProgram(internal_id, num_devices, raw_device_ids, options.c_str(), raw_callback, (void *)this));
-         } else {
-            throw_if_failed(clBuildProgram(internal_id, num_devices, raw_device_ids, options.c_str(), nullptr, nullptr));
-         }
+      } catch(...) {
+         if(internal_callback_ptr) delete internal_callback_ptr;
+         throw;
       }
    }
 

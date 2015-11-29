@@ -106,7 +106,7 @@ namespace CLplusplus {
 
          // For all program building commands, we accept native std::functions as callbacks, with and without user-defined data blocks.
          // We discourage the use of such data blocks in C++11 as lambdas and std::bind() usually provide a safer alternative, but they are needed for legacy C code compatibility.
-         // Another thing to keep in mind is that callbacks are stored within the Program object, so users should make sure that a Program with a callback has been either built or copied before leaving its scope.
+         // Another thing to keep in mind is that callbacks are stored within the Program object, so users should make sure that Program objects remain in scope during asynchronous builds.
          //
          // Finally, please consider using our event-based asynchronous build functionality instead of callbacks. It's built on top of them, but more idiomatic OpenCL and less error-prone to use.
          using BuildCallback = std::function<void(cl_program)>;
@@ -130,11 +130,14 @@ namespace CLplusplus {
 
          // === KERNEL OBJECT CREATION ===
 
-         // A kernel object may be created from any __kernel function of a successfully built OpenCL program
+         // A kernel object may be created from any __kernel function of a successfully built OpenCL program.
+         // Kernel creation may optionally wait for an asynchronous program build to complete instead.
          CLplusplus::Kernel create_kernel(const std::string & kernel_name) const;
+         CLplusplus::Kernel create_kernel(const std::string & kernel_name, const Event & program_build_event) const;
 
-         // Alternatively, the implementation may create one kernel object for all such function
+         // Alternatively, the implementation may create one kernel object for all possible functions
          std::vector<CLplusplus::Kernel> create_kernels_in_program() const;
+         std::vector<CLplusplus::Kernel> create_kernels_in_program(const Event & program_build_event) const;
 
          // === RAW OPENCL ID ===
 
