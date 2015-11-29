@@ -63,6 +63,12 @@ namespace CLplusplus {
             throw InvalidEventWaitList();
          case CL_INVALID_HOST_PTR:
             throw InvalidHostPtr();
+         case CL_INVALID_KERNEL:
+            throw InvalidKernel();
+         case CL_INVALID_KERNEL_DEFINITION:
+            throw InvalidKernelDefinition();
+         case CL_INVALID_KERNEL_NAME:
+            throw InvalidKernelName();
          case CL_INVALID_MEM_OBJECT:
             throw InvalidMemObject();
          case CL_INVALID_OPERATION:

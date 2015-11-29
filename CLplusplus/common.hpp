@@ -52,6 +52,9 @@ namespace CLplusplus {
       class InvalidEvent : public StandardException {};
       class InvalidEventWaitList : public StandardException {};
       class InvalidHostPtr : public StandardException {};
+      class InvalidKernel : public StandardException {};
+      class InvalidKernelDefinition : public StandardException {};
+      class InvalidKernelName : public StandardException {};
       class InvalidMemObject : public StandardException {};
       class InvalidOperation : public StandardException {};
       class InvalidPlatform : public StandardException {};
