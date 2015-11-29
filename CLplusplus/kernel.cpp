@@ -66,6 +66,22 @@ namespace CLplusplus {
       throw_if_failed(clGetKernelInfo(internal_id, parameter_name, output_storage_size, output_storage, actual_output_size));
    }
 
+   std::array<size_t, 3> Kernel::raw_work_group_size3_query(const Device & device, const cl_kernel_work_group_info parameter_name) const {
+      std::array<size_t, 3> result;
+      raw_work_group_query(device, parameter_name, 3 * sizeof(size_t), static_cast<void*>(&(result[0])), nullptr);
+      return result;
+   }
+
+   size_t Kernel::raw_work_group_query_output_size(const Device & device, const cl_kernel_work_group_info parameter_name) const {
+      size_t result;
+      raw_work_group_query(device, parameter_name, 0, nullptr, &result);
+      return result;
+   }
+
+   void Kernel::raw_work_group_query(const Device & device, const cl_kernel_work_group_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size) const {
+      throw_if_failed(clGetKernelWorkGroupInfo(internal_id, device.raw_identifier(), parameter_name, output_storage_size, output_storage, actual_output_size));
+   }
+
    void Kernel::retain() const {
       throw_if_failed(clRetainKernel(internal_id));
    }
