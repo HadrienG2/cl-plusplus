@@ -185,9 +185,23 @@ namespace CLplusplus {
 
          // === SYNCHRONIZATION ===
 
-         // In an OpenCL command queue, one can wait for some global command-related events
-         void flush() const;  // Wait for all previously issued commands to be sent to the device
-         void finish() const; // Wait for all previously issued commands to finish execution
+         // --- Event-specific synchronization ---
+
+         // Wait for a list of events, emits an event that may be queried to check when these have all completed. If called with an empty wait list, waits for all previously issued commands.
+         Event enqueued_marker_with_wait_list(const EventWaitList & event_wait_list) const;
+         void enqueue_marker_with_wait_list(const EventWaitList & event_wait_list) const;
+
+         // Similar to the above, but also blocks the execution of commands which are enqueued after this one.
+         Event enqueued_barrier_with_wait_list(const EventWaitList & event_wait_list) const;
+         void enqueue_barrier_with_wait_list(const EventWaitList & event_wait_list) const;
+
+         // --- Global command queue events ---
+
+         // Wait for all previously issued commands to be sent to the device
+         void flush() const;
+
+         // Wait for all previously issued commands to finish execution
+         void finish() const;
 
          // === RAW OPENCL ID ===
 
@@ -231,6 +245,10 @@ namespace CLplusplus {
          void raw_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list, cl_event * event) const;
 
          void raw_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list, cl_event * event) const;
+
+         void raw_marker_with_wait_list(const EventWaitList & event_wait_list, cl_event * event) const;
+
+         void raw_barrier_with_wait_list(const EventWaitList & event_wait_list, cl_event * event) const;
 
          // These functions manage the life cycle of reference-counted command queues
          cl_uint reference_count() const { return raw_value_query<cl_uint>(CL_QUEUE_REFERENCE_COUNT); }

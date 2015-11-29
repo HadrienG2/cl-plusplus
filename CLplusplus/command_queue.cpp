@@ -211,6 +211,26 @@ namespace CLplusplus {
       raw_migrate_mem_objects(mem_objects, flags, event_wait_list, nullptr);
    }
 
+   Event CommandQueue::enqueued_marker_with_wait_list(const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_marker_with_wait_list(event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_marker_with_wait_list(const EventWaitList & event_wait_list) const {
+      raw_marker_with_wait_list(event_wait_list, nullptr);
+   }
+
+   Event CommandQueue::enqueued_barrier_with_wait_list(const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_barrier_with_wait_list(event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_barrier_with_wait_list(const EventWaitList & event_wait_list) const {
+      raw_barrier_with_wait_list(event_wait_list, nullptr);
+   }
+
    void CommandQueue::flush() const {
       throw_if_failed(clFlush(internal_id));
    }
@@ -409,6 +429,28 @@ namespace CLplusplus {
          cl_event raw_event_ids[num_events];
          for(size_t i = 0; i < num_events; ++i) raw_event_ids[i] = event_wait_list[i].raw_identifier();
          throw_if_failed(clEnqueueMigrateMemObjects(internal_id, num_objects, raw_object_ids, flags, num_events, raw_event_ids, event));
+      }
+   }
+
+   void CommandQueue::raw_marker_with_wait_list(const EventWaitList & event_wait_list, cl_event * event) const {
+      const auto num_events = event_wait_list.size();
+      if(num_events == 0) {
+         throw_if_failed(clEnqueueMarkerWithWaitList(internal_id, 0, nullptr, event));
+      } else {
+         cl_event raw_event_ids[num_events];
+         for(size_t i = 0; i < num_events; ++i) raw_event_ids[i] = event_wait_list[i].raw_identifier();
+         throw_if_failed(clEnqueueMarkerWithWaitList(internal_id, num_events, raw_event_ids, event));
+      }
+   }
+
+   void CommandQueue::raw_barrier_with_wait_list(const EventWaitList & event_wait_list, cl_event * event) const {
+      const auto num_events = event_wait_list.size();
+      if(num_events == 0) {
+         throw_if_failed(clEnqueueBarrierWithWaitList(internal_id, 0, nullptr, event));
+      } else {
+         cl_event raw_event_ids[num_events];
+         for(size_t i = 0; i < num_events; ++i) raw_event_ids[i] = event_wait_list[i].raw_identifier();
+         throw_if_failed(clEnqueueBarrierWithWaitList(internal_id, num_events, raw_event_ids, event));
       }
    }
 
