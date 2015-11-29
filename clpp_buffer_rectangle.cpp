@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CLplusplus.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <array>
 #include <iostream>
 
 #include <CL/cl.h>
@@ -69,33 +70,31 @@ int main() {
 
    // Write the pattern to the buffer, as a rectangle
    std::cout << "Writing some pretty pattern to the buffer..." << std::endl;
-   const size_t no_offset[] {0, 0};
-   const size_t full_buffer_rect[] {buffer_width, buffer_height};
-   const auto write_event = command_queue.enqueued_write_buffer_rect_2d(static_cast<const void *>(input), no_offset, buffer_width, false,
-                                                                        buffer, no_offset, buffer_width,
-                                                                        full_buffer_rect, {});
+   const auto write_event = command_queue.enqueued_write_buffer_rect_2d(static_cast<const void *>(input), {0, 0}, buffer_width, false,
+                                                                        buffer, {0, 0}, buffer_width,
+                                                                        {buffer_width, buffer_height},
+                                                                        {});
 
    // Transform the pattern in a checkerboard manner, getting from   A  C   to   A  B
    //                                                                B  D        B  A
    std::cout << "Transforming it in a checkerboard manner..." << std::endl;
    const size_t half_width {buffer_width / 2};
    const size_t half_height {buffer_height / 2};
-   const size_t lower_left[] {0, half_height};
-   const size_t upper_right[] {half_width, 0};
-   const size_t lower_right[] {half_width, half_height};
-   const size_t buffer_quarter_rect[] {half_width, half_height};
-   const auto copy_event_1 = command_queue.enqueued_copy_buffer_rect_2d(buffer, no_offset, buffer_width,
-                                                                        buffer, lower_right, buffer_width,
-                                                                        buffer_quarter_rect, {write_event});
-   const auto copy_event_2 = command_queue.enqueued_copy_buffer_rect_2d(buffer, lower_left, buffer_width,
-                                                                        buffer, upper_right, buffer_width,
-                                                                        buffer_quarter_rect, {write_event});
+   const auto copy_event_1 = command_queue.enqueued_copy_buffer_rect_2d(buffer, {0, 0}, buffer_width,
+                                                                        buffer, {half_width, half_height}, buffer_width,
+                                                                        {half_width, half_height},
+                                                                        {write_event});
+   const auto copy_event_2 = command_queue.enqueued_copy_buffer_rect_2d(buffer, {0, half_height}, buffer_width,
+                                                                        buffer, {half_width, 0}, buffer_width,
+                                                                        {half_width, half_height},
+                                                                        {write_event});
 
    // Synchronously read back the result in an output buffer
    cl_uchar output[buffer_size];
-   command_queue.read_buffer_rect_2d(buffer, no_offset, buffer_width,
-                                     static_cast<void *>(output), no_offset, buffer_width,
-                                     full_buffer_rect, {copy_event_1, copy_event_2});
+   command_queue.read_buffer_rect_2d(buffer, {0, 0}, buffer_width,
+                                     static_cast<void *>(output), {0, 0}, buffer_width,
+                                     {buffer_width, buffer_height},
+                                     {copy_event_1, copy_event_2});
    std::cout << "Result read back to host memory !" << std::endl << std::endl;
 
    // Check that the output matches our expectations
