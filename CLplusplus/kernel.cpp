@@ -84,7 +84,7 @@ namespace CLplusplus {
 
    std::string Kernel::raw_argument_string_query(const cl_uint arg_indx, const cl_kernel_arg_info parameter_name) const {
       // Check how long the output string should be
-      size_t output_string_length = raw_query_output_size(parameter_name);
+      size_t output_string_length = raw_argument_query_output_size(arg_indx, parameter_name);
       
       // Fetch the output string
       char output_string[output_string_length];
