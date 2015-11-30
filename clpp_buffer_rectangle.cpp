@@ -88,13 +88,14 @@ int main() {
                                                                         buffer, {half_width, 0}, buffer_width,
                                                                         {half_width, half_height},
                                                                         {write_event});
+   const auto all_copy_events = command_queue.enqueued_marker_with_wait_list({copy_event_1, copy_event_2});
 
    // Synchronously read back the result in an output buffer
    cl_uchar output[buffer_size];
    command_queue.read_buffer_rect_2d(buffer, {0, 0}, buffer_width,
                                      static_cast<void *>(output), {0, 0}, buffer_width,
                                      {buffer_width, buffer_height},
-                                     {copy_event_1, copy_event_2});
+                                     {all_copy_events});
    std::cout << "Result read back to host memory !" << std::endl << std::endl;
 
    // Check that the output matches our expectations
