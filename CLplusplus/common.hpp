@@ -41,6 +41,7 @@ namespace CLplusplus {
       class DeviceNotFound : public StandardException {};
       class DevicePartitionFailed : public StandardException {};
       class ExecStatusErrorForEventsInWaitList : public StandardException {};
+      class ImageFormatNotSupported : public StandardException {};
       class InvalidArgIndex : public StandardException {};
       class InvalidArgValue : public StandardException {};
       class InvalidArgSize : public StandardException {};
@@ -54,8 +55,12 @@ namespace CLplusplus {
       class InvalidDeviceType : public StandardException {};
       class InvalidEvent : public StandardException {};
       class InvalidEventWaitList : public StandardException {};
+      class InvalidGlobalOffset : public StandardException {};
+      class InvalidGlobalWorkSize : public StandardException {};
+      class InvalidImageSize : public StandardException {};
       class InvalidHostPtr : public StandardException {};
       class InvalidKernel : public StandardException {};
+      class InvalidKernelArgs : public StandardException {};
       class InvalidKernelDefinition : public StandardException {};
       class InvalidKernelName : public StandardException {};
       class InvalidMemObject : public StandardException {};
@@ -67,6 +72,9 @@ namespace CLplusplus {
       class InvalidSampler : public StandardException {};
       class InvalidQueueProperties : public StandardException {};
       class InvalidValue : public StandardException {};
+      class InvalidWorkDimension : public StandardException {};
+      class InvalidWorkGroupSize : public StandardException {};
+      class InvalidWorkItemSize : public StandardException {};
       class KernelArgInfoNotAvailable : public StandardException {};
       class MapFailure : public StandardException {};
       class MemCopyOverlap : public StandardException {};

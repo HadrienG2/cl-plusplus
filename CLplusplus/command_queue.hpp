@@ -27,6 +27,7 @@
 #include "device.hpp"
 #include "event.hpp"
 #include "memory_object.hpp"
+#include "kernel.hpp"
 
 // This code unit provides facilities for handling OpenCL command queues
 namespace CLplusplus {
@@ -181,7 +182,88 @@ namespace CLplusplus {
          Event enqueued_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list) const;
          void enqueue_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list) const;
 
-         // TODO : Add remaining features: kernel execution, etc.
+         // === KERNEL EXECUTION ===
+
+         // --- N-dimensional range execution ---
+
+         // It is possible to only specify as many kernel launch parameters as strictly necessary.
+         // The only scenario which the rules of C++ do not allow us to support is the unlikely scenario where an advanced user would like to set a global work offset without setting the local work size.
+         // This is illustrated by the 1D kernel launch functions below:
+         Event enqueued_1d_range_kernel(const Kernel & kernel,
+                                        const size_t global_work_size,
+                                        const EventWaitList & event_wait_list) const;
+         void enqueue_1d_range_kernel(const Kernel & kernel,
+                                      const size_t global_work_size,
+                                      const EventWaitList & event_wait_list) const;
+         Event enqueued_1d_range_kernel(const Kernel & kernel,
+                                        const size_t global_work_size,
+                                        const size_t local_work_size,
+                                        const EventWaitList & event_wait_list) const;
+         void enqueue_1d_range_kernel(const Kernel & kernel,
+                                      const size_t global_work_size,
+                                      const size_t local_work_size,
+                                      const EventWaitList & event_wait_list) const;
+         Event enqueued_1d_range_kernel(const Kernel & kernel,
+                                        const size_t global_work_offset,
+                                        const size_t global_work_size,
+                                        const size_t local_work_size,
+                                        const EventWaitList & event_wait_list) const;
+         void enqueue_1d_range_kernel(const Kernel & kernel,
+                                      const size_t global_work_offset,
+                                      const size_t global_work_size,
+                                      const size_t local_work_size,
+                                      const EventWaitList & event_wait_list) const;
+
+         // Same as above, but in 2D and 3D.
+         Event enqueued_2d_range_kernel(const Kernel & kernel,
+                                        const std::array<size_t, 2> global_work_size,
+                                        const EventWaitList & event_wait_list) const;
+         void enqueue_2d_range_kernel(const Kernel & kernel,
+                                      const std::array<size_t, 2> global_work_size,
+                                      const EventWaitList & event_wait_list) const;
+         Event enqueued_2d_range_kernel(const Kernel & kernel,
+                                        const std::array<size_t, 2> global_work_size,
+                                        const std::array<size_t, 2> local_work_size,
+                                        const EventWaitList & event_wait_list) const;
+         void enqueue_2d_range_kernel(const Kernel & kernel,
+                                      const std::array<size_t, 2> global_work_size,
+                                      const std::array<size_t, 2> local_work_size,
+                                      const EventWaitList & event_wait_list) const;
+         Event enqueued_2d_range_kernel(const Kernel & kernel,
+                                        const std::array<size_t, 2> global_work_offset,
+                                        const std::array<size_t, 2> global_work_size,
+                                        const std::array<size_t, 2> local_work_size,
+                                        const EventWaitList & event_wait_list) const;
+         void enqueue_2d_range_kernel(const Kernel & kernel,
+                                      const std::array<size_t, 2> global_work_offset,
+                                      const std::array<size_t, 2> global_work_size,
+                                      const std::array<size_t, 2> local_work_size,
+                                      const EventWaitList & event_wait_list) const;
+
+         Event enqueued_3d_range_kernel(const Kernel & kernel,
+                                        const std::array<size_t, 3> global_work_size,
+                                        const EventWaitList & event_wait_list) const;
+         void enqueue_3d_range_kernel(const Kernel & kernel,
+                                      const std::array<size_t, 3> global_work_size,
+                                      const EventWaitList & event_wait_list) const;
+         Event enqueued_3d_range_kernel(const Kernel & kernel,
+                                        const std::array<size_t, 3> global_work_size,
+                                        const std::array<size_t, 3> local_work_size,
+                                        const EventWaitList & event_wait_list) const;
+         void enqueue_3d_range_kernel(const Kernel & kernel,
+                                      const std::array<size_t, 3> global_work_size,
+                                      const std::array<size_t, 3> local_work_size,
+                                      const EventWaitList & event_wait_list) const;
+         Event enqueued_3d_range_kernel(const Kernel & kernel,
+                                        const std::array<size_t, 3> global_work_offset,
+                                        const std::array<size_t, 3> global_work_size,
+                                        const std::array<size_t, 3> local_work_size,
+                                        const EventWaitList & event_wait_list) const;
+         void enqueue_3d_range_kernel(const Kernel & kernel,
+                                      const std::array<size_t, 3> global_work_offset,
+                                      const std::array<size_t, 3> global_work_size,
+                                      const std::array<size_t, 3> local_work_size,
+                                      const EventWaitList & event_wait_list) const;
 
          // === SYNCHRONIZATION ===
 
@@ -214,29 +296,44 @@ namespace CLplusplus {
          cl_command_queue internal_id;
 
          // These are the raw OpenCL calls that higher-level device commands make
-         void raw_read_buffer(const Buffer & source_buffer, const size_t offset, void * const destination, const size_t size, const bool synchronous_read, const EventWaitList & event_wait_list, cl_event * event) const;
+         void raw_read_buffer(const Buffer & source_buffer, const size_t offset,
+                              void * const destination,
+                              const size_t size, const bool synchronous_read,
+                              const EventWaitList & event_wait_list, cl_event * const event) const;
          void raw_read_buffer_rect_2d(const Buffer & source_buffer, const std::array<size_t, 2> source_offset, const size_t source_row_pitch,
                                       void * const destination, const std::array<size_t, 2> dest_offset, const size_t dest_row_pitch,
-                                      const std::array<size_t, 2> size, const bool synchronous_read, const EventWaitList & event_wait_list, cl_event * event) const;
+                                      const std::array<size_t, 2> size, const bool synchronous_read,
+                                      const EventWaitList & event_wait_list, cl_event * const event) const;
          void raw_read_buffer_rect_3d(const Buffer & source_buffer, const std::array<size_t, 3> source_offset, const std::array<size_t, 2> source_pitch,
                                       void * const destination, const std::array<size_t, 3> dest_offset, const std::array<size_t, 2> dest_pitch,
-                                      const std::array<size_t, 3> size, const bool synchronous_read, const EventWaitList & event_wait_list, cl_event * event) const;
+                                      const std::array<size_t, 3> size, const bool synchronous_read,
+                                      const EventWaitList & event_wait_list, cl_event * const event) const;
 
-         void raw_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list, cl_event * event) const;
+         void raw_write_buffer(const void * const source, const bool wait_for_availability,
+                               const Buffer & dest_buffer, const size_t offset,
+                               const size_t size,
+                               const EventWaitList & event_wait_list, cl_event * const event) const;
          void raw_write_buffer_rect_2d(const void * const source, const std::array<size_t, 2> source_offset, const size_t source_row_pitch, const bool wait_for_availability,
                                        const Buffer & dest_buffer, const std::array<size_t, 2> dest_offset, const size_t dest_row_pitch,
-                                       const std::array<size_t, 2> size, const EventWaitList & event_wait_list, cl_event * event) const;
+                                       const std::array<size_t, 2> size,
+                                       const EventWaitList & event_wait_list, cl_event * const event) const;
          void raw_write_buffer_rect_3d(const void * const source, const std::array<size_t, 3> source_offset, const std::array<size_t, 2> source_pitch, const bool wait_for_availability,
                                        const Buffer & dest_buffer, const std::array<size_t, 3> dest_offset, const std::array<size_t, 2> dest_pitch,
-                                       const std::array<size_t, 3> size, const EventWaitList & event_wait_list, cl_event * event) const;
+                                       const std::array<size_t, 3> size,
+                                       const EventWaitList & event_wait_list, cl_event * const event) const;
 
-         void raw_copy_buffer(const Buffer & source_buffer, const size_t source_offset, const Buffer & dest_buffer, const size_t dest_offset, const size_t size, const EventWaitList & event_wait_list, cl_event * event) const;
+         void raw_copy_buffer(const Buffer & source_buffer, const size_t source_offset,
+                              const Buffer & dest_buffer, const size_t dest_offset,
+                              const size_t size,
+                              const EventWaitList & event_wait_list, cl_event * const event) const;
          void raw_copy_buffer_rect_2d(const Buffer & source_buffer, const std::array<size_t, 2> source_offset, const size_t source_row_pitch,
                                       const Buffer & dest_buffer, const std::array<size_t, 2> dest_offset, const size_t dest_row_pitch,
-                                      const std::array<size_t, 2> size, const EventWaitList & event_wait_list, cl_event * event) const;
+                                      const std::array<size_t, 2> size,
+                                      const EventWaitList & event_wait_list, cl_event * const event) const;
          void raw_copy_buffer_rect_3d(const Buffer & source_buffer, const std::array<size_t, 3> source_offset, const std::array<size_t, 2> source_pitch,
                                       const Buffer & dest_buffer, const std::array<size_t, 3> dest_offset, const std::array<size_t, 2> dest_pitch,
-                                      const std::array<size_t, 3> size, const EventWaitList & event_wait_list, cl_event * event) const;
+                                      const std::array<size_t, 3> size,
+                                      const EventWaitList & event_wait_list, cl_event * const event) const;
 
          void raw_fill_buffer(const void * const pattern, const size_t pattern_size, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list, cl_event * event) const;
 
@@ -245,6 +342,12 @@ namespace CLplusplus {
          void raw_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list, cl_event * event) const;
 
          void raw_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list, cl_event * event) const;
+
+         void raw_Nd_range_kernel(const Kernel & kernel, const cl_uint work_dim,
+                                  const size_t * const global_work_offset,
+                                  const size_t * const global_work_size,
+                                  const size_t * const local_work_size,
+                                  const EventWaitList & event_wait_list, cl_event * const event) const;
 
          void raw_marker_with_wait_list(const EventWaitList & event_wait_list, cl_event * event) const;
 

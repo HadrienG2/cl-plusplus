@@ -211,6 +211,150 @@ namespace CLplusplus {
       raw_migrate_mem_objects(mem_objects, flags, event_wait_list, nullptr);
    }
 
+   Event CommandQueue::enqueued_1d_range_kernel(const Kernel & kernel,
+                                                const size_t global_work_size,
+                                                const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_Nd_range_kernel(kernel, 1, nullptr, &global_work_size, nullptr, event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_1d_range_kernel(const Kernel & kernel,
+                                              const size_t global_work_size,
+                                              const EventWaitList & event_wait_list) const {
+      raw_Nd_range_kernel(kernel, 1, nullptr, &global_work_size, nullptr, event_wait_list, nullptr);
+   }
+
+   Event CommandQueue::enqueued_1d_range_kernel(const Kernel & kernel,
+                                                const size_t global_work_size,
+                                                const size_t local_work_size,
+                                                const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_Nd_range_kernel(kernel, 1, nullptr, &global_work_size, &local_work_size, event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_1d_range_kernel(const Kernel & kernel,
+                                              const size_t global_work_size,
+                                              const size_t local_work_size,
+                                              const EventWaitList & event_wait_list) const {
+      raw_Nd_range_kernel(kernel, 1, nullptr, &global_work_size, &local_work_size, event_wait_list, nullptr);
+   }
+
+   Event CommandQueue::enqueued_1d_range_kernel(const Kernel & kernel,
+                                                const size_t global_work_offset,
+                                                const size_t global_work_size,
+                                                const size_t local_work_size,
+                                                const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_Nd_range_kernel(kernel, 1, &global_work_offset, &global_work_size, &local_work_size, event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_1d_range_kernel(const Kernel & kernel,
+                                              const size_t global_work_offset,
+                                              const size_t global_work_size,
+                                              const size_t local_work_size,
+                                              const EventWaitList & event_wait_list) const {
+      raw_Nd_range_kernel(kernel, 1, &global_work_offset, &global_work_size, &local_work_size, event_wait_list, nullptr);
+   }
+
+   Event CommandQueue::enqueued_2d_range_kernel(const Kernel & kernel,
+                                                const std::array<size_t, 2> global_work_size,
+                                                const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_Nd_range_kernel(kernel, 2, nullptr, &(global_work_size[0]), nullptr, event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_2d_range_kernel(const Kernel & kernel,
+                                              const std::array<size_t, 2> global_work_size,
+                                              const EventWaitList & event_wait_list) const {
+      raw_Nd_range_kernel(kernel, 2, nullptr, &(global_work_size[0]), nullptr, event_wait_list, nullptr);
+   }
+
+   Event CommandQueue::enqueued_2d_range_kernel(const Kernel & kernel,
+                                                const std::array<size_t, 2> global_work_size,
+                                                const std::array<size_t, 2> local_work_size,
+                                                const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_Nd_range_kernel(kernel, 2, nullptr, &(global_work_size[0]), &(local_work_size[0]), event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_2d_range_kernel(const Kernel & kernel,
+                                              const std::array<size_t, 2> global_work_size,
+                                              const std::array<size_t, 2> local_work_size,
+                                              const EventWaitList & event_wait_list) const {
+      raw_Nd_range_kernel(kernel, 2, nullptr, &(global_work_size[0]), &(local_work_size[0]), event_wait_list, nullptr);
+   }
+
+   Event CommandQueue::enqueued_2d_range_kernel(const Kernel & kernel,
+                                                const std::array<size_t, 2> global_work_offset,
+                                                const std::array<size_t, 2> global_work_size,
+                                                const std::array<size_t, 2> local_work_size,
+                                                const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_Nd_range_kernel(kernel, 2, &(global_work_offset[0]), &(global_work_size[0]), &(local_work_size[0]), event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_2d_range_kernel(const Kernel & kernel,
+                                              const std::array<size_t, 2> global_work_offset,
+                                              const std::array<size_t, 2> global_work_size,
+                                              const std::array<size_t, 2> local_work_size,
+                                              const EventWaitList & event_wait_list) const {
+      raw_Nd_range_kernel(kernel, 2, &(global_work_offset[0]), &(global_work_size[0]), &(local_work_size[0]), event_wait_list, nullptr);
+   }
+
+   Event CommandQueue::enqueued_3d_range_kernel(const Kernel & kernel,
+                                                const std::array<size_t, 3> global_work_size,
+                                                const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_Nd_range_kernel(kernel, 3, nullptr, &(global_work_size[0]), nullptr, event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_3d_range_kernel(const Kernel & kernel,
+                                              const std::array<size_t, 3> global_work_size,
+                                              const EventWaitList & event_wait_list) const {
+      raw_Nd_range_kernel(kernel, 3, nullptr, &(global_work_size[0]), nullptr, event_wait_list, nullptr);
+   }
+
+   Event CommandQueue::enqueued_3d_range_kernel(const Kernel & kernel,
+                                                const std::array<size_t, 3> global_work_size,
+                                                const std::array<size_t, 3> local_work_size,
+                                                const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_Nd_range_kernel(kernel, 3, nullptr, &(global_work_size[0]), &(local_work_size[0]), event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_3d_range_kernel(const Kernel & kernel,
+                                              const std::array<size_t, 3> global_work_size,
+                                              const std::array<size_t, 3> local_work_size,
+                                              const EventWaitList & event_wait_list) const {
+      raw_Nd_range_kernel(kernel, 3, nullptr, &(global_work_size[0]), &(local_work_size[0]), event_wait_list, nullptr);
+   }
+
+   Event CommandQueue::enqueued_3d_range_kernel(const Kernel & kernel,
+                                                const std::array<size_t, 3> global_work_offset,
+                                                const std::array<size_t, 3> global_work_size,
+                                                const std::array<size_t, 3> local_work_size,
+                                                const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_Nd_range_kernel(kernel, 3, &(global_work_offset[0]), &(global_work_size[0]), &(local_work_size[0]), event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_3d_range_kernel(const Kernel & kernel,
+                                              const std::array<size_t, 3> global_work_offset,
+                                              const std::array<size_t, 3> global_work_size,
+                                              const std::array<size_t, 3> local_work_size,
+                                              const EventWaitList & event_wait_list) const {
+      raw_Nd_range_kernel(kernel, 3, &(global_work_offset[0]), &(global_work_size[0]), &(local_work_size[0]), event_wait_list, nullptr);
+   }
+
    Event CommandQueue::enqueued_marker_with_wait_list(const EventWaitList & event_wait_list) const {
       cl_event event_id;
       raw_marker_with_wait_list(event_wait_list, &event_id);
@@ -239,7 +383,10 @@ namespace CLplusplus {
       throw_if_failed(clFinish(internal_id));
    }
 
-   void CommandQueue::raw_read_buffer(const Buffer & source_buffer, const size_t offset, void * const destination, const size_t size, const bool synchronous_read, const EventWaitList & event_wait_list, cl_event * event) const {
+   void CommandQueue::raw_read_buffer(const Buffer & source_buffer, const size_t offset,
+                                      void * const destination,
+                                      const size_t size, const bool synchronous_read,
+                                      const EventWaitList & event_wait_list, cl_event * const event) const {
       const auto num_events = event_wait_list.size();
       if(num_events == 0) {
          throw_if_failed(clEnqueueReadBuffer(internal_id, source_buffer.raw_identifier(), synchronous_read, offset, size, destination, 0, nullptr, event));
@@ -252,7 +399,8 @@ namespace CLplusplus {
 
    void CommandQueue::raw_read_buffer_rect_2d(const Buffer & source_buffer, const std::array<size_t, 2> source_offset, const size_t source_row_pitch,
                                               void * const destination, const std::array<size_t, 2> dest_offset, const size_t dest_row_pitch,
-                                              const std::array<size_t, 2> size, const bool synchronous_read, const EventWaitList & event_wait_list, cl_event * event) const {
+                                              const std::array<size_t, 2> size, const bool synchronous_read,
+                                              const EventWaitList & event_wait_list, cl_event * const event) const {
       // Build a 3D equivalent of our 2D rectangle read request
       const std::array<size_t, 3> source_offset_3d {source_offset[0], source_offset[1], 0};
       const std::array<size_t, 2> source_pitch_3d {source_row_pitch, 0};
@@ -266,7 +414,8 @@ namespace CLplusplus {
 
    void CommandQueue::raw_read_buffer_rect_3d(const Buffer & source_buffer, const std::array<size_t, 3> source_offset, const std::array<size_t, 2> source_pitch,
                                               void * const destination, const std::array<size_t, 3> dest_offset, const std::array<size_t, 2> dest_pitch,
-                                              const std::array<size_t, 3> size, const bool synchronous_read, const EventWaitList & event_wait_list, cl_event * event) const {
+                                              const std::array<size_t, 3> size, const bool synchronous_read,
+                                              const EventWaitList & event_wait_list, cl_event * const event) const {
       const auto num_events = event_wait_list.size();
       if(num_events == 0) {
          throw_if_failed(clEnqueueReadBufferRect(internal_id, source_buffer.raw_identifier(), synchronous_read,
@@ -283,7 +432,10 @@ namespace CLplusplus {
       }
    }
 
-   void CommandQueue::raw_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list, cl_event * event) const {
+   void CommandQueue::raw_write_buffer(const void * const source, const bool wait_for_availability,
+                                       const Buffer & dest_buffer, const size_t offset,
+                                       const size_t size,
+                                       const EventWaitList & event_wait_list, cl_event * const event) const {
       const auto num_events = event_wait_list.size();
       if(num_events == 0) {
          throw_if_failed(clEnqueueWriteBuffer(internal_id, dest_buffer.raw_identifier(), wait_for_availability, offset, size, source, 0, nullptr, event));
@@ -296,7 +448,8 @@ namespace CLplusplus {
 
    void CommandQueue::raw_write_buffer_rect_2d(const void * const source, const std::array<size_t, 2> source_offset, const size_t source_row_pitch, const bool wait_for_availability,
                                                const Buffer & dest_buffer, const std::array<size_t, 2> dest_offset, const size_t dest_row_pitch,
-                                               const std::array<size_t, 2> size, const EventWaitList & event_wait_list, cl_event * event) const {
+                                               const std::array<size_t, 2> size,
+                                               const EventWaitList & event_wait_list, cl_event * const event) const {
       // Build a 3D equivalent of our 2D rectangle write request
       const std::array<size_t, 3> source_offset_3d {source_offset[0], source_offset[1], 0};
       const std::array<size_t, 2> source_pitch_3d {source_row_pitch, 0};
@@ -310,7 +463,8 @@ namespace CLplusplus {
 
    void CommandQueue::raw_write_buffer_rect_3d(const void * const source, const std::array<size_t, 3> source_offset, const std::array<size_t, 2> source_pitch, const bool wait_for_availability,
                                                const Buffer & dest_buffer, const std::array<size_t, 3> dest_offset, const std::array<size_t, 2> dest_pitch,
-                                               const std::array<size_t, 3> size, const EventWaitList & event_wait_list, cl_event * event) const {
+                                               const std::array<size_t, 3> size,
+                                               const EventWaitList & event_wait_list, cl_event * const event) const {
       const auto num_events = event_wait_list.size();
       if(num_events == 0) {
          throw_if_failed(clEnqueueWriteBufferRect(internal_id, dest_buffer.raw_identifier(), wait_for_availability,
@@ -327,7 +481,10 @@ namespace CLplusplus {
       }
    }
 
-   void CommandQueue::raw_copy_buffer(const Buffer & source_buffer, const size_t source_offset, const Buffer & dest_buffer, const size_t dest_offset, const size_t size, const EventWaitList & event_wait_list, cl_event * event) const {
+   void CommandQueue::raw_copy_buffer(const Buffer & source_buffer, const size_t source_offset,
+                                      const Buffer & dest_buffer, const size_t dest_offset,
+                                      const size_t size,
+                                      const EventWaitList & event_wait_list, cl_event * const event) const {
       const auto num_events = event_wait_list.size();
       if(num_events == 0) {
          throw_if_failed(clEnqueueCopyBuffer(internal_id, source_buffer.raw_identifier(), dest_buffer.raw_identifier(), source_offset, dest_offset, size, 0, nullptr, event));
@@ -340,7 +497,8 @@ namespace CLplusplus {
 
    void CommandQueue::raw_copy_buffer_rect_2d(const Buffer & source_buffer, const std::array<size_t, 2> source_offset, const size_t source_row_pitch,
                                               const Buffer & dest_buffer, const std::array<size_t, 2> dest_offset, const size_t dest_row_pitch,
-                                              const std::array<size_t, 2> size, const EventWaitList & event_wait_list, cl_event * event) const {
+                                              const std::array<size_t, 2> size,
+                                              const EventWaitList & event_wait_list, cl_event * const event) const {
       // Build a 3D equivalent of our 2D rectangle copy request
       const std::array<size_t, 3> source_offset_3d {source_offset[0], source_offset[1], 0};
       const std::array<size_t, 2> source_pitch_3d {source_row_pitch, 0};
@@ -354,7 +512,8 @@ namespace CLplusplus {
 
    void CommandQueue::raw_copy_buffer_rect_3d(const Buffer & source_buffer, const std::array<size_t, 3> source_offset, const std::array<size_t, 2> source_pitch,
                                               const Buffer & dest_buffer, const std::array<size_t, 3> dest_offset, const std::array<size_t, 2> dest_pitch,
-                                              const std::array<size_t, 3> size, const EventWaitList & event_wait_list, cl_event * event) const {
+                                              const std::array<size_t, 3> size,
+                                              const EventWaitList & event_wait_list, cl_event * const event) const {
       const auto num_events = event_wait_list.size();
       if(num_events == 0) {
          throw_if_failed(clEnqueueCopyBufferRect(internal_id, source_buffer.raw_identifier(), dest_buffer.raw_identifier(),
@@ -371,7 +530,7 @@ namespace CLplusplus {
       }
    }
 
-   void CommandQueue::raw_fill_buffer(const void * const pattern, const size_t pattern_size, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list, cl_event * event) const {
+   void CommandQueue::raw_fill_buffer(const void * const pattern, const size_t pattern_size, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list, cl_event * const event) const {
       const auto num_events = event_wait_list.size();
       if(num_events == 0) {
          throw_if_failed(clEnqueueFillBuffer(internal_id, dest_buffer.raw_identifier(), pattern, pattern_size, offset, size, 0, nullptr, event));
@@ -382,7 +541,7 @@ namespace CLplusplus {
       }
    }
 
-   void * CommandQueue::raw_map_buffer(const Buffer & buffer, const size_t offset, const size_t size, const bool synchronous_map, const cl_map_flags map_flags, const EventWaitList & event_wait_list, cl_event * event) const {
+   void * CommandQueue::raw_map_buffer(const Buffer & buffer, const size_t offset, const size_t size, const bool synchronous_map, const cl_map_flags map_flags, const EventWaitList & event_wait_list, cl_event * const event) const {
       // Determine if we are waiting for events, and prepare error code and result storage
       const auto num_events = event_wait_list.size();
       cl_int error_code;
@@ -402,7 +561,7 @@ namespace CLplusplus {
       return result;
    }
 
-   void CommandQueue::raw_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list, cl_event * event) const {
+   void CommandQueue::raw_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list, cl_event * const event) const {
       const auto num_events = event_wait_list.size();
       if(num_events == 0) {
          throw_if_failed(clEnqueueUnmapMemObject(internal_id, memobj.raw_identifier(), mapped_ptr, 0, nullptr, event));
@@ -413,7 +572,7 @@ namespace CLplusplus {
       }
    }
 
-   void CommandQueue::raw_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list, cl_event * event) const {
+   void CommandQueue::raw_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list, cl_event * const event) const {
       // Convert the memory object list to its OpenCL representation
       const auto num_objects = mem_objects.size();
       cl_mem raw_object_ids[num_objects];
@@ -432,7 +591,30 @@ namespace CLplusplus {
       }
    }
 
-   void CommandQueue::raw_marker_with_wait_list(const EventWaitList & event_wait_list, cl_event * event) const {
+   void CommandQueue::raw_Nd_range_kernel(const Kernel & kernel, const cl_uint work_dim,
+                                          const size_t * const global_work_offset,
+                                          const size_t * const global_work_size,
+                                          const size_t * const local_work_size,
+                                          const EventWaitList & event_wait_list, cl_event * const event) const {
+      const auto num_events = event_wait_list.size();
+      if(num_events == 0) {
+         throw_if_failed(clEnqueueNDRangeKernel(internal_id, kernel.raw_identifier(), work_dim,
+                                                global_work_offset,
+                                                global_work_size,
+                                                local_work_size,
+                                                0, nullptr, event));
+      } else {
+         cl_event raw_event_ids[num_events];
+         for(size_t i = 0; i < num_events; ++i) raw_event_ids[i] = event_wait_list[i].raw_identifier();
+         throw_if_failed(clEnqueueNDRangeKernel(internal_id, kernel.raw_identifier(), work_dim,
+                                                global_work_offset,
+                                                global_work_size,
+                                                local_work_size,
+                                                num_events, raw_event_ids, event));
+      }
+   }
+
+   void CommandQueue::raw_marker_with_wait_list(const EventWaitList & event_wait_list, cl_event * const event) const {
       const auto num_events = event_wait_list.size();
       if(num_events == 0) {
          throw_if_failed(clEnqueueMarkerWithWaitList(internal_id, 0, nullptr, event));
@@ -443,7 +625,7 @@ namespace CLplusplus {
       }
    }
 
-   void CommandQueue::raw_barrier_with_wait_list(const EventWaitList & event_wait_list, cl_event * event) const {
+   void CommandQueue::raw_barrier_with_wait_list(const EventWaitList & event_wait_list, cl_event * const event) const {
       const auto num_events = event_wait_list.size();
       if(num_events == 0) {
          throw_if_failed(clEnqueueBarrierWithWaitList(internal_id, 0, nullptr, event));

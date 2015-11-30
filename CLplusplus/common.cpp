@@ -41,6 +41,8 @@ namespace CLplusplus {
             throw DevicePartitionFailed();
          case CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST:
             throw ExecStatusErrorForEventsInWaitList();
+         case CL_IMAGE_FORMAT_NOT_SUPPORTED:
+            throw ImageFormatNotSupported();
          case CL_INVALID_ARG_INDEX:
             throw InvalidArgIndex();
          case CL_INVALID_ARG_SIZE:
@@ -67,8 +69,16 @@ namespace CLplusplus {
             throw InvalidEvent();
          case CL_INVALID_EVENT_WAIT_LIST:
             throw InvalidEventWaitList();
+         case CL_INVALID_GLOBAL_WORK_SIZE:
+            throw InvalidGlobalWorkSize();
+         case CL_INVALID_GLOBAL_OFFSET:
+            throw InvalidGlobalOffset();
          case CL_INVALID_HOST_PTR:
             throw InvalidHostPtr();
+         case CL_INVALID_IMAGE_SIZE:
+            throw InvalidImageSize();
+         case CL_INVALID_KERNEL_ARGS:
+            throw InvalidKernelArgs();
          case CL_INVALID_KERNEL:
             throw InvalidKernel();
          case CL_INVALID_KERNEL_DEFINITION:
@@ -93,6 +103,12 @@ namespace CLplusplus {
             throw InvalidSampler();
          case CL_INVALID_VALUE:
             throw InvalidValue();
+         case CL_INVALID_WORK_DIMENSION:
+            throw InvalidWorkDimension();
+         case CL_INVALID_WORK_GROUP_SIZE:
+            throw InvalidWorkGroupSize();
+         case CL_INVALID_WORK_ITEM_SIZE:
+            throw InvalidWorkItemSize();
          case CL_KERNEL_ARG_INFO_NOT_AVAILABLE:
             throw KernelArgInfoNotAvailable();
          case CL_MAP_FAILURE:
