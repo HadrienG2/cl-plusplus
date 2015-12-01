@@ -17,9 +17,9 @@
 
 // This is a very simple vector addition example
 __kernel
-void vector_add(__global       int * const C,
-                __global const int * const A,
-                __global const int * const B) {
+void vector_add(__global const int * const A,
+                __global const int * const B,
+                __global       int * const C) {
    const size_t gid = get_global_id(0);
    C[gid] = A[gid] + B[gid];
 }
