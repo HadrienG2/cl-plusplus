@@ -85,6 +85,7 @@ namespace CLplusplus {
 #ifdef CL_PLATFORM_NOT_FOUND_KHR
       class PlatformNotFoundKhr : public StandardException {};
 #endif
+      class ProfilingInfoNotAvailable : public StandardException {};
    }
 
    // This function raises the standard exception associated to an error code, or UnknownStandardException if it is not aware of the error that occured.

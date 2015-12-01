@@ -53,14 +53,14 @@ namespace CLplusplus {
          cl_int raw_command_execution_status() const { return raw_value_query<cl_int>(CL_EVENT_COMMAND_EXECUTION_STATUS); }
 
          // And fully unsupported event properties can be queried in a nearly pure OpenCL way, with some common-case usability optimizations
-         template<typename ValueType> ValueType raw_value_query(const cl_mem_info parameter_name) const {
+         template<typename ValueType> ValueType raw_value_query(const cl_event_info parameter_name) const {
             ValueType result;
             raw_query(parameter_name, sizeof(ValueType), &result);
             return result;
          }
 
-         size_t raw_query_output_size(const cl_mem_info parameter_name) const;
-         void raw_query(const cl_mem_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
+         size_t raw_query_output_size(const cl_event_info parameter_name) const;
+         void raw_query(const cl_event_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
 
          // === CALLBACKS ===
 
@@ -85,8 +85,16 @@ namespace CLplusplus {
 
          // === PROFILING ===
 
-         // Non-user events may be queried for profiling info on any command queue which has CL_QUEUE_PROFILING_ENABLE set, after they reach completion.
-         // TODO : Implement the general profiling event info query, a specialization for ulong, and further specializations for all currently profile-able statuses
+         // Non-user events may be queried for supported profiling info on any command queue which has CL_QUEUE_PROFILING_ENABLE set, after they reach completion.
+         cl_ulong enqueue_time_ns() const { return raw_profiling_ulong_query(CL_PROFILING_COMMAND_QUEUED); }
+         cl_ulong submit_time_ns() const { return raw_profiling_ulong_query(CL_PROFILING_COMMAND_SUBMIT); }
+         cl_ulong start_time_ns() const { return raw_profiling_ulong_query(CL_PROFILING_COMMAND_START); }
+         cl_ulong end_time_ns() const { return raw_profiling_ulong_query(CL_PROFILING_COMMAND_END); }
+
+         // And fully unsupported profiling info can be queried in a nearly pure OpenCL way, with some common-case usability optimizations
+         cl_ulong raw_profiling_ulong_query(const cl_profiling_info parameter_name) const;
+         size_t raw_profiling_query_output_size(const cl_profiling_info parameter_name) const;
+         void raw_profiling_query(const cl_profiling_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
 
          // === RAW OPENCL ID ===
 

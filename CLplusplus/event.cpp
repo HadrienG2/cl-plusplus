@@ -50,7 +50,7 @@ namespace CLplusplus {
       return result;
    }
 
-   void Event::raw_query(const cl_mem_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size) const {
+   void Event::raw_query(const cl_event_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size) const {
       throw_if_failed(clGetEventInfo(internal_id, parameter_name, output_storage_size, output_storage, actual_output_size));
    }
 
@@ -64,6 +64,22 @@ namespace CLplusplus {
 
    void Event::set_status(cl_int final_execution_status) const {
       throw_if_failed(clSetUserEventStatus(internal_id, final_execution_status));
+   }
+
+   cl_ulong Event::raw_profiling_ulong_query(const cl_profiling_info parameter_name) const {
+      cl_ulong result;
+      raw_profiling_query(parameter_name, sizeof(cl_ulong), static_cast<void *>(&result));
+      return result;
+   }
+
+   size_t Event::raw_profiling_query_output_size(const cl_profiling_info parameter_name) const {
+      size_t result;
+      raw_profiling_query(parameter_name, 0, nullptr, &result);
+      return result;
+   }
+
+   void Event::raw_profiling_query(const cl_profiling_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size) const {
+      throw_if_failed(clGetEventProfilingInfo(internal_id, parameter_name, output_storage_size, output_storage, actual_output_size));
    }
 
    Event::EventCallback Event::make_event_callback(const EventCallbackWithUserData & callback, void * const user_data) {

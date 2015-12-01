@@ -127,6 +127,8 @@ namespace CLplusplus {
          case CL_PLATFORM_NOT_FOUND_KHR:
             throw PlatformNotFoundKhr();
 #endif
+         case CL_PROFILING_INFO_NOT_AVAILABLE:
+            throw ProfilingInfoNotAvailable();
          default:
             throw UnknownStandardException();
       }
