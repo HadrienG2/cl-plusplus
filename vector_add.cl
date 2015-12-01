@@ -15,11 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with CLplusplus.  If not, see <http://www.gnu.org/licenses/>.
 
-// This is a very simple vector addition example
+// This is the textbook vector addition example
 __kernel
-void vector_add(__global const int * const A,
-                __global const int * const B,
-                __global       int * const C) {
+void vector_add(__global const int * restrict const A,
+                __global const int * restrict const B,
+                __global       int * restrict const C) {
    const size_t gid = get_global_id(0);
    C[gid] = A[gid] + B[gid];
 }

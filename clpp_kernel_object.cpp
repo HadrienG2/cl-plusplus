@@ -89,7 +89,7 @@ int main() {
    // Check out its device-specific properties
    const auto & device = selected_platform_and_device.second;
    std::cout << std::endl;
-   std::cout << "Now, onto kernel properties which are specific to the " << device.name() << std::endl;
+   std::cout << "Now, onto kernel properties which are specific to the " << device.name() << ":" << std::endl;
 
    std::cout << "For this kernel, work groups cannot be larger than " << kernel.work_group_size(device) << " items" << std::endl;
 
@@ -114,6 +114,7 @@ int main() {
    for(size_t arg = 0; arg < num_args; ++arg) {
       std::cout << " - ";
 
+      // Address space qualifiers
       switch(kernel.arg_address_qualifier(arg)) {
          case CL_KERNEL_ARG_ADDRESS_GLOBAL:
             std::cout << "__global ";
@@ -130,6 +131,7 @@ int main() {
             std::cout << "<UNKNOWN> ";
       }
 
+      // Image access qualifiers
       switch(kernel.arg_access_qualifier(arg)) {
          case CL_KERNEL_ARG_ACCESS_READ_ONLY:
             std::cout << "read_only ";
@@ -144,11 +146,12 @@ int main() {
             std::cout << "<UNKNOWN> ";
       }
 
+      // CV type qualifiers
       const auto type_qualifier = kernel.arg_type_qualifier(arg);
       if(type_qualifier & CL_KERNEL_ARG_TYPE_CONST) std::cout << "const ";
-      if(type_qualifier & CL_KERNEL_ARG_TYPE_RESTRICT) std::cout << "restrict ";
       if(type_qualifier & CL_KERNEL_ARG_TYPE_VOLATILE) std::cout << "volatile ";
 
+      // Unqualified type name
       const auto type_name = kernel.arg_type_name(arg);
       const bool is_ptr = (type_name[type_name.length() - 1] == '*');
       if(is_ptr) {
@@ -157,6 +160,11 @@ int main() {
          std::cout << type_name << ' ';
       }
 
+      // Restrict qualifier
+      // NOTE: the OpenCL spec thinks that this one should go before a pointer type's star, but the C99 spec, the NVidia implementation and I disagree on this front)
+      if(type_qualifier & CL_KERNEL_ARG_TYPE_RESTRICT) std::cout << "restrict ";
+
+      // Argument name
       std::cout << kernel.arg_name(arg);
 
       std::cout << std::endl;
