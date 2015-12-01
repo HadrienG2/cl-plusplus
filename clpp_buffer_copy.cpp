@@ -35,6 +35,7 @@ int main() {
    // Minimal platform and device parameters are specified here
    const CLplusplus::Version target_version = CLplusplus::version_1p2;
    const cl_ulong min_mem_alloc_size = buffer_size;
+   const cl_ulong min_global_mem_size = 2 * buffer_size;
 
    // Have the user select a suitable device, according to some criteria (see shared.hpp for more details)
    const auto selected_platform_and_device = Shared::select_device(
@@ -46,7 +47,8 @@ int main() {
          const bool device_supports_ooe_execution = device.queue_properties() & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
          return device.available() &&                                         // Device is available for compute purposes
                 device_supports_ooe_execution &&                              // Device can execute OpenCL commands out of order
-                (device.max_mem_alloc_size() >= min_mem_alloc_size);          // Device accepts large enough global memory allocations
+                (device.max_mem_alloc_size() >= min_mem_alloc_size) &&        // Device accepts large enough global memory allocations
+                (device.global_mem_size() >= min_global_mem_size);            // Device has enough global memory
       }
    );
 
@@ -56,8 +58,8 @@ int main() {
    // Create two OpenCL buffers.
    // One will be written to by the host, and thus serve as a copy input.
    // The other will serve as a copy output, and be read and checked by the host.
-   const auto input_buffer = context.create_buffer(CL_MEM_READ_WRITE, buffer_size);
-   const auto output_buffer = context.create_buffer(CL_MEM_READ_WRITE, buffer_size);
+   const auto input_buffer = context.create_buffer(CL_MEM_READ_WRITE | CL_MEM_HOST_WRITE_ONLY, buffer_size);
+   const auto output_buffer = context.create_buffer(CL_MEM_READ_WRITE | CL_MEM_HOST_READ_ONLY, buffer_size);
 
    // Create an out-of-order command queue for the device
    const auto command_queue = context.create_command_queue(CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE);
