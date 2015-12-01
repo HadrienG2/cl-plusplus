@@ -355,6 +355,16 @@ namespace CLplusplus {
       raw_Nd_range_kernel(kernel, 3, &(global_work_offset[0]), &(global_work_size[0]), &(local_work_size[0]), event_wait_list, nullptr);
    }
 
+   Event CommandQueue::enqueued_task(const Kernel & kernel, const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_task(kernel, event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_task(const Kernel & kernel, const EventWaitList & event_wait_list) const {
+      raw_task(kernel, event_wait_list, nullptr);
+   }
+
    Event CommandQueue::enqueued_marker_with_wait_list(const EventWaitList & event_wait_list) const {
       cl_event event_id;
       raw_marker_with_wait_list(event_wait_list, &event_id);
@@ -611,6 +621,17 @@ namespace CLplusplus {
                                                 global_work_size,
                                                 local_work_size,
                                                 num_events, raw_event_ids, event));
+      }
+   }
+
+   void CommandQueue::raw_task(const Kernel & kernel, const EventWaitList & event_wait_list, cl_event * const event) const {
+      const auto num_events = event_wait_list.size();
+      if(num_events == 0) {
+         throw_if_failed(clEnqueueTask(internal_id, kernel.raw_identifier(), 0, nullptr, event));
+      } else {
+         cl_event raw_event_ids[num_events];
+         for(size_t i = 0; i < num_events; ++i) raw_event_ids[i] = event_wait_list[i].raw_identifier();
+         throw_if_failed(clEnqueueTask(internal_id, kernel.raw_identifier(), num_events, raw_event_ids, event));
       }
    }
 

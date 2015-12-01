@@ -265,6 +265,13 @@ namespace CLplusplus {
                                       const std::array<size_t, 3> local_work_size,
                                       const EventWaitList & event_wait_list) const;
 
+         // --- Task execution ---
+
+         Event enqueued_task(const Kernel & kernel, const EventWaitList & event_wait_list) const;
+         void enqueue_task(const Kernel & kernel, const EventWaitList & event_wait_list) const;
+
+         // --- TODO : Native kernels ---
+
          // === SYNCHRONIZATION ===
 
          // --- Event-specific synchronization ---
@@ -348,6 +355,8 @@ namespace CLplusplus {
                                   const size_t * const global_work_size,
                                   const size_t * const local_work_size,
                                   const EventWaitList & event_wait_list, cl_event * const event) const;
+
+         void raw_task(const Kernel & kernel, const EventWaitList & event_wait_list, cl_event * const event) const;
 
          void raw_marker_with_wait_list(const EventWaitList & event_wait_list, cl_event * event) const;
 

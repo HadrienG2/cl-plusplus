@@ -87,6 +87,7 @@ int main() {
 
    // Generate our input data and send it to the device
    std::cout << "Generating and sending data..." << std::endl;
+
    std::vector<cl_int> input_A(vector_length);
    for(size_t i = 0; i < vector_length; ++i) input_A[i] = i + 1;
    const auto write_A_event = command_queue.enqueued_write_buffer(static_cast<const void *>(&(input_A[0])), false, input_A_buffer, 0, vector_size, {});
