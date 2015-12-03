@@ -150,7 +150,7 @@ int main() {
 
    // === RESULT COMPARISON ===
 
-   // Check that both routines produce the same result (we will assume the second one is right)
+   // Check that the naive and local transpose produce the same result (we will assume the naive one is right)
    std::cout << std::endl;
    for(size_t i = 0; i < matrix_length; ++i) {
       if(output_matrix_1[i] != output_matrix_2[i]) {

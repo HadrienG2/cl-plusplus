@@ -48,17 +48,17 @@ void float_transpose_local(__global const float * restrict const in_matrix,
    const unsigned int glob_input_j = get_global_id(1);
    const size_t glob_input_idx = glob_input_j * get_global_size(0) + glob_input_i;
 
-   // Determine a corresponding (transposed!) location inside the local scratchpad
+   // Determine a corresponding transposed location inside the local scratchpad
    const unsigned int loc_input_i = get_local_id(1);
    const unsigned int loc_input_j = get_local_id(0);
    const unsigned int loc_input_idx = loc_input_j * get_local_size(0) + loc_input_i;
 
    // Load our input matrix slide into the local scratchpad, in transposed form
-   // (global reads are coalesced, local writes aren't but it doesn't matter)
+   // (global reads are coalesced, local writes aren't but it doesn't matter as much)
    transpose_buf[loc_input_idx] = in_matrix[glob_input_idx];
    barrier(CLK_LOCAL_MEM_FENCE);
 
-   // Since out local buffer is now transposed, we can access it normally for the output stage
+   // Since our local buffer is now transposed, we can access it normally for the output stage
    const unsigned int loc_output_i = get_local_id(0);
    const unsigned int loc_output_j = get_local_id(1);
    const unsigned int loc_output_idx = loc_output_j * get_local_size(0) + loc_output_i;   
@@ -72,6 +72,6 @@ void float_transpose_local(__global const float * restrict const in_matrix,
    const unsigned int glob_output_j = output_offset_j + loc_output_j;
    const size_t glob_output_idx = glob_output_j * get_global_size(0) + glob_output_i;
 
-   // Commit the matrix transpose output to memory
+   // Commit the matrix transpose output to memory (global writes are now coalesced)
    out_matrix[glob_output_idx] = transpose_buf[loc_output_idx];
 }
