@@ -35,8 +35,10 @@ int main() {
    // In this example, we will be transposing a square float matrix of a certain size
    const unsigned int matrix_side_length = 8192;
    const std::array<size_t, 2> global_work_size = {matrix_side_length, matrix_side_length};
-   const size_t matrix_size = matrix_side_length * matrix_side_length * sizeof(cl_float);
-   const std::array<size_t, 2> local_work_size = {16, 16};
+   const size_t matrix_size = global_work_size[0] * global_work_size[1] * sizeof(cl_float);
+
+   const unsigned int workgroup_side_length = 16;
+   const std::array<size_t, 2> local_work_size = {workgroup_side_length, workgroup_side_length};
    const size_t local_buf_size = local_work_size[0] * local_work_size[1] * sizeof(cl_float);
 
    // Minimal platform and device parameters are specified here
@@ -55,20 +57,33 @@ int main() {
       },
       [&](const CLplusplus::Device & device) -> bool {
          if(device.version() < target_version) return false;                  // OpenCL platforms may support older-generation devices, which we need to eliminate
+
          const auto queue_properties = device.queue_properties();
          const bool device_supports_ooe_execution = queue_properties & CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE;
          const bool device_supports_profiling = queue_properties & CL_QUEUE_PROFILING_ENABLE;
+
          const auto device_double_config = device.double_fp_config();
+
+         const auto max_work_item_size = device.max_work_item_sizes();
+         const auto device_supports_launch_config = (device.max_work_item_dimensions() >= 2) && (max_work_item_size[0] >= local_work_size[0]) && (max_work_item_size[1] >= local_work_size[1]);
+
          return device.available() &&                                         // Device is available for compute purposes
                 device.endian_little() &&                                     // Device is little-endian
                 (device.execution_capabilities() & CL_EXEC_KERNEL) &&         // Device can execute OpenCL kernels
+
                 device_supports_ooe_execution &&                              // Device can execute OpenCL commands out of order
                 device_supports_profiling &&                                  // Device supports OpenCL command profiling
+
                 device.compiler_available() && device.linker_available() &&   // Implementation has an OpenCL C compiler and linker for this device
+
                 (device.max_mem_alloc_size() >= min_mem_alloc_size) &&        // Device accepts large enough global memory allocations
                 (device.global_mem_size() >= min_global_mem_size) &&          // Device has enough global memory
+
                 (device.local_mem_type() == CL_LOCAL) &&                      // Device has local memory support, with dedicated storage
                 (device.local_mem_size() >= min_local_mem_size) &&            // Device has a large enough local memory
+
+                device_supports_launch_config &&                              // Device supports our desired kernel launch configuration
+
                 (device_double_config != 0) &&                                // Doubles are supported
                 ((device_double_config & CL_FP_SOFT_FLOAT) == 0);             // Doubles are not emulated in software
       }
@@ -145,7 +160,7 @@ int main() {
    std::vector<cl_float> output_matrix_2(matrix_length);
    command_queue.read_buffer(output_matrix_2_buffer, 0, static_cast<void *>(&(output_matrix_2[0])), matrix_size, {exec_event_2});
 
-   // Tell the profiled performance of this first output
+   // Tell the profiled performance of this second output
    std::cout << "The local memory based kernel executed in " << (exec_event_2.end_time_ns() - exec_event_2.start_time_ns()) / 1000 << " microseconds" << std::endl;
 
    // === RESULT COMPARISON ===
