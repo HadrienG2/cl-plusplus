@@ -2,7 +2,7 @@
 A more modern C++ wrapper to OpenCL
 
 ## What's the point?
-There is such a thing as an C++ wrapper within the OpenCL standard, but it fails to leverage latest advances in the C++ standard, such as lambdas or std::bind.
+There is such a thing as an C++ wrapper within the OpenCL standard, but it fails to leverage the latest advances in the C++ standard, such as lambdas or std::array.
 
 In addition, the standard OpenCL C++ wrapper follows dangerous practices from the OpenCL C library, such as using zero-terminated arrays, which are a frequent source of application crashes and security exploits.
 
