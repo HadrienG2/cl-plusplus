@@ -76,5 +76,58 @@ int main() {
    for(const auto & kernel_name : program.kernel_names()) std::cout << kernel_name << ' ';
    std::cout << std::endl;
 
+   // Display device-specific build information
+   std::cout << std::endl;
+   const auto device = selected_platform_and_device.second;
+   std::cout << "Now, what do we know about the build results for the " << device.name() << "?" << std::endl;
+
+   switch(program.build_status(device)) {
+      case CL_BUILD_NONE:
+         std::cout << "Strangely enough, it seems our program has never been built for this device";
+         break;
+      case CL_BUILD_ERROR:
+         std::cout << "The program build has failed, and none told us about it!";
+         break;
+      case CL_BUILD_SUCCESS:
+         std::cout << "The program has been successfully built, as expected";
+         break;
+      case CL_BUILD_IN_PROGRESS:
+         std::cout << "The program is not actually built yet!";
+         break;
+      default:
+         std::cout << "The program has an UNKNOWN build status!";
+   }
+   std::cout << std::endl;
+
+   std::cout << "The build options are : " << program.build_options(device) << std::endl;
+
+   const auto build_log = program.build_log(device);
+   if(build_log.length() <= 2) {
+      std::cout << "The implementation returned no build log for this device" << std::endl;
+   } else {
+      std::cout << "The implementation returned the following build log:" << std::endl;
+      std::cout << "---------------" << std::endl;
+      std::cout << program.build_log(device);
+      std::cout << "---------------" << std::endl;
+   }
+
+   switch(program.binary_type(device)) {
+      case CL_PROGRAM_BINARY_TYPE_NONE:
+         std::cout << "The program has no binary associated to it";
+         break;
+      case CL_PROGRAM_BINARY_TYPE_COMPILED_OBJECT:
+         std::cout << "The program binary is an object file, suitable for further linking";
+         break;
+      case CL_PROGRAM_BINARY_TYPE_LIBRARY:
+         std::cout << "The program binary is a library file, suitable for further linking";
+         break;
+      case CL_PROGRAM_BINARY_TYPE_EXECUTABLE:
+         std::cout << "The program binary is an executable file, ready to be turned into a kernel!";
+         break;
+      default:
+         std::cout << "The program is associated to an UNKNOWN kind of binary!";
+   }
+   std::cout << std::endl;
+
    return 0;
 }
