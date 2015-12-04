@@ -50,7 +50,6 @@ int main() {
    // === INITIALIZATION ===
 
    // Have the user select a suitable device, according to some criteria (see shared.hpp for more details)
-   // TODO : Transfer some of this complexity to more advanced CLplusplus examples
    const auto selected_platform_and_device = Shared::select_device(
       [&](const CLplusplus::Platform & platform) -> bool {
          return (platform.version() >= target_version);                       // Platform OpenCL version is recent enough
@@ -64,8 +63,6 @@ int main() {
 
          const auto max_work_item_size = device.max_work_item_sizes();
          const auto device_supports_launch_config = (device.max_work_item_dimensions() >= 2) && (max_work_item_size[0] >= local_work_size[0]) && (max_work_item_size[1] >= local_work_size[1]);
-
-         const auto device_double_config = device.double_fp_config();
 
          return device.available() &&                                         // Device is available for compute purposes
                 device.endian_little() &&                                     // Device is little-endian
@@ -82,10 +79,7 @@ int main() {
                 (device.local_mem_type() == CL_LOCAL) &&                      // Device has local memory support, with dedicated storage
                 (device.local_mem_size() >= min_local_mem_size) &&            // Device has a large enough local memory
 
-                device_supports_launch_config &&                              // Device supports our desired kernel launch configuration
-
-                (device_double_config != 0) &&                                // Doubles are supported
-                ((device_double_config & CL_FP_SOFT_FLOAT) == 0);             // Doubles are not emulated in software
+                device_supports_launch_config;                                // Device supports our desired kernel launch configuration
       }
    );
 
