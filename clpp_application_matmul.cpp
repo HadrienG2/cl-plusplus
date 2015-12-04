@@ -99,12 +99,12 @@ int main() {
    const auto transposed_B_buf = context.create_buffer(CL_MEM_READ_WRITE | CL_MEM_HOST_NO_ACCESS, matrix_size);
    const auto output_matrix_buf = context.create_buffer(CL_MEM_WRITE_ONLY | CL_MEM_HOST_READ_ONLY, matrix_size);
 
-   // Create a program object from the matrix transpose example
+   // Create programs object from the matrix transpose and matrix multiplication examples
    std::cout << "Loading programs..." << std::endl;
    auto transpose_program = context.create_program_with_source_file("matrix_transpose_double.cl");
    auto matmul_program = context.create_program_with_source_file("matrix_multiply_double.cl");
 
-   // Start an asynchronous program build
+   // Start asynchronous program builds
    std::cout << "Starting to build program..." << std::endl;
    const auto matmul_build_event = matmul_program.build_with_event("-cl-mad-enable -cl-no-signed-zeros -cl-std=CL1.2 -cl-kernel-arg-info");
    const auto transpose_build_event = transpose_program.build_with_event("-cl-mad-enable -cl-no-signed-zeros -cl-std=CL1.2 -cl-kernel-arg-info");
