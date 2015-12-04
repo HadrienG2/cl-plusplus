@@ -15,10 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with CLplusplus.  If not, see <http://www.gnu.org/licenses/>.
 
+// The code here can really apply to matrices of any kind without any modifications
+typedef float MatrixElement;
+
 // Here is a basic matrix transpose algorithm, without any memory access optimization
 __kernel
-void float_transpose_naive(__global const float * restrict const in_matrix,
-                           __global       float * restrict const out_matrix) {
+void float_transpose_naive(__global const MatrixElement * restrict const in_matrix,
+                           __global       MatrixElement * restrict const out_matrix) {
    // Determine the current thread's location within the input matrix
    const unsigned int glob_input_i = get_global_id(0);
    const unsigned int glob_input_j = get_global_id(1);
@@ -40,9 +43,9 @@ void float_transpose_naive(__global const float * restrict const in_matrix,
 //    * Work-groups are square
 //    * The matrix has a size which is evenly divisible by the work group size
 __kernel
-void float_transpose_local(__global const float * restrict const in_matrix,
-                           __local        float * restrict const transpose_buf,
-                           __global       float * restrict const out_matrix) {
+void float_transpose_local(__global const MatrixElement * restrict const in_matrix,
+                           __local        MatrixElement * restrict const transpose_buf,
+                           __global       MatrixElement * restrict const out_matrix) {
    // Determine the current thread's location within the input matrix
    const unsigned int glob_input_i = get_global_id(0);
    const unsigned int glob_input_j = get_global_id(1);
