@@ -28,6 +28,7 @@
 #include "command_queue.hpp"
 #include "device.hpp"
 #include "event.hpp"
+#include "image.hpp"
 #include "program.hpp"
 #include "property_list.hpp"
 
@@ -60,11 +61,11 @@ namespace CLplusplus {
          // If this is done when a context is NOT created from a single device, or could have been created from multiple devices, this exception will be thrown.
          class AmbiguousDevice : public WrapperException {};
 
-         // Create a context from multiple devices -- wraps clCreateContext
+         // Create a context from multiple devices (wraps clCreateContext)
          Context(ContextProperties & properties, const std::vector<Device> & devices, const ContextCallback & callback = nullptr);
          Context(ContextProperties & properties, const std::vector<Device> & devices, const ContextCallbackWithUserData & callback, void * const user_data);
 
-         // Create a context from all devices of a specific type -- wraps clCreateContextFromType
+         // Create a context from all devices of a specific type (wraps clCreateContextFromType)
          Context(ContextProperties & properties, const cl_device_type device_type, const ContextCallback & callback = nullptr);
          Context(ContextProperties & properties, const cl_device_type device_type, const ContextCallbackWithUserData & callback, void * const user_data);
 
@@ -99,7 +100,11 @@ namespace CLplusplus {
          // Although they are managed using command queues, buffers belong to a context.
          CLplusplus::Buffer create_buffer(const cl_mem_flags flags, const size_t size, void * const host_ptr = nullptr) const;
 
-         // TODO : The same is also true for images.
+         // The same is also true of images.
+         CLplusplus::Image create_image(const cl_mem_flags flags, const cl_image_format & image_format, const cl_image_desc & image_desc, void * const host_ptr = nullptr) const;
+
+         // The folllowing function may be used to query which image formats are supported by the implementation
+         std::vector<cl_image_format> supported_image_formats(const cl_mem_flags flags, const cl_mem_object_type image_type) const;
 
          // --- Program objects ---
 

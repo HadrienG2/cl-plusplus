@@ -75,6 +75,10 @@ namespace CLplusplus {
             throw InvalidGlobalOffset();
          case CL_INVALID_HOST_PTR:
             throw InvalidHostPtr();
+         case CL_INVALID_IMAGE_DESCRIPTOR:
+            throw InvalidImageDescriptor();
+         case CL_INVALID_IMAGE_FORMAT_DESCRIPTOR:
+            throw InvalidImageFormatDescriptor();
          case CL_INVALID_IMAGE_SIZE:
             throw InvalidImageSize();
          case CL_INVALID_KERNEL_ARGS:

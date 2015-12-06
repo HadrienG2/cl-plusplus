@@ -152,6 +152,24 @@ namespace CLplusplus {
       return Buffer{buffer_id, false};
    }
 
+   CLplusplus::Image Context::create_image(const cl_mem_flags flags, const cl_image_format & image_format, const cl_image_desc & image_desc, void * const host_ptr) const {
+      cl_int error_code;
+      const auto image_id = clCreateImage(internal_id, flags, &image_format, &image_desc, host_ptr, &error_code);
+      throw_if_failed(error_code);
+      return Image{image_id, false};
+   }
+
+   std::vector<cl_image_format> Context::supported_image_formats(const cl_mem_flags flags, const cl_mem_object_type image_type) const {
+      // Query how many image formats there will be, and prepare a vector of suitable size
+      cl_uint num_image_formats;
+      throw_if_failed(clGetSupportedImageFormats(internal_id, flags, image_type, 0, nullptr, &num_image_formats));
+      std::vector<cl_image_format> result(num_image_formats);
+
+      // Fetch the list of supported image formats and return it
+      throw_if_failed(clGetSupportedImageFormats(internal_id, flags, image_type, num_image_formats, &(result[0]), nullptr));
+      return result;
+   }
+
    CLplusplus::Program Context::create_program_with_source(const std::string & source_code) const {
       cl_int error_code;
       const size_t source_code_length = source_code.size();
@@ -164,6 +182,7 @@ namespace CLplusplus {
    CLplusplus::Program Context::create_program_with_source_file(const std::string & source_code_filename) const {
       // Open source file and determine its size
       std::ifstream input_file(source_code_filename, std::ios_base::in | std::ios_base::ate);
+      if(input_file.fail()) throw FileOpenFailed();
       const auto file_size = input_file.tellg();
       input_file.seekg(0);
 

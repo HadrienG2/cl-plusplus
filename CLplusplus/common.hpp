@@ -57,6 +57,8 @@ namespace CLplusplus {
       class InvalidEventWaitList : public StandardException {};
       class InvalidGlobalOffset : public StandardException {};
       class InvalidGlobalWorkSize : public StandardException {};
+      class InvalidImageDescriptor : public StandardException {};
+      class InvalidImageFormatDescriptor : public StandardException {};
       class InvalidImageSize : public StandardException {};
       class InvalidHostPtr : public StandardException {};
       class InvalidKernel : public StandardException {};
@@ -102,6 +104,9 @@ namespace CLplusplus {
 
    // This exception will be thrown if a function is passed an invalid argument
    class InvalidArgument : public WrapperException {};
+
+   // This exception will be thrown if opening a file fails, for example because the file is nonexistent
+   class FileOpenFailed : public WrapperException {};
 
    // === OPENCL LIST PARSING ===
 
