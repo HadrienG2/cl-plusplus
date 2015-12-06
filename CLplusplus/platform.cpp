@@ -89,4 +89,10 @@ namespace CLplusplus {
       throw_if_failed(clUnloadPlatformCompiler(internal_id));
    }
 
+   void * Platform::raw_extension_function_address(const std::string & funcname) {
+      const auto extension_address = clGetExtensionFunctionAddressForPlatform(internal_id, funcname.c_str());
+      if(!extension_address) throw NonexistentExtensionFunction();
+      return extension_address;
+   }
+
 }

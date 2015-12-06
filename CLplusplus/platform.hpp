@@ -24,6 +24,7 @@
 
 #include <CL/cl.h>
 
+#include "common.hpp"
 #include "device.hpp"
 #include "extensions.hpp"
 #include "profile.hpp"
@@ -31,6 +32,9 @@
 
 // This code unit provides facilities for handling OpenCL platforms
 namespace CLplusplus {
+
+   // If a user tries to request access to a nonexistent OpenCL extension function, an exception will be thrown
+   class NonexistentExtensionFunction : public WrapperException {};
 
    // This class represents an OpenCL platform that can be queried in a high-level way.
    class Platform {
@@ -66,6 +70,11 @@ namespace CLplusplus {
 
          // Allow the implementation to unload the resources associated to the OpenCL C compiler
          void unload_compiler() const;
+
+         // === PLATFORM-SPECIFIC EXTENSIONS ===
+
+         // In case an extension is not supported by the wrapper, it is still possible to get extension function addresses in a raw OpenCL way
+         void * raw_extension_function_address(const std::string & funcname);
 
          // === RAW OPENCL ID ===
 
