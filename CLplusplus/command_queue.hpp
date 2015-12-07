@@ -170,7 +170,14 @@ namespace CLplusplus {
          void enqueue_map_buffer(const Buffer & buffer, const size_t offset, const size_t size, const cl_map_flags map_flags, const EventWaitList & event_wait_list, void * & future_result) const;
          void * map_buffer(const Buffer & buffer, const size_t offset, const size_t size, const cl_map_flags map_flags, const EventWaitList & event_wait_list) const;
 
-         // TODO : Add image support
+         // --- Image operations ---
+
+         // TODO : Reads (sync and async, 1D 2D and 3D)
+         // TODO : Writes (blocking and nonblocking, 1D 2D and 3D)
+         // TODO : Copy (1D 2D and 3D)
+         // TODO : Fill (1D 2D and 3D)
+         // TODO : Image <-> buffer copies (1D 2D and 3D)
+         // TODO : Map (1D 2D and 3D)
 
          // --- Common memory object operations ---
 
