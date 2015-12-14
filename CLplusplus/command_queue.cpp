@@ -37,18 +37,24 @@ namespace CLplusplus {
       throw_if_failed(clGetCommandQueueInfo(internal_id, parameter_name, output_storage_size, output_storage, actual_output_size));
    }
 
-   Event CommandQueue::enqueued_read_buffer(const Buffer & source_buffer, const size_t offset, void * const destination, const size_t size, const EventWaitList & event_wait_list) const {
+   Event CommandQueue::enqueued_read_buffer(const Buffer & source_buffer, const size_t source_offset, void * const destination, const size_t size, const EventWaitList & event_wait_list) const {
       cl_event event_id;
-      raw_read_buffer(source_buffer, offset, destination, size, false, event_wait_list, &event_id);
+      raw_read_buffer(source_buffer, source_offset, destination, size, false, event_wait_list, &event_id);
       return Event{event_id, false};
    }
 
-   void CommandQueue::enqueue_read_buffer(const Buffer & source_buffer, const size_t offset, void * const destination, const size_t size, const EventWaitList & event_wait_list) const {
-      raw_read_buffer(source_buffer, offset, destination, size, false, event_wait_list, nullptr);
+   void CommandQueue::enqueue_read_buffer(const Buffer & source_buffer, const size_t source_offset,
+                                          void * const destination,
+                                          const size_t size,
+                                          const EventWaitList & event_wait_list) const {
+      raw_read_buffer(source_buffer, source_offset, destination, size, false, event_wait_list, nullptr);
    }
 
-   void CommandQueue::read_buffer(const Buffer & source_buffer, const size_t offset, void * const destination, const size_t size, const EventWaitList & event_wait_list) const {
-      raw_read_buffer(source_buffer, offset, destination, size, true, event_wait_list, nullptr);
+   void CommandQueue::read_buffer(const Buffer & source_buffer, const size_t source_offset,
+                                  void * const destination,
+                                  const size_t size,
+                                  const EventWaitList & event_wait_list) const {
+      raw_read_buffer(source_buffer, source_offset, destination, size, true, event_wait_list, nullptr);
    }
 
    Event CommandQueue::enqueued_read_buffer_rect_2d(const Buffer & source_buffer, const std::array<size_t, 2> source_offset, const size_t source_row_pitch,
@@ -91,14 +97,20 @@ namespace CLplusplus {
       raw_read_buffer_rect_3d(source_buffer, source_offset, source_pitch, destination, dest_offset, dest_pitch, size, true, event_wait_list, nullptr);
    }
 
-   Event CommandQueue::enqueued_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const {
+   Event CommandQueue::enqueued_write_buffer(const void * const source, const bool wait_for_availability,
+                                             const Buffer & dest_buffer, const size_t dest_offset,
+                                             const size_t size,
+                                             const EventWaitList & event_wait_list) const {
       cl_event event_id;
-      raw_write_buffer(source, wait_for_availability, dest_buffer, offset, size, event_wait_list, &event_id);
+      raw_write_buffer(source, wait_for_availability, dest_buffer, dest_offset, size, event_wait_list, &event_id);
       return Event{event_id, false};
    }
 
-   void CommandQueue::enqueue_write_buffer(const void * const source, const bool wait_for_availability, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const {
-      raw_write_buffer(source, wait_for_availability, dest_buffer, offset, size, event_wait_list, nullptr);
+   void CommandQueue::enqueue_write_buffer(const void * const source, const bool wait_for_availability,
+                                           const Buffer & dest_buffer, const size_t dest_offset,
+                                           const size_t size,
+                                           const EventWaitList & event_wait_list) const {
+      raw_write_buffer(source, wait_for_availability, dest_buffer, dest_offset, size, event_wait_list, nullptr);
    }
 
    Event CommandQueue::enqueued_write_buffer_rect_2d(const void * const source, const std::array<size_t, 2> source_offset, const size_t source_row_pitch, const bool wait_for_availability,
@@ -189,6 +201,75 @@ namespace CLplusplus {
 
    void * CommandQueue::map_buffer(const Buffer & buffer, const size_t offset, const size_t size, const cl_map_flags map_flags, const EventWaitList & event_wait_list) const {
       return raw_map_buffer(buffer, offset, size, true, map_flags, event_wait_list, nullptr);
+   }
+
+   Event CommandQueue::enqueued_read_image_1d(const Image & source_image, const size_t source_origin,
+                                              void * const destination,
+                                              const size_t region_length,
+                                              const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_read_image_1d(source_image, source_origin, destination, region_length, false, event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_read_image_1d(const Image & source_image, const size_t source_origin,
+                                            void * const destination,
+                                            const size_t region_length,
+                                            const EventWaitList & event_wait_list) const {
+      raw_read_image_1d(source_image, source_origin, destination, region_length, false, event_wait_list, nullptr);
+   }
+
+   void CommandQueue::read_image_1d(const Image & source_image, const size_t source_origin,
+                                    void * const destination,
+                                    const size_t region_length,
+                                    const EventWaitList & event_wait_list) const {
+      raw_read_image_1d(source_image, source_origin, destination, region_length, true, event_wait_list, nullptr);
+   }
+
+   Event CommandQueue::enqueued_read_image_2d(const Image & source_image, const std::array<size_t, 2> source_origin,
+                                              void * const destination, const size_t dest_row_pitch,
+                                              const std::array<size_t, 2> region,
+                                              const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_read_image_2d(source_image, source_origin, destination, dest_row_pitch, region, false, event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_read_image_2d(const Image & source_image, const std::array<size_t, 2> source_origin,
+                                            void * const destination, const size_t dest_row_pitch,
+                                            const std::array<size_t, 2> region,
+                                            const EventWaitList & event_wait_list) const {
+      raw_read_image_2d(source_image, source_origin, destination, dest_row_pitch, region, false, event_wait_list, nullptr);
+   }
+
+   void CommandQueue::read_image_2d(const Image & source_image, const std::array<size_t, 2> source_origin,
+                                    void * const destination, const size_t dest_row_pitch,
+                                    const std::array<size_t, 2> region,
+                                    const EventWaitList & event_wait_list) const {
+      raw_read_image_2d(source_image, source_origin, destination, dest_row_pitch, region, true, event_wait_list, nullptr);
+   }
+
+   Event CommandQueue::enqueued_read_image_3d(const Image & source_image, const std::array<size_t, 3> source_origin,
+                                              void * const destination, const std::array<size_t, 2> dest_pitch,
+                                              const std::array<size_t, 3> region,
+                                              const EventWaitList & event_wait_list) const {
+      cl_event event_id;
+      raw_read_image_3d(source_image, source_origin, destination, dest_pitch, region, false, event_wait_list, &event_id);
+      return Event{event_id, false};
+   }
+
+   void CommandQueue::enqueue_read_image_3d(const Image & source_image, const std::array<size_t, 3> source_origin,
+                                              void * const destination, const std::array<size_t, 2> dest_pitch,
+                                              const std::array<size_t, 3> region,
+                                              const EventWaitList & event_wait_list) const {
+      raw_read_image_3d(source_image, source_origin, destination, dest_pitch, region, false, event_wait_list, nullptr);
+   }
+
+   void CommandQueue::read_image_3d(const Image & source_image, const std::array<size_t, 3> source_origin,
+                                              void * const destination, const std::array<size_t, 2> dest_pitch,
+                                              const std::array<size_t, 3> region,
+                                              const EventWaitList & event_wait_list) const {
+      raw_read_image_3d(source_image, source_origin, destination, dest_pitch, region, true, event_wait_list, nullptr);
    }
 
    Event CommandQueue::enqueued_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list) const {
@@ -569,6 +650,54 @@ namespace CLplusplus {
       // Check if an error occured, and throw exceptions accordingly
       throw_if_failed(error_code);
       return result;
+   }
+
+   void CommandQueue::raw_read_image_1d(const Image & source_image, const size_t source_origin,
+                                        void * const destination,
+                                        const size_t region_length, const bool synchronous_read,
+                                        const EventWaitList & event_wait_list, cl_event * const event) const {
+      // Build a 3D equivalent of our 1D image read request
+      const std::array<size_t, 3> source_origin_3d {source_origin, 0, 0};
+      const std::array<size_t, 2> dest_pitch_3d {0, 0};
+      const std::array<size_t, 3> region_3d {region_length, 1, 1};
+
+      // Run that request
+      raw_read_image_3d(source_image, source_origin_3d, destination, dest_pitch_3d, region_3d, synchronous_read, event_wait_list, event);
+   }
+
+   void CommandQueue::raw_read_image_2d(const Image & source_image, const std::array<size_t, 2> source_origin,
+                                        void * const destination, const size_t dest_row_pitch,
+                                        const std::array<size_t, 2> region, const bool synchronous_read,
+                                        const EventWaitList & event_wait_list, cl_event * const event) const {
+      // Build a 3D equivalent of our 2D image read request
+      const std::array<size_t, 3> source_origin_3d {source_origin[0], source_origin[1], 0};
+      const std::array<size_t, 2> dest_pitch_3d {dest_row_pitch, 0};
+      const std::array<size_t, 3> region_3d {region[0], region[1], 1};
+
+      // Run that request
+      raw_read_image_3d(source_image, source_origin_3d, destination, dest_pitch_3d, region_3d, synchronous_read, event_wait_list, event);
+   }
+
+   void CommandQueue::raw_read_image_3d(const Image & source_image, const std::array<size_t, 3> source_origin,
+                                        void * const destination, const std::array<size_t, 2> dest_pitch,
+                                        const std::array<size_t, 3> region, const bool synchronous_read,
+                                        const EventWaitList & event_wait_list, cl_event * const event) const {
+      const auto num_events = event_wait_list.size();
+      if(num_events == 0) {
+         throw_if_failed(clEnqueueReadImage(internal_id, source_image.raw_identifier(), synchronous_read,
+                                            source_origin.data(), region.data(),
+                                            dest_pitch[0], dest_pitch[1],
+                                            destination,
+                                            0, nullptr, event));
+      } else {
+         cl_event raw_event_ids[num_events];
+         for(size_t i = 0; i < num_events; ++i) raw_event_ids[i] = event_wait_list[i].raw_identifier();
+         throw_if_failed(clEnqueueReadImage(internal_id, source_image.raw_identifier(), synchronous_read,
+                                            source_origin.data(), region.data(),
+                                            dest_pitch[0], dest_pitch[1],
+                                            destination,
+                                            num_events, raw_event_ids, event));
+      }
    }
 
    void CommandQueue::raw_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list, cl_event * const event) const {
