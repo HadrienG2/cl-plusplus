@@ -92,14 +92,15 @@ namespace CLplusplus {
          size_t append(const PropertyName name, const ScalarValue * const opencl_vector_value); // Returns the size of the input vector
 
          // Trying to access a value leads a read-only view of it (see above).
-         // WARNING : This operation requires a linear search, prefer iteration for efficient parsing.
+         // WARNING: This operation requires a linear search, prefer iteration for efficient parsing.
          PropertyView operator[](const PropertyName name) const;
 
          // It is also possible to iterate through the views using range-based iteration
          const_iterator begin() const { return const_iterator(internal_storage_ptr()); }
          const_iterator end() const { return const_iterator(internal_storage_ptr() + internal_storage.size()); }
 
-         // Finally, property lists can be converted to OpenCL-style zero-terminated lists for final input
+         // Finally, property lists can be converted to OpenCL-style zero-terminated lists for final input.
+         // NOTE: Because OpenCL expects a pointer, this requires keeping the output as mutable internal state.
          const PropertyType * opencl_view();
 
       private:
