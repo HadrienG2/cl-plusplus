@@ -32,7 +32,7 @@ namespace CLplusplus {
       }
 
       // Search our extension list for the requested extensions, indicating in the map whether we found them
-      for(const auto & extension : *this) {
+      for(const auto & extension : contents) {
          const auto status_location = extension_status.find(extension);
          if(status_location != extension_status.end()) {
             status_location->second = true;
@@ -48,12 +48,9 @@ namespace CLplusplus {
 
       void run_tests_extensions() {
          // Try decoding a simple "extension" list
-         ExtensionList expected_result{" "};
-         expected_result.emplace_back("This");
-         expected_result.emplace_back("is");
-         expected_result.emplace_back("blasphemy");
+         ExtensionList::StringVector expected_result{"This", "is", "blasphemy"};
          ExtensionList actual_result{"This is blasphemy"};
-         check(actual_result == expected_result, "Decoding a simple extension list should work");
+         check(*actual_result == expected_result, "Decoding a simple extension list should work");
 
          // Check that we can test extension support easily
          using StringVector = std::vector<std::string>;

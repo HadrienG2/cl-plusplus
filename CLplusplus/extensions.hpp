@@ -26,20 +26,25 @@
 // This code unit provides facilities for dealing with OpenCL's space-separated extension lists
 namespace CLplusplus {
 
-   // This class manages an OpenCL extension list in a high level way
-   class ExtensionList : public std::vector<std::string> {
-      public:
-         using StringVector = std::vector<std::string>;
-         explicit ExtensionList(const std::string & space_separated_extension_list) : StringVector{decode_opencl_list(space_separated_extension_list, ' ')} {}
-         bool contains(const std::vector<std::string> & extensions) const;
-   };
+    // This class manages an OpenCL extension list in a high level way
+    class ExtensionList {
+        public:
+            using StringVector = std::vector<std::string>;
+            explicit ExtensionList(const std::string & space_separated_extension_list) : contents{decode_opencl_list(space_separated_extension_list, ' ')} {}
+            
+            const StringVector & operator*() const { return contents; }
+            bool contains(const std::vector<std::string> & extensions) const;
+         
+        private:
+            StringVector contents;
+    };
 
-   namespace UnitTests {
+    namespace UnitTests {
 
-      // Test the components of this unit
-      void run_tests_extensions();
+        // Test the components of this unit
+        void run_tests_extensions();
 
-   }
+    }
 
 }
 

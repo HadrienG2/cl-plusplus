@@ -70,8 +70,8 @@ int main() {
       // Detect vendor name
       std::cout << "Platform vendor is " << platform.vendor() << std::endl;
 
-      // Detect extensions
-      const auto extensions = platform.extensions();
+      // Enumerate extensions
+      const auto extensions = *platform.extensions();
       std::cout << "Platform supports " << extensions.size() << " extensions: ";
       for(const auto & extension : extensions) {
          std::cout << extension << " ";
@@ -366,8 +366,8 @@ int main() {
          const auto dev_opencl_c_version = device.opencl_c_version();
          std::cout << "Maximal supported OpenCL C version is " << dev_opencl_c_version.major << "." << dev_opencl_c_version.minor << " [" << dev_opencl_c_version.vendor_specific_info << "]" << std::endl;
 
-         // Detect extensions
-         const auto dev_extensions = device.extensions();
+         // Enumerate extensions
+         const auto dev_extensions = *device.extensions();
          std::cout << "Device supports " << dev_extensions.size() << " extensions: ";
          for(const auto & extension : dev_extensions) {
             std::cout << extension << " ";
