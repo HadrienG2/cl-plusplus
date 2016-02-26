@@ -173,11 +173,11 @@ namespace CLplusplus {
          check(decode_version_string("Preamble 123.234 Some Gibberish", "Preamble ", true) == Version{ 123, 234, "Some Gibberish" }, "Version string decoding with a nontrivial vendor-specific string should work");
          try {
             decode_version_string("Preamble 123.234", "Preamble ", true);
-            fail("Decoding verison strings that should have a vendor-specific epilogue but don't should raise an exception");
+            fail("Decoding version strings that should have a vendor-specific epilogue but don't should raise an exception");
          } catch(const InvalidArgument) {
             pass();
          } catch(...) {
-            fail("Decoding verison strings that should have a vendor-specific epilogue but don't should raise InvalidArgument");
+            fail("Decoding version strings that should have a vendor-specific epilogue but don't should raise InvalidArgument");
          }
 
          // Quickly check that specialzed version string decoding leads the right results

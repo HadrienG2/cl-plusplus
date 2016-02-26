@@ -110,7 +110,7 @@ namespace CLplusplus {
 
    // === OPENCL LIST PARSING ===
 
-   // OpenCL loves character-separated lists, but these are somewhat impractical to process. So here's a function that does it.
+   // OpenCL loves delimiter-separated lists, but these are somewhat impractical to process. So here's a function that does it.
    std::vector<std::string> decode_opencl_list(const std::string & character_separated_list, const char separator);
 
    // === UNIT TESTING ===
