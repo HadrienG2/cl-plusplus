@@ -31,6 +31,28 @@ namespace CLplusplus {
       if(internal_id == NULL) throw InvalidArgument();
    }
 
+   std::string Platform::raw_string_query(cl_platform_info parameter_name) const {
+      // Check how long the output string should be
+      size_t output_string_length = raw_query_output_size(parameter_name);
+      
+      // Fetch the output string
+      char output_string[output_string_length];
+      raw_query(parameter_name, output_string_length, static_cast<void *>(output_string));
+
+      // Return the result
+      return std::string(output_string);
+   }
+
+   size_t Platform::raw_query_output_size(cl_platform_info parameter_name) const {
+      size_t result;
+      raw_query(parameter_name, 0, nullptr, &result);
+      return result;
+   }
+
+   void Platform::raw_query(cl_platform_info parameter_name, size_t output_storage_size, void * output_storage, size_t * actual_output_size) const {
+      throw_if_failed(clGetPlatformInfo(internal_id, parameter_name, output_storage_size, output_storage, actual_output_size));
+   }
+   
    std::vector<CLplusplus::Device> Platform::devices(const cl_device_type dev_type) const {
       // Check how many devices are available on the platform
       cl_uint number_of_devices;
@@ -61,28 +83,6 @@ namespace CLplusplus {
 
       // Return the result
       return result;
-   }
-
-   std::string Platform::raw_string_query(cl_platform_info parameter_name) const {
-      // Check how long the output string should be
-      size_t output_string_length = raw_query_output_size(parameter_name);
-      
-      // Fetch the output string
-      char output_string[output_string_length];
-      raw_query(parameter_name, output_string_length, static_cast<void *>(output_string));
-
-      // Return the result
-      return std::string(output_string);
-   }
-
-   size_t Platform::raw_query_output_size(cl_platform_info parameter_name) const {
-      size_t result;
-      raw_query(parameter_name, 0, nullptr, &result);
-      return result;
-   }
-
-   void Platform::raw_query(cl_platform_info parameter_name, size_t output_storage_size, void * output_storage, size_t * actual_output_size) const {
-      throw_if_failed(clGetPlatformInfo(internal_id, parameter_name, output_storage_size, output_storage, actual_output_size));
    }
 
    void Platform::unload_compiler() const {

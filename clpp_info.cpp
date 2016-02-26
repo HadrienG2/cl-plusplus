@@ -79,7 +79,7 @@ int main() {
       std::cout << std::endl;
 
       // Determine how many devices are available on this platform
-      const auto devices = platforms[i].devices(CL_DEVICE_TYPE_ALL);
+      const auto devices = platforms[i].devices();
       std::cout << std::endl << "Platform features " << devices.size() << " device(s)" << std::endl;
 
       // Investigate each detected OpenCL device

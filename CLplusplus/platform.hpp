@@ -53,11 +53,6 @@ namespace CLplusplus {
          std::string vendor() const { return raw_string_query(CL_PLATFORM_VENDOR); };
          CLplusplus::ExtensionList extensions() const { return ExtensionList{raw_string_query(CL_PLATFORM_EXTENSIONS)}; }
 
-         // Available devices may be queried as well, using a high-level equivalent of clGetDeviceIDs, possibly with some additional user-defined device filtering
-         // (to request e.g. double precision capability, minimal work group sizes, minimal storage, etc...)
-         std::vector<CLplusplus::Device> devices(const cl_device_type dev_type) const;
-         std::vector<CLplusplus::Device> filtered_devices(const DevicePredicate & filter, const cl_device_type dev_type = CL_DEVICE_TYPE_ALL) const;
-
          // Wrapper-unsupported property values may be queried in a lower-level way
          std::string raw_profile_string() const { return raw_string_query(CL_PLATFORM_PROFILE); }
 
@@ -65,6 +60,13 @@ namespace CLplusplus {
          std::string raw_string_query(const cl_platform_info parameter_name) const;
          size_t raw_query_output_size(const cl_platform_info parameter_name) const;
          void raw_query(const cl_platform_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
+         
+         // === DEVICE ACCESS ===
+         
+         // Available devices may be queried using a high-level equivalent of clGetDeviceIDs, possibly with some additional user-defined device filtering
+         // (to request e.g. double precision capability, minimal work group sizes, minimal storage, etc...)
+         std::vector<CLplusplus::Device> devices(const cl_device_type dev_type = CL_DEVICE_TYPE_ALL) const;
+         std::vector<CLplusplus::Device> filtered_devices(const DevicePredicate & filter, const cl_device_type dev_type = CL_DEVICE_TYPE_ALL) const;
 
          // === OPENCL C COMPILER UNLOAD HINT ===
 
