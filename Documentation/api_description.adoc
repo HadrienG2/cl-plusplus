@@ -1,0 +1,6 @@
+== API description
+
+include::api_architecture.adoc[]
+include::api_platform_layer.adoc[]
+include::api_runtime_layer.adoc[]
+

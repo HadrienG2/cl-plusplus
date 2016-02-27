@@ -1,0 +1,143 @@
+=== Platform layer
+
+==== Purpose
+
+The main purpose of the OpenCL platform layer is to help developpers identify accessible OpenCL devices at runtime, and query their properties in order to select the devices that are most appropriate for their needs, if any. These devices may then be grouped together in OpenCL contexts for the purpose of performing computations on them.
+
+Additionally, this layer allows developers to access platform- and device-specific functionality, such as OpenCL extensions, and to manipulate OpenCL devices by e.g. partitioning them into multiple sub-devices.
+
+
+==== Accessing platforms
+
+OpenCL platform access is provided in the header `CLplusplus/queries.hpp` through the following functions:
+
+* `std::vector<CLplusplus::Platform> get_platforms()` provides a list of all OpenCL platforms which are available on a given system.
+* `std::vector<CLplusplus::Platform> get_filtered_platforms(const PlatformPredicate & filter)` provides a list of all platforms which match a certain _platform predicate_.
+* `std::vector<FilteredPlatform> get_filtered_devices(const PlatformPredicate & platform_filter, const DevicePredicate & device_filter)` provides a list of all platforms which match a certain _platform predicate_, and for each of these platforms, a list of all devices which match a certain _device predicate_.
+
+[[CLPP_PREDICATES]]The notion of platform and device predicates is specific to CLplusplus, so it is worth expanding upon. A platform predicate, as defined in `CLplusplus/platform.hpp`, is a function which takes as a parameter a platform object and returns a boolean stating whether that platform _matches_ some criterion. Objects which do not match the predicate are left out of the results of `get_filtered_xyz()` functions. Predicates are thus a relatively simple and convenient way to select OpenCL platform which matches some requirements, that scale very well from simple selection criteria to very complex ones.
+
+Platform filtering works best when the predicates are implemented as $$C++11$$ lambda anonymous functions. Here is an example of a simple platform filter which matches all platforms offering support for OpenCL version 1.2 or greater:
+
+----
+auto filtered_platforms = get_filtered_platforms(
+    [&](const CLplusplus::Platform & platform) -> bool {
+        return (platform.version() >= CLplusplus::version_1p2);
+    }
+);
+----
+
+Device predicates offer comparable ability, but for selecting devices instead of platforms. Together, platform and device predicates allow one to easily set hardware requirements for OpenCL programs, solely consider devices which match these requirements, and abort the program early on if no suitable device is available.
+
+
+==== Platform objects
+
+===== Platform properties
+
+Platform objects are defined in `CLplusplus/platform.hpp`. Given a platform object as returned by one of the platform access functions, one may easily access the standard OpenCL platform properties using identically named methods:
+
+* `CLplusplus::Profile profile()` describes which OpenCL profile the platform implements.
+* `CLplusplus::Version version()` describes which OpenCL version the platform implements.
+* `std::string name()` provides a string identifying the platform, such as "NVIDIA CUDA".
+* `std::string vendor()` provides a string identifying the platform vendor, such as "NVIDIA Corporation".
+* `CLplusplus::ExtensionList extensions()` describes which OpenCL extensions are supported.
+
+Some of these functions return CLplusplus-specific objects which warrant further descriptions:
+
+* [[CLPP_PROFILE]]`CLplusplus::Profile` is just an enum class defined in `CLplusplus/profile.h` which can currently take the values `Profile::Full` or `Profile::Embedded`. An enum is used here as these are much more straightforward to probe, compare, and handle than strings, yet good enough for OpenCL profile identification. If an unexpected profile string is encountered, the exception `CLplusplus::UnsupportedProfileString` will be thrown.
+* [[CLPP_VERSION]]`CLplusplus::Version` is a struct decomposing OpenCL versioning information (minor, major, and vendor-specific info), and featuring a `>=` operator overload for easy compatibility checks. The constant `CLplusplus::version_1p2` corresponds to OpenCL version 1.2.
+* [[CLPP_EXTENSION_LIST]]`CLplusplus::ExtensionList` is basically an lightweight wrapper around an std::vector of extensions, featuring the method `bool contains(const std::vector<std::string> & extensions)` which allows to efficiently check if a platform or device supports a given set of extensions. Raw access to the underlying extension vector are provided through an `operator*` overload.
+
+===== Device enumeration
+
+Given a platform object, one may enumerate the OpenCL devices which it supports, filtering these in two different ways:
+
+* Using OpenCL device types, such as `CL_DEVICE_TYPE_GPU` or `CL_DEVICE_TYPE_ACCELERATOR`. These are natively supported by the OpenCL implementation, and thus expected to be extremely efficient. But they are pretty ambiguous and limited in scope. Their use is not recommended, and solely supported for OpenCL compatibility.
+* Using device predicates, as presented <<CLPP_PREDICATES, above>>. This kind of filtering is internally performed by CLplusplus, but provides a fully general device filter which can select devices according to any requirement, including for example minimal memory capacity or image support. It is thus the recommended device filtering mechanism.
+
+Accessing devices is concretely done using the following two platform object methods:
+
+* `std::vector<CLplusplus::Device> devices(const cl_device_type dev_type = CL_DEVICE_TYPE_ALL)` solely performs OpenCL device type filtering, bypassing it by default to produce the full device list for a platform.
+* `std::vector<CLplusplus::Device> filtered_devices(const DevicePredicate & filter, const cl_device_type dev_type = CL_DEVICE_TYPE_ALL)` performs both device type and predicate-based filtering.
+
+===== Compiler unload hint
+
+An OpenCL implementation features a compiler for the OpenCL C language, which may in some usage scenarios use an unacceptably large amount of system resources during data processing.
+
+In this situation, one may provide the OpenCL platform with a hint that the OpenCL C compiler will not be used anymore and may safely be unloaded, by calling the `unload_compiler()` platform object method.
+
+===== Extension function access
+
+To access OpenCL extensions which are not yet supported by CLplusplus, after checking that they are supported by the OpenCL platforms and devices that are going to be used, one may ask for a function pointer to the relevant OpenCL extension functions.
+
+This is done by calling the `void * raw_extension_function_address(const std::string & funcname)` platform object method, and casting the result to the appropriate function pointer type.
+
+`raw_extension_function_address` internally checks that the extension function query went well, and throws `CLplusplus::NonexistentExtensionFunction` if it doesn't. The resulting function pointer is thus guaranteed to be valid, although the associated extension function may not be supported by all OpenCL devices on a given platform.
+
+
+==== Device objects
+
+===== Device properties
+
+Like platform properties, device properties may be accessed using methods of the `CLplusplus::Device` class, which rigorously follow the OpenCL property naming conventions in the sense that for (almost) every `CL_DEVICE_XYZ` value of cl_device_info, there is an associated `xyz()` accessor method in `CLplusplus::Device`.
+
+Due to the sheer number of device properties which can be queried using OpenCL, whose semantics correspond to roughly 15 pages of the OpenCL 1.2 specification, it would not be reasonable to enumerate all of these here. This documentation will thus solely focus on the area where CLplusplus device property semantics differ from that of the original device property which they are mapping.
+
+* `max_work_item_sizes()` returns an STL vector instead of filling a C array.
+* All boolean properties return standard C++ `bool` values instead of cl_bool enums.
+* `built_in_kernels()` returns an STL vector of kernel names instead of filling a semicolon-separated C string.
+* `name()` and `vendor()` return STL strings instead of filling C strings.
+* `driver_version()`, `version()` and `opencl_c_version()` use the <<CLPP_VERSION, `CLplusplus::Version`>> structure.
+* `profile()` uses <<CLPP_PROFILE, `CLplusplus::Profile`>>, and `extensions()` uses <<CLPP_EXTENSION_LIST, `CLplusplus::ExtensionList`>>.
+* `parent_device()` returns a `CLplusplus::Device` object instead of a raw `cl_device` handle.
+* An extra `supports_partitioning()` boolean helper property tells whether the device may be partitioned.
+* `partition_properties()` returns an STL vector of partition types instead of filling a C array.
+* `partition_type()` returns a <<_property_lists, `CLplusplus::PropertyList`>> instead of a raw OpenCL property list.
+
+===== Partitioning a device
+
+Some OpenCL devices may be partitioned into subdevices, allowing for example for one quad-core CPU to be manipulated as four single-core CPUs or two dual-core CPUs by OpenCL programs. In CLplusplus, this is indicated by the `supports_partitioning()` property of a device object.
+
+In CLplusplus, partitioning a device is done by calling the `std::vector<Device> create_sub_devices(PartitionProperties & properties)` method of the device object to be partitioned.
+
+The partitioning scheme is selected using a single-element <<_property_lists, property list>>, featuring one of the following properties:
+
+* `CL_DEVICE_PARTITION_EQUALLY` is a scalar property whose value n corresponds to the amount of compute units that should be featured in each subdevice.
+* `CL_DEVICE_PARTITION_BY_COUNTS` is a vector property whose elements describe how many compute units should be featured in each subdevice.
+* `CL_DEVICE_PARTITION_BY_AFFINITY_DOMAIN` is a scalar property commanding that the device be partitioned according to the source device's cache hierarchy:
+** If set to `CL_DEVICE_AFFINITY_DOMAIN_NUMA`, each subdevice will share a NUMA node.
+** If set to `CL_DEVICE_AFFINITY_DOMAIN_Ln_CACHE`, where n is an integer, each subdevice will share a level-n cache
+** If set to `CL_DEVICE_AFFINITY_DOMAIN_NEXT_PARTITIONABLE`, subdevices will be creating by following the next available caching hierarchy level.
+
+If successful, `create_sub_devices` will return an array of Device objects which may be used to control the resuling OpenCL sub-devices.
+
+
+==== Contexts
+
+===== Creating a context
+
+Contexts are at the center of OpenCL resource management. Spanning one or more OpenCL devices, they allow for the allocation of memory and synchronization resources, for the compilation of OpenCL C programs into kernels, and for the creation of command queues allowing one to send commands to devices. In CLplusplus, contexts are manipulated using the `CLplusplus::Context` class, which is defined in `CLplusplus/context.hpp`.
+
+In OpenCL, contexts may be created by manually specifying the list of devices which they encompass. As a convenience shortcut, OpenCL also supports creating a context featuring all devices matching a certain OpenCL device type. Finally, CLplusplus acknowledges the common case of creating an OpenCL context for the purpose of controlling one single device by also providing convenience shortcuts for this use cases.
+
+Another dimension to context creation is the possible specification of error callbacks, which are used by OpenCL implementations to report on some kind of errors which are not appropriately signaled by OpenCL API function return codes. OpenCL supports passing information to callbacks using a `void *` pointer, whereas the preferred way to implement complex callback behavior in CLplusplus is to use $$C++11$$ lambdas as callbacks.
+
+The end result is that to preserve OpenCL compatibility without hampering modern development practices, error callbacks with and without a `void *` parameter are both supported by CLplusplus, leading to a total of 6 context creation constructors:
+
+* `Context(ContextProperties & properties, const Device & device, const ContextCallback & callback = nullptr)` creates a context for interaction with one single device, with an optional pointer-less error callback.
+* `Context(ContextProperties & properties, const Device & device, const ContextCallbackWithUserData & callback, void * const user_data)` does the same, but features user data as a callback parameter.
+* `Context(ContextProperties & properties, const std::vector<Device> & devices, const ContextCallback & callback = nullptr)` creates a context spanning multiple devices, using pointer-less callbacks.
+* `Context(ContextProperties & properties, const std::vector<Device> & devices, const ContextCallbackWithUserData & callback, void * const user_data)` does the same with a user data callback parameter.
+* `Context(ContextProperties & properties, const cl_device_type device_type, const ContextCallback & callback = nullptr)` creates a context spanning all OpenCL devices of a given type, with pointer-less callbacks.
+* `Context(ContextProperties & properties, const cl_device_type device_type, const ContextCallbackWithUserData & callback, void * const user_data)` does the same with a user data callback parameter.
+
+Optional context properties are specified using a <<_property_lists, property list>>, whose contents may be filled exactly as one would expect by looking at the OpenCL specification.
+
+===== Context properties
+
+CLplusplus context objects provide the following properties:
+
+* `cl_uint num_devices()` tells how many OpenCL devices are attached to the context.
+* `std::vector<CLplusplus::Device> devices()` provides the list of said devices.
+* `ContextProperties properties()` basically retrieves back the `properties` argument to Context's constructor, which is useful for clients which inherit contexts that they have not created themselves.
+

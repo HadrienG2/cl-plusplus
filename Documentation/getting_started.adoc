@@ -1,0 +1,21 @@
+== Getting started
+
+=== Building CLplusplus
+
+The only strict dependencies of CLplusplus are an OpenCL implementation and a $$C++$$ compiler that complies with the $$C++11$$ standard. Since OpenCL implementations tend to be highly hardware-specific and are usually provided by individual hardware manufacturers, it is impossible to provide general instructions on how to install one. One may only point out that in the specific case of NVidia GPUs, the OpenCL implementation is actually hidden inside of the software development kit for the competing CUDA technology, as part of this manufacturer's unfortunate business strategy of favoring proprietary standards over fair technological competition.
+
+The recommended software development toolchain, by which is meant the one that is used for building and testing CLplusplus, is a combination of Linux, $$g++$$ and GNU Make. For users of this toolchain, the CLplusplus project provides a simple Makefile which automates the build process of all example code, reducing it to a mere
+
+    $ make
+
+Users of other development toolchains are invited to study the underlying Makefile and adapt it to their own build system and needs. Generally speaking, the Makefile that is provided is fairly basic, and overlooks issues such as the building of a shared library object and the separation of source files from headers. Third-party contributions of higher-quality Makefiles would be most definitely welcome.
+
+
+=== Running the examples
+
+Once you have managed to build the CLplusplus example code, and by extension CLplusplus, you may want to run all of the examples and make sure that they either work, or shouldn't work on your hardware implementation (this is the case, for example, when examples attempt to use OpenCL images on hardware which doesn't support them).
+
+If you have the feeling that a CLplusplus example should work on your hardware configuration, but doesn't, please make sure that your OpenCL implementation is working properly by testing your manufacturer's own example code, then submit this as a bug in the CLplusplus bugtracker. It is a design goal of CLplusplus to be usable in any context where OpenCL and $$C++11$$ are.
+
+Once you have asserted that the examples run properly, you may want to study their source code in order to get a feel of the intended usage patterns of the CLplusplus API. For a more authoritative guide through the API's features, however, please read on through the reminder of this documentation.
+

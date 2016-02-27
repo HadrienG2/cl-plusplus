@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 1.5.4">
+<meta name="author" content="Hadrien Grasland">
+<title>CLplusplus documentation</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
+<style>
+/* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
+/* Remove comment around @import statement below when using as a custom stylesheet */
+/*@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";*/
+article,aside,details,figcaption,figure,footer,header,hgroup,main,nav,section,summary{display:block}
+audio,canvas,video{display:inline-block}
+audio:not([controls]){display:none;height:0}
+[hidden],template{display:none}
+script{display:none!important}
+html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
+body{margin:0}
+a{background:transparent}
+a:focus{outline:thin dotted}
+a:active,a:hover{outline:0}
+h1{font-size:2em;margin:.67em 0}
+abbr[title]{border-bottom:1px dotted}
+b,strong{font-weight:bold}
+dfn{font-style:italic}
+hr{-moz-box-sizing:content-box;box-sizing:content-box;height:0}
+mark{background:#ff0;color:#000}
+code,kbd,pre,samp{font-family:monospace;font-size:1em}
+pre{white-space:pre-wrap}
+q{quotes:"\201C" "\201D" "\2018" "\2019"}
+small{font-size:80%}
+sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}
+sup{top:-.5em}
+sub{bottom:-.25em}
+img{border:0}
+svg:not(:root){overflow:hidden}
+figure{margin:0}
+fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}
+legend{border:0;padding:0}
+button,input,select,textarea{font-family:inherit;font-size:100%;margin:0}
+button,input{line-height:normal}
+button,select{text-transform:none}
+button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer}
+button[disabled],html input[disabled]{cursor:default}
+input[type="checkbox"],input[type="radio"]{box-sizing:border-box;padding:0}
+input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}
+input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none}
+button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}
+textarea{overflow:auto;vertical-align:top}
+table{border-collapse:collapse;border-spacing:0}
+*,*:before,*:after{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
+html,body{font-size:100%}
+body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto}
+a:hover{cursor:pointer}
+img,object,embed{max-width:100%;height:auto}
+object,embed{height:100%}
+img{-ms-interpolation-mode:bicubic}
+.left{float:left!important}
+.right{float:right!important}
+.text-left{text-align:left!important}
+.text-right{text-align:right!important}
+.text-center{text-align:center!important}
+.text-justify{text-align:justify!important}
+.hide{display:none}
+body{-webkit-font-smoothing:antialiased}
+img,object,svg{display:inline-block;vertical-align:middle}
+textarea{height:auto;min-height:50px}
+select{width:100%}
+.center{margin-left:auto;margin-right:auto}
+.spread{width:100%}
+p.lead,.paragraph.lead>p,#preamble>.sectionbody>.paragraph:first-of-type p{font-size:1.21875em;line-height:1.6}
+.subheader,.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{line-height:1.45;color:#7a2518;font-weight:400;margin-top:0;margin-bottom:.25em}
+div,dl,dt,dd,ul,ol,li,h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6,pre,form,p,blockquote,th,td{margin:0;padding:0;direction:ltr}
+a{color:#2156a5;text-decoration:underline;line-height:inherit}
+a:hover,a:focus{color:#1d4b8f}
+a img{border:none}
+p{font-family:inherit;font-weight:400;font-size:1em;line-height:1.6;margin-bottom:1.25em;text-rendering:optimizeLegibility}
+p aside{font-size:.875em;line-height:1.35;font-style:italic}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{font-family:"Open Sans","DejaVu Sans",sans-serif;font-weight:300;font-style:normal;color:#ba3925;text-rendering:optimizeLegibility;margin-top:1em;margin-bottom:.5em;line-height:1.0125em}
+h1 small,h2 small,h3 small,#toctitle small,.sidebarblock>.content>.title small,h4 small,h5 small,h6 small{font-size:60%;color:#e99b8f;line-height:0}
+h1{font-size:2.125em}
+h2{font-size:1.6875em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.375em}
+h4,h5{font-size:1.125em}
+h6{font-size:1em}
+hr{border:solid #ddddd8;border-width:1px 0 0;clear:both;margin:1.25em 0 1.1875em;height:0}
+em,i{font-style:italic;line-height:inherit}
+strong,b{font-weight:bold;line-height:inherit}
+small{font-size:60%;line-height:inherit}
+code{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;color:rgba(0,0,0,.9)}
+ul,ol,dl{font-size:1em;line-height:1.6;margin-bottom:1.25em;list-style-position:outside;font-family:inherit}
+ul,ol,ul.no-bullet,ol.no-bullet{margin-left:1.5em}
+ul li ul,ul li ol{margin-left:1.25em;margin-bottom:0;font-size:1em}
+ul.square li ul,ul.circle li ul,ul.disc li ul{list-style:inherit}
+ul.square{list-style-type:square}
+ul.circle{list-style-type:circle}
+ul.disc{list-style-type:disc}
+ul.no-bullet{list-style:none}
+ol li ul,ol li ol{margin-left:1.25em;margin-bottom:0}
+dl dt{margin-bottom:.3125em;font-weight:bold}
+dl dd{margin-bottom:1.25em}
+abbr,acronym{text-transform:uppercase;font-size:90%;color:rgba(0,0,0,.8);border-bottom:1px dotted #ddd;cursor:help}
+abbr{text-transform:none}
+blockquote{margin:0 0 1.25em;padding:.5625em 1.25em 0 1.1875em;border-left:1px solid #ddd}
+blockquote cite{display:block;font-size:.9375em;color:rgba(0,0,0,.6)}
+blockquote cite:before{content:"\2014 \0020"}
+blockquote cite a,blockquote cite a:visited{color:rgba(0,0,0,.6)}
+blockquote,blockquote p{line-height:1.6;color:rgba(0,0,0,.85)}
+@media only screen and (min-width:768px){h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2}
+h1{font-size:2.75em}
+h2{font-size:2.3125em}
+h3,#toctitle,.sidebarblock>.content>.title{font-size:1.6875em}
+h4{font-size:1.4375em}}
+table{background:#fff;margin-bottom:1.25em;border:solid 1px #dedede}
+table thead,table tfoot{background:#f7f8f7;font-weight:bold}
+table thead tr th,table thead tr td,table tfoot tr th,table tfoot tr td{padding:.5em .625em .625em;font-size:inherit;color:rgba(0,0,0,.8);text-align:left}
+table tr th,table tr td{padding:.5625em .625em;font-size:inherit;color:rgba(0,0,0,.8)}
+table tr.even,table tr.alt,table tr:nth-of-type(even){background:#f8f8f7}
+table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{display:table-cell;line-height:1.6}
+body{tab-size:4}
+h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2;word-spacing:-.05em}
+h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title strong,h4 strong,h5 strong,h6 strong{font-weight:400}
+.clearfix:before,.clearfix:after,.float-group:before,.float-group:after{content:" ";display:table}
+.clearfix:after,.float-group:after{clear:both}
+*:not(pre)>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background-color:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed}
+pre,pre>code{line-height:1.45;color:rgba(0,0,0,.9);font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;text-rendering:optimizeSpeed}
+.keyseq{color:rgba(51,51,51,.8)}
+kbd{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;display:inline-block;color:rgba(0,0,0,.8);font-size:.65em;line-height:1.45;background-color:#f7f7f7;border:1px solid #ccc;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em white inset;box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em #fff inset;margin:0 .15em;padding:.2em .5em;vertical-align:middle;position:relative;top:-.1em;white-space:nowrap}
+.keyseq kbd:first-child{margin-left:0}
+.keyseq kbd:last-child{margin-right:0}
+.menuseq,.menu{color:rgba(0,0,0,.8)}
+b.button:before,b.button:after{position:relative;top:-1px;font-weight:400}
+b.button:before{content:"[";padding:0 3px 0 2px}
+b.button:after{content:"]";padding:0 2px 0 3px}
+p a>code:hover{color:rgba(0,0,0,.9)}
+#header,#content,#footnotes,#footer{width:100%;margin-left:auto;margin-right:auto;margin-top:0;margin-bottom:0;max-width:62.5em;*zoom:1;position:relative;padding-left:.9375em;padding-right:.9375em}
+#header:before,#header:after,#content:before,#content:after,#footnotes:before,#footnotes:after,#footer:before,#footer:after{content:" ";display:table}
+#header:after,#content:after,#footnotes:after,#footer:after{clear:both}
+#content{margin-top:1.25em}
+#content:before{content:none}
+#header>h1:first-child{color:rgba(0,0,0,.85);margin-top:2.25rem;margin-bottom:0}
+#header>h1:first-child+#toc{margin-top:8px;border-top:1px solid #ddddd8}
+#header>h1:only-child,body.toc2 #header>h1:nth-last-child(2){border-bottom:1px solid #ddddd8;padding-bottom:8px}
+#header .details{border-bottom:1px solid #ddddd8;line-height:1.45;padding-top:.25em;padding-bottom:.25em;padding-left:.25em;color:rgba(0,0,0,.6);display:-ms-flexbox;display:-webkit-flex;display:flex;-ms-flex-flow:row wrap;-webkit-flex-flow:row wrap;flex-flow:row wrap}
+#header .details span:first-child{margin-left:-.125em}
+#header .details span.email a{color:rgba(0,0,0,.85)}
+#header .details br{display:none}
+#header .details br+span:before{content:"\00a0\2013\00a0"}
+#header .details br+span.author:before{content:"\00a0\22c5\00a0";color:rgba(0,0,0,.85)}
+#header .details br+span#revremark:before{content:"\00a0|\00a0"}
+#header #revnumber{text-transform:capitalize}
+#header #revnumber:after{content:"\00a0"}
+#content>h1:first-child:not([class]){color:rgba(0,0,0,.85);border-bottom:1px solid #ddddd8;padding-bottom:8px;margin-top:0;padding-top:1rem;margin-bottom:1.25rem}
+#toc{border-bottom:1px solid #efefed;padding-bottom:.5em}
+#toc>ul{margin-left:.125em}
+#toc ul.sectlevel0>li>a{font-style:italic}
+#toc ul.sectlevel0 ul.sectlevel1{margin:.5em 0}
+#toc ul{font-family:"Open Sans","DejaVu Sans",sans-serif;list-style-type:none}
+#toc li{line-height:1.3334;margin-top:.3334em}
+#toc a{text-decoration:none}
+#toc a:active{text-decoration:underline}
+#toctitle{color:#7a2518;font-size:1.2em}
+@media only screen and (min-width:768px){#toctitle{font-size:1.375em}
+body.toc2{padding-left:15em;padding-right:0}
+#toc.toc2{margin-top:0!important;background-color:#f8f8f7;position:fixed;width:15em;left:0;top:0;border-right:1px solid #efefed;border-top-width:0!important;border-bottom-width:0!important;z-index:1000;padding:1.25em 1em;height:100%;overflow:auto}
+#toc.toc2 #toctitle{margin-top:0;margin-bottom:.8rem;font-size:1.2em}
+#toc.toc2>ul{font-size:.9em;margin-bottom:0}
+#toc.toc2 ul ul{margin-left:0;padding-left:1em}
+#toc.toc2 ul.sectlevel0 ul.sectlevel1{padding-left:0;margin-top:.5em;margin-bottom:.5em}
+body.toc2.toc-right{padding-left:0;padding-right:15em}
+body.toc2.toc-right #toc.toc2{border-right-width:0;border-left:1px solid #efefed;left:auto;right:0}}
+@media only screen and (min-width:1280px){body.toc2{padding-left:20em;padding-right:0}
+#toc.toc2{width:20em}
+#toc.toc2 #toctitle{font-size:1.375em}
+#toc.toc2>ul{font-size:.95em}
+#toc.toc2 ul ul{padding-left:1.25em}
+body.toc2.toc-right{padding-left:0;padding-right:20em}}
+#content #toc{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+#content #toc>:first-child{margin-top:0}
+#content #toc>:last-child{margin-bottom:0}
+#footer{max-width:100%;background-color:rgba(0,0,0,.8);padding:1.25em}
+#footer-text{color:rgba(255,255,255,.8);line-height:1.44}
+.sect1{padding-bottom:.625em}
+@media only screen and (min-width:768px){.sect1{padding-bottom:1.25em}}
+.sect1+.sect1{border-top:1px solid #efefed}
+#content h1>a.anchor,h2>a.anchor,h3>a.anchor,#toctitle>a.anchor,.sidebarblock>.content>.title>a.anchor,h4>a.anchor,h5>a.anchor,h6>a.anchor{position:absolute;z-index:1001;width:1.5ex;margin-left:-1.5ex;display:block;text-decoration:none!important;visibility:hidden;text-align:center;font-weight:400}
+#content h1>a.anchor:before,h2>a.anchor:before,h3>a.anchor:before,#toctitle>a.anchor:before,.sidebarblock>.content>.title>a.anchor:before,h4>a.anchor:before,h5>a.anchor:before,h6>a.anchor:before{content:"\00A7";font-size:.85em;display:block;padding-top:.1em}
+#content h1:hover>a.anchor,#content h1>a.anchor:hover,h2:hover>a.anchor,h2>a.anchor:hover,h3:hover>a.anchor,#toctitle:hover>a.anchor,.sidebarblock>.content>.title:hover>a.anchor,h3>a.anchor:hover,#toctitle>a.anchor:hover,.sidebarblock>.content>.title>a.anchor:hover,h4:hover>a.anchor,h4>a.anchor:hover,h5:hover>a.anchor,h5>a.anchor:hover,h6:hover>a.anchor,h6>a.anchor:hover{visibility:visible}
+#content h1>a.link,h2>a.link,h3>a.link,#toctitle>a.link,.sidebarblock>.content>.title>a.link,h4>a.link,h5>a.link,h6>a.link{color:#ba3925;text-decoration:none}
+#content h1>a.link:hover,h2>a.link:hover,h3>a.link:hover,#toctitle>a.link:hover,.sidebarblock>.content>.title>a.link:hover,h4>a.link:hover,h5>a.link:hover,h6>a.link:hover{color:#a53221}
+.audioblock,.imageblock,.literalblock,.listingblock,.stemblock,.videoblock{margin-bottom:1.25em}
+.admonitionblock td.content>.title,.audioblock>.title,.exampleblock>.title,.imageblock>.title,.listingblock>.title,.literalblock>.title,.stemblock>.title,.openblock>.title,.paragraph>.title,.quoteblock>.title,table.tableblock>.title,.verseblock>.title,.videoblock>.title,.dlist>.title,.olist>.title,.ulist>.title,.qlist>.title,.hdlist>.title{text-rendering:optimizeLegibility;text-align:left;font-family:"Noto Serif","DejaVu Serif",serif;font-size:1rem;font-style:italic}
+table.tableblock>caption.title{white-space:nowrap;overflow:visible;max-width:0}
+.paragraph.lead>p,#preamble>.sectionbody>.paragraph:first-of-type p{color:rgba(0,0,0,.85)}
+table.tableblock #preamble>.sectionbody>.paragraph:first-of-type p{font-size:inherit}
+.admonitionblock>table{border-collapse:separate;border:0;background:none;width:100%}
+.admonitionblock>table td.icon{text-align:center;width:80px}
+.admonitionblock>table td.icon img{max-width:none}
+.admonitionblock>table td.icon .title{font-weight:bold;font-family:"Open Sans","DejaVu Sans",sans-serif;text-transform:uppercase}
+.admonitionblock>table td.content{padding-left:1.125em;padding-right:1.25em;border-left:1px solid #ddddd8;color:rgba(0,0,0,.6)}
+.admonitionblock>table td.content>:last-child>:last-child{margin-bottom:0}
+.exampleblock>.content{border-style:solid;border-width:1px;border-color:#e6e6e6;margin-bottom:1.25em;padding:1.25em;background:#fff;-webkit-border-radius:4px;border-radius:4px}
+.exampleblock>.content>:first-child{margin-top:0}
+.exampleblock>.content>:last-child{margin-bottom:0}
+.sidebarblock{border-style:solid;border-width:1px;border-color:#e0e0dc;margin-bottom:1.25em;padding:1.25em;background:#f8f8f7;-webkit-border-radius:4px;border-radius:4px}
+.sidebarblock>:first-child{margin-top:0}
+.sidebarblock>:last-child{margin-bottom:0}
+.sidebarblock>.content>.title{color:#7a2518;margin-top:0;text-align:center}
+.exampleblock>.content>:last-child>:last-child,.exampleblock>.content .olist>ol>li:last-child>:last-child,.exampleblock>.content .ulist>ul>li:last-child>:last-child,.exampleblock>.content .qlist>ol>li:last-child>:last-child,.sidebarblock>.content>:last-child>:last-child,.sidebarblock>.content .olist>ol>li:last-child>:last-child,.sidebarblock>.content .ulist>ul>li:last-child>:last-child,.sidebarblock>.content .qlist>ol>li:last-child>:last-child{margin-bottom:0}
+.literalblock pre,.listingblock pre:not(.highlight),.listingblock pre[class="highlight"],.listingblock pre[class^="highlight "],.listingblock pre.CodeRay,.listingblock pre.prettyprint{background:#f7f7f8}
+.sidebarblock .literalblock pre,.sidebarblock .listingblock pre:not(.highlight),.sidebarblock .listingblock pre[class="highlight"],.sidebarblock .listingblock pre[class^="highlight "],.sidebarblock .listingblock pre.CodeRay,.sidebarblock .listingblock pre.prettyprint{background:#f2f1f1}
+.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{-webkit-border-radius:4px;border-radius:4px;word-wrap:break-word;padding:1em;font-size:.8125em}
+.literalblock pre.nowrap,.literalblock pre[class].nowrap,.listingblock pre.nowrap,.listingblock pre[class].nowrap{overflow-x:auto;white-space:pre;word-wrap:normal}
+@media only screen and (min-width:768px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:.90625em}}
+@media only screen and (min-width:1280px){.literalblock pre,.literalblock pre[class],.listingblock pre,.listingblock pre[class]{font-size:1em}}
+.literalblock.output pre{color:#f7f7f8;background-color:rgba(0,0,0,.9)}
+.listingblock pre.highlightjs{padding:0}
+.listingblock pre.highlightjs>code{padding:1em;-webkit-border-radius:4px;border-radius:4px}
+.listingblock pre.prettyprint{border-width:0}
+.listingblock>.content{position:relative}
+.listingblock code[data-lang]:before{display:none;content:attr(data-lang);position:absolute;font-size:.75em;top:.425rem;right:.5rem;line-height:1;text-transform:uppercase;color:#999}
+.listingblock:hover code[data-lang]:before{display:block}
+.listingblock.terminal pre .command:before{content:attr(data-prompt);padding-right:.5em;color:#999}
+.listingblock.terminal pre .command:not([data-prompt]):before{content:"$"}
+table.pyhltable{border-collapse:separate;border:0;margin-bottom:0;background:none}
+table.pyhltable td{vertical-align:top;padding-top:0;padding-bottom:0;line-height:1.45}
+table.pyhltable td.code{padding-left:.75em;padding-right:0}
+pre.pygments .lineno,table.pyhltable td:not(.code){color:#999;padding-left:0;padding-right:.5em;border-right:1px solid #ddddd8}
+pre.pygments .lineno{display:inline-block;margin-right:.25em}
+table.pyhltable .linenodiv{background:none!important;padding-right:0!important}
+.quoteblock{margin:0 1em 1.25em 1.5em;display:table}
+.quoteblock>.title{margin-left:-1.5em;margin-bottom:.75em}
+.quoteblock blockquote,.quoteblock blockquote p{color:rgba(0,0,0,.85);font-size:1.15rem;line-height:1.75;word-spacing:.1em;letter-spacing:0;font-style:italic;text-align:justify}
+.quoteblock blockquote{margin:0;padding:0;border:0}
+.quoteblock blockquote:before{content:"\201c";float:left;font-size:2.75em;font-weight:bold;line-height:.6em;margin-left:-.6em;color:#7a2518;text-shadow:0 1px 2px rgba(0,0,0,.1)}
+.quoteblock blockquote>.paragraph:last-child p{margin-bottom:0}
+.quoteblock .attribution{margin-top:.5em;margin-right:.5ex;text-align:right}
+.quoteblock .quoteblock{margin-left:0;margin-right:0;padding:.5em 0;border-left:3px solid rgba(0,0,0,.6)}
+.quoteblock .quoteblock blockquote{padding:0 0 0 .75em}
+.quoteblock .quoteblock blockquote:before{display:none}
+.verseblock{margin:0 1em 1.25em 1em}
+.verseblock pre{font-family:"Open Sans","DejaVu Sans",sans;font-size:1.15rem;color:rgba(0,0,0,.85);font-weight:300;text-rendering:optimizeLegibility}
+.verseblock pre strong{font-weight:400}
+.verseblock .attribution{margin-top:1.25rem;margin-left:.5ex}
+.quoteblock .attribution,.verseblock .attribution{font-size:.9375em;line-height:1.45;font-style:italic}
+.quoteblock .attribution br,.verseblock .attribution br{display:none}
+.quoteblock .attribution cite,.verseblock .attribution cite{display:block;letter-spacing:-.025em;color:rgba(0,0,0,.6)}
+.quoteblock.abstract{margin:0 0 1.25em 0;display:block}
+.quoteblock.abstract blockquote,.quoteblock.abstract blockquote p{text-align:left;word-spacing:0}
+.quoteblock.abstract blockquote:before,.quoteblock.abstract blockquote p:first-of-type:before{display:none}
+table.tableblock{max-width:100%;border-collapse:separate}
+table.tableblock td>.paragraph:last-child p>p:last-child,table.tableblock th>p:last-child,table.tableblock td>p:last-child{margin-bottom:0}
+table.tableblock,th.tableblock,td.tableblock{border:0 solid #dedede}
+table.grid-all th.tableblock,table.grid-all td.tableblock{border-width:0 1px 1px 0}
+table.grid-all tfoot>tr>th.tableblock,table.grid-all tfoot>tr>td.tableblock{border-width:1px 1px 0 0}
+table.grid-cols th.tableblock,table.grid-cols td.tableblock{border-width:0 1px 0 0}
+table.grid-all *>tr>.tableblock:last-child,table.grid-cols *>tr>.tableblock:last-child{border-right-width:0}
+table.grid-rows th.tableblock,table.grid-rows td.tableblock{border-width:0 0 1px 0}
+table.grid-all tbody>tr:last-child>th.tableblock,table.grid-all tbody>tr:last-child>td.tableblock,table.grid-all thead:last-child>tr>th.tableblock,table.grid-rows tbody>tr:last-child>th.tableblock,table.grid-rows tbody>tr:last-child>td.tableblock,table.grid-rows thead:last-child>tr>th.tableblock{border-bottom-width:0}
+table.grid-rows tfoot>tr>th.tableblock,table.grid-rows tfoot>tr>td.tableblock{border-width:1px 0 0 0}
+table.frame-all{border-width:1px}
+table.frame-sides{border-width:0 1px}
+table.frame-topbot{border-width:1px 0}
+th.halign-left,td.halign-left{text-align:left}
+th.halign-right,td.halign-right{text-align:right}
+th.halign-center,td.halign-center{text-align:center}
+th.valign-top,td.valign-top{vertical-align:top}
+th.valign-bottom,td.valign-bottom{vertical-align:bottom}
+th.valign-middle,td.valign-middle{vertical-align:middle}
+table thead th,table tfoot th{font-weight:bold}
+tbody tr th{display:table-cell;line-height:1.6;background:#f7f8f7}
+tbody tr th,tbody tr th p,tfoot tr th,tfoot tr th p{color:rgba(0,0,0,.8);font-weight:bold}
+p.tableblock>code:only-child{background:none;padding:0}
+p.tableblock{font-size:1em}
+td>div.verse{white-space:pre}
+ol{margin-left:1.75em}
+ul li ol{margin-left:1.5em}
+dl dd{margin-left:1.125em}
+dl dd:last-child,dl dd:last-child>:last-child{margin-bottom:0}
+ol>li p,ul>li p,ul dd,ol dd,.olist .olist,.ulist .ulist,.ulist .olist,.olist .ulist{margin-bottom:.625em}
+ul.unstyled,ol.unnumbered,ul.checklist,ul.none{list-style-type:none}
+ul.unstyled,ol.unnumbered,ul.checklist{margin-left:.625em}
+ul.checklist li>p:first-child>.fa-square-o:first-child,ul.checklist li>p:first-child>.fa-check-square-o:first-child{width:1em;font-size:.85em}
+ul.checklist li>p:first-child>input[type="checkbox"]:first-child{width:1em;position:relative;top:1px}
+ul.inline{margin:0 auto .625em auto;margin-left:-1.375em;margin-right:0;padding:0;list-style:none;overflow:hidden}
+ul.inline>li{list-style:none;float:left;margin-left:1.375em;display:block}
+ul.inline>li>*{display:block}
+.unstyled dl dt{font-weight:400;font-style:normal}
+ol.arabic{list-style-type:decimal}
+ol.decimal{list-style-type:decimal-leading-zero}
+ol.loweralpha{list-style-type:lower-alpha}
+ol.upperalpha{list-style-type:upper-alpha}
+ol.lowerroman{list-style-type:lower-roman}
+ol.upperroman{list-style-type:upper-roman}
+ol.lowergreek{list-style-type:lower-greek}
+.hdlist>table,.colist>table{border:0;background:none}
+.hdlist>table>tbody>tr,.colist>table>tbody>tr{background:none}
+td.hdlist1,td.hdlist2{vertical-align:top;padding:0 .625em}
+td.hdlist1{font-weight:bold;padding-bottom:1.25em}
+.literalblock+.colist,.listingblock+.colist{margin-top:-.5em}
+.colist>table tr>td:first-of-type{padding:0 .75em;line-height:1}
+.colist>table tr>td:last-of-type{padding:.25em 0}
+.thumb,.th{line-height:0;display:inline-block;border:solid 4px #fff;-webkit-box-shadow:0 0 0 1px #ddd;box-shadow:0 0 0 1px #ddd}
+.imageblock.left,.imageblock[style*="float: left"]{margin:.25em .625em 1.25em 0}
+.imageblock.right,.imageblock[style*="float: right"]{margin:.25em 0 1.25em .625em}
+.imageblock>.title{margin-bottom:0}
+.imageblock.thumb,.imageblock.th{border-width:6px}
+.imageblock.thumb>.title,.imageblock.th>.title{padding:0 .125em}
+.image.left,.image.right{margin-top:.25em;margin-bottom:.25em;display:inline-block;line-height:0}
+.image.left{margin-right:.625em}
+.image.right{margin-left:.625em}
+a.image{text-decoration:none;display:inline-block}
+a.image object{pointer-events:none}
+sup.footnote,sup.footnoteref{font-size:.875em;position:static;vertical-align:super}
+sup.footnote a,sup.footnoteref a{text-decoration:none}
+sup.footnote a:active,sup.footnoteref a:active{text-decoration:underline}
+#footnotes{padding-top:.75em;padding-bottom:.75em;margin-bottom:.625em}
+#footnotes hr{width:20%;min-width:6.25em;margin:-.25em 0 .75em 0;border-width:1px 0 0 0}
+#footnotes .footnote{padding:0 .375em 0 .225em;line-height:1.3334;font-size:.875em;margin-left:1.2em;text-indent:-1.05em;margin-bottom:.2em}
+#footnotes .footnote a:first-of-type{font-weight:bold;text-decoration:none}
+#footnotes .footnote:last-of-type{margin-bottom:0}
+#content #footnotes{margin-top:-.625em;margin-bottom:0;padding:.75em 0}
+.gist .file-data>table{border:0;background:#fff;width:100%;margin-bottom:0}
+.gist .file-data>table td.line-data{width:99%}
+div.unbreakable{page-break-inside:avoid}
+.big{font-size:larger}
+.small{font-size:smaller}
+.underline{text-decoration:underline}
+.overline{text-decoration:overline}
+.line-through{text-decoration:line-through}
+.aqua{color:#00bfbf}
+.aqua-background{background-color:#00fafa}
+.black{color:#000}
+.black-background{background-color:#000}
+.blue{color:#0000bf}
+.blue-background{background-color:#0000fa}
+.fuchsia{color:#bf00bf}
+.fuchsia-background{background-color:#fa00fa}
+.gray{color:#606060}
+.gray-background{background-color:#7d7d7d}
+.green{color:#006000}
+.green-background{background-color:#007d00}
+.lime{color:#00bf00}
+.lime-background{background-color:#00fa00}
+.maroon{color:#600000}
+.maroon-background{background-color:#7d0000}
+.navy{color:#000060}
+.navy-background{background-color:#00007d}
+.olive{color:#606000}
+.olive-background{background-color:#7d7d00}
+.purple{color:#600060}
+.purple-background{background-color:#7d007d}
+.red{color:#bf0000}
+.red-background{background-color:#fa0000}
+.silver{color:#909090}
+.silver-background{background-color:#bcbcbc}
+.teal{color:#006060}
+.teal-background{background-color:#007d7d}
+.white{color:#bfbfbf}
+.white-background{background-color:#fafafa}
+.yellow{color:#bfbf00}
+.yellow-background{background-color:#fafa00}
+span.icon>.fa{cursor:default}
+.admonitionblock td.icon [class^="fa icon-"]{font-size:2.5em;text-shadow:1px 1px 2px rgba(0,0,0,.5);cursor:default}
+.admonitionblock td.icon .icon-note:before{content:"\f05a";color:#19407c}
+.admonitionblock td.icon .icon-tip:before{content:"\f0eb";text-shadow:1px 1px 2px rgba(155,155,0,.8);color:#111}
+.admonitionblock td.icon .icon-warning:before{content:"\f071";color:#bf6900}
+.admonitionblock td.icon .icon-caution:before{content:"\f06d";color:#bf3400}
+.admonitionblock td.icon .icon-important:before{content:"\f06a";color:#bf0000}
+.conum[data-value]{display:inline-block;color:#fff!important;background-color:rgba(0,0,0,.8);-webkit-border-radius:100px;border-radius:100px;text-align:center;font-size:.75em;width:1.67em;height:1.67em;line-height:1.67em;font-family:"Open Sans","DejaVu Sans",sans-serif;font-style:normal;font-weight:bold}
+.conum[data-value] *{color:#fff!important}
+.conum[data-value]+b{display:none}
+.conum[data-value]:after{content:attr(data-value)}
+pre .conum[data-value]{position:relative;top:-.125em}
+b.conum *{color:inherit!important}
+.conum:not([data-value]):empty{display:none}
+dt,th.tableblock,td.content,div.footnote{text-rendering:optimizeLegibility}
+h1,h2,p,td.content,span.alt{letter-spacing:-.01em}
+p strong,td.content strong,div.footnote strong{letter-spacing:-.005em}
+p,blockquote,dt,td.content,span.alt{font-size:1.0625rem}
+p{margin-bottom:1.25rem}
+.sidebarblock p,.sidebarblock dt,.sidebarblock td.content,p.tableblock{font-size:1em}
+.exampleblock>.content{background-color:#fffef7;border-color:#e0e0dc;-webkit-box-shadow:0 1px 4px #e0e0dc;box-shadow:0 1px 4px #e0e0dc}
+.print-only{display:none!important}
+@media print{@page{margin:1.25cm .75cm}
+*{-webkit-box-shadow:none!important;box-shadow:none!important;text-shadow:none!important}
+a{color:inherit!important;text-decoration:underline!important}
+a.bare,a[href^="#"],a[href^="mailto:"]{text-decoration:none!important}
+a[href^="http:"]:not(.bare):after,a[href^="https:"]:not(.bare):after{content:"(" attr(href) ")";display:inline-block;font-size:.875em;padding-left:.25em}
+abbr[title]:after{content:" (" attr(title) ")"}
+pre,blockquote,tr,img,object,svg{page-break-inside:avoid}
+thead{display:table-header-group}
+svg{max-width:100%}
+p,blockquote,dt,td.content{font-size:1em;orphans:3;widows:3}
+h2,h3,#toctitle,.sidebarblock>.content>.title{page-break-after:avoid}
+#toc,.sidebarblock,.exampleblock>.content{background:none!important}
+#toc{border-bottom:1px solid #ddddd8!important;padding-bottom:0!important}
+.sect1{padding-bottom:0!important}
+.sect1+.sect1{border:0!important}
+#header>h1:first-child{margin-top:1.25rem}
+body.book #header{text-align:center}
+body.book #header>h1:first-child{border:0!important;margin:2.5em 0 1em 0}
+body.book #header .details{border:0!important;display:block;padding:0!important}
+body.book #header .details span:first-child{margin-left:0!important}
+body.book #header .details br{display:block}
+body.book #header .details br+span:before{content:none!important}
+body.book #toc{border:0!important;text-align:left!important;padding:0!important;margin:0!important}
+body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-break-before:always}
+.listingblock code[data-lang]:before{display:block}
+#footer{background:none!important;padding:0 .9375em}
+#footer-text{color:rgba(0,0,0,.6)!important;font-size:.9em}
+.hide-on-print{display:none!important}
+.print-only{display:block!important}
+.hide-for-print{display:none!important}
+.show-for-print{display:inherit!important}}
+</style>
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>CLplusplus documentation</h1>
+<div class="details">
+<span id="author" class="author">Hadrien Grasland</span><br>
+<span id="email" class="email"><a href="mailto:hadrien.grasland@gmail.com">hadrien.grasland@gmail.com</a></span><br>
+<span id="revnumber">version 1.2.0pre,</span>
+<span id="revdate">YYYY-MM-DD, First OpenCL 1.2 compatible release</span>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_introduction">Introduction</a>
+<ul class="sectlevel2">
+<li><a href="#_rationale">Rationale</a></li>
+<li><a href="#_opencl_support_status">OpenCL support status</a></li>
+</ul>
+</li>
+<li><a href="#_getting_started">Getting started</a>
+<ul class="sectlevel2">
+<li><a href="#_building_clplusplus">Building CLplusplus</a></li>
+<li><a href="#_running_the_examples">Running the examples</a></li>
+</ul>
+</li>
+<li><a href="#_api_description">API description</a>
+<ul class="sectlevel2">
+<li><a href="#_architecture">Architecture</a>
+<ul class="sectlevel3">
+<li><a href="#_design_principles">Design principles</a></li>
+<li><a href="#_wrapping_opencl_handles">Wrapping OpenCL handles</a></li>
+<li><a href="#_property_lists">Property lists</a></li>
+</ul>
+</li>
+<li><a href="#_platform_layer">Platform layer</a>
+<ul class="sectlevel3">
+<li><a href="#_purpose">Purpose</a></li>
+<li><a href="#_accessing_platforms">Accessing platforms</a></li>
+<li><a href="#_platform_objects">Platform objects</a></li>
+<li><a href="#_device_objects">Device objects</a></li>
+<li><a href="#_contexts">Contexts</a></li>
+</ul>
+</li>
+<li><a href="#_runtime_layer">Runtime layer</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_introduction">Introduction</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_rationale">Rationale</h3>
+<div class="paragraph">
+<p>OpenCL is a parallel programming API based on the paradigm of data parallelism, which uses a heterogeneous and relaxed memory model. It is designed to allow the creation of software which is easily portable across a large spectrum of parallel programmable hardware, including:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Multi-core CPUs (from the regular SMP variety to more exotic variations like IBM&#8217;s CELL)</p>
+</li>
+<li>
+<p>SIMD vector processing units</p>
+</li>
+<li>
+<p>Graphical processing units</p>
+</li>
+<li>
+<p>Field-programmable gate arrays</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For portability reasons, the OpenCL API provides a C interface, in spite of using an object-oriented design. This makes it particularly awkward to use from more modern programming environments, such are C++, where the cumbersome and error-prone interface brought about by the limitations of C feels unnecessarily complex. For this reason, in typical scenarios where the overhead of individual API calls are not a concern, it is desirable to use the API indirectly through a higher-level binding, which makes full use of the host language&#8217;s features to provide greatly improved usability.</p>
+</div>
+<div class="paragraph">
+<p>OpenCL valiantly attempts to address these use cases for C++ by providing a standard C++ binding. However, concerns of portability to legacy compilers and minimalistic STL implementations made this a half-hearted attempt, which does not really make the most of the C++ feature set. In particular, the resulting binding fails to leverage modern C++ features such as lambdas or std::array where these would be appropriate, and instead propagates dangerous bad habits from the C API such as the use of zero-terminated arrays, whose harmful security and reliability impact have been long known.</p>
+</div>
+<div class="paragraph">
+<p>CLplusplus aims to be a more idiomatic C++ binding for OpenCL, which does not exhibit these shortcomings.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_opencl_support_status">OpenCL support status</h3>
+<div class="paragraph">
+<p>CLplusplus currently targets OpenCL 1.2, as this is the best which its main developer&#8217;s hardware implementation will do.</p>
+</div>
+<div class="paragraph">
+<p>Platform layer is complete: one can query platforms and devices, create contexts, and query context properties.</p>
+</div>
+<div class="paragraph">
+<p>Runtime layer is coming next. With it, one will be able create command queues, submit commands, and in fact do everything which OpenCL allows on the host side.</p>
+</div>
+<div class="paragraph">
+<p>Extension support is, at the moment, a question mark. The main developer is most interested in extensions which add new features to OpenCL itself, rather than improving its interoperability with graphics APIs (which is limited to GPUs and, according to various web commenters, seems to be pretty broken in most implementations anyway).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_getting_started">Getting started</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_building_clplusplus">Building CLplusplus</h3>
+<div class="paragraph">
+<p>The only strict dependencies of CLplusplus are an OpenCL implementation and a C++ compiler that complies with the C++11 standard. Since OpenCL implementations tend to be highly hardware-specific and are usually provided by individual hardware manufacturers, it is impossible to provide general instructions on how to install one. One may only point out that in the specific case of NVidia GPUs, the OpenCL implementation is actually hidden inside of the software development kit for the competing CUDA technology, as part of this manufacturer&#8217;s unfortunate business strategy of favoring proprietary standards over fair technological competition.</p>
+</div>
+<div class="paragraph">
+<p>The recommended software development toolchain, by which is meant the one that is used for building and testing CLplusplus, is a combination of Linux, g++ and GNU Make. For users of this toolchain, the CLplusplus project provides a simple Makefile which automates the build process of all example code, reducing it to a mere</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ make</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Users of other development toolchains are invited to study the underlying Makefile and adapt it to their own build system and needs. Generally speaking, the Makefile that is provided is fairly basic, and overlooks issues such as the building of a shared library object and the separation of source files from headers. Third-party contributions of higher-quality Makefiles would be most definitely welcome.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_running_the_examples">Running the examples</h3>
+<div class="paragraph">
+<p>Once you have managed to build the CLplusplus example code, and by extension CLplusplus, you may want to run all of the examples and make sure that they either work, or shouldn&#8217;t work on your hardware implementation (this is the case, for example, when examples attempt to use OpenCL images on hardware which doesn&#8217;t support them).</p>
+</div>
+<div class="paragraph">
+<p>If you have the feeling that a CLplusplus example should work on your hardware configuration, but doesn&#8217;t, please make sure that your OpenCL implementation is working properly by testing your manufacturer&#8217;s own example code, then submit this as a bug in the CLplusplus bugtracker. It is a design goal of CLplusplus to be usable in any context where OpenCL and C++11 are.</p>
+</div>
+<div class="paragraph">
+<p>Once you have asserted that the examples run properly, you may want to study their source code in order to get a feel of the intended usage patterns of the CLplusplus API. For a more authoritative guide through the API&#8217;s features, however, please read on through the reminder of this documentation.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_api_description">API description</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_architecture">Architecture</h3>
+<div class="sect3">
+<h4 id="_design_principles">Design principles</h4>
+<div class="paragraph">
+<p>One core design tenet of CLplusplus is to stay as close to the OpenCL design as possible, without hesitating to fixing it when it breaks. There are several advantages to doing this:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The resulting design feels as familiar as possible to experienced OpenCL developers.</p>
+</li>
+<li>
+<p>Design experience from OpenCL is reused, reducing the odds of making a mistake.</p>
+</li>
+<li>
+<p>The abstraction layer is thinner, increasing its efficiency and reducing the odds of a wrapper bug.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Because the design of CLplusplus heavily mirrors that of OpenCL, readers of this documentation are assumed to be familiar with the OpenCL specification, and to understand its general design. The documentation will thus solely focus on the areas where CLplusplus differs from OpenCL, and concentrate on the wrapper&#8217;s interface rather than on the underlying concepts that it manipulates.</p>
+</div>
+<div class="paragraph">
+<p>Key areas where CLplusplus will generally deviate from the OpenCL design are as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>All CLplusplus constructs belong to the <code>CLplusplus</code> namespace, avoiding collisions with other libraries.</p>
+</li>
+<li>
+<p>All OpenCL objects are mapped to automatically reference-counted C++ classes.</p>
+</li>
+<li>
+<p>All OpenCL properties are mapped to identically named methods in the associated class for easy access.</p>
+</li>
+<li>
+<p>Many C-style type-unsafe enumerations and string constants are replaced with type-safe C++11 enum classes.</p>
+</li>
+<li>
+<p>C-style arrays and delimiter-separated strings are replaced with STL containers whenever these fit, and lightweight specialized objects elsewhere.</p>
+</li>
+<li>
+<p>The standard C++ <code>bool</code> type is used in place of <code>cl_bool</code> enumerations.</p>
+</li>
+<li>
+<p>Error codes and null pointer results are replaced with exceptions, preventing errors from going unnoticed.</p>
+</li>
+<li>
+<p>Platform and device selection is done using predicate functions, abstracting this laborious process away.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_wrapping_opencl_handles">Wrapping OpenCL handles</h4>
+<div class="paragraph">
+<p>Although a user who creates OpenCL objects solely through CLplusplus will never be exposed to this process, CLplusplus wrapper classes are constructed from raw OpenCL handles. Because the wrapper classes are automatically reference counted but the raw handles aren&#8217;t, special care is needed in this operation, in order to help the wrapper discriminate between two usage scenarios:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The responsibility for handling an OpenCL object is transferred to a CLplusplus class</p>
+</li>
+<li>
+<p>A new high-level accessor for an OpenCL object is created, but the original handle remains accessible</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In the former case, the reference count for the underlying OpenCL object should remain the same, whereas in the later case, it should be incremented. Discriminating between these usage scenarios is handled by a boolean parameter to the corresponding CLplusplus object constructors, called <code>increment_reference_count</code>.</p>
+</div>
+<div class="paragraph">
+<p>After wrapping an OpenCL object into a CLplusplus class, its raw C handle and properties remain readily accessible for compatibility with legacy and third-party OpenCL code, through "raw_"-prefixed methods. In particular, all CLplusplus classes possess a <code>raw_identifier()</code> method, which may be used to get back to the underlying raw OpenCL object ID for direct OpenCL usage.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Caution</div>
+</td>
+<td class="content">
+Extracting the raw OpenCL object ID of a CLplusplus object, then wrapping back that handle in a CLplusplus class, is a lossy operation that can cause obscure memory management problems. This should only be done in tightly controlled scenarios, by users who know very well what they are doing.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_property_lists">Property lists</h4>
+<div class="paragraph">
+<p>In various operations, including device partitioning and context creation, OpenCL expects property lists which present themselves as zero-terminated tuples whose elements may themselves be zero-terminated arrays, leading to a fairly unconventional zero-terminated data tree design.</p>
+</div>
+<div class="paragraph">
+<p>Now, to anyone familiar with the performance and security issues of C strings, it should be clear that zero-terminated data structures are fundamentally an inefficient and dangerous design, which only gained popularity due to C&#8217;s controversial design decision of equating pointers with arrays and should nowadays be considered deprecated. In a modern programming environment where container objects are aware of their own length, such data structures should never be needed, and communication with legacy API designs that use them should be restricted to carefully designed adapter classes which are entirely focused on filling and using these properly.</p>
+</div>
+<div class="paragraph">
+<p>CLplusplus thus makes the design choice of abstracting OpenCL property lists away behind a higher-level container abstraction, <code>CLplusplus::PropertyList</code>, which is located in <code>CLplusplus/property_list.hpp</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>PropertyList is a template types parametrized by an integer type, as OpenCL property lists may be built out of multiple integer property types.</p>
+</li>
+<li>
+<p>A PropertyList may either be created empty, or filled from a raw OpenCL property list.</p>
+</li>
+<li>
+<p>Appending a property to the list is done using the <code>void PropertyList::append()</code> overloaded method, which takes as a parameters a property name (such as <code>CL_DEVICE_PARTITION_EQUALLY</code>) and the desired property value.</p>
+</li>
+<li>
+<p>PropertyLists may be efficiently iterated through using range-based C++11 for loops:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Iteration provides <code>PropertyView</code> objects, which may be used to study the properties contained within the list</p>
+</li>
+<li>
+<p><code>PropertyView::name()</code> tells which properties is being described</p>
+</li>
+<li>
+<p><code>PropertyView::kind()</code> describes using a simple enum class whether the property being parsed is scalar (<code>PropertyTag::Scalar</code>) or vectorial (<code>PropertyTag::Vector</code>).</p>
+</li>
+<li>
+<p>Scalar property values may be accessed using <code>PropertyView::value()</code> or an <code>operator*</code> overload.</p>
+</li>
+<li>
+<p>Vector property values may be iterated through, and accessed like an STL vector.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>An OpenCL-compatible view of a <code>CLplusplus::PropertyList</code> may be generated using <code>const PropertyType * PropertyList::opencl_view()</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_platform_layer">Platform layer</h3>
+<div class="sect3">
+<h4 id="_purpose">Purpose</h4>
+<div class="paragraph">
+<p>The main purpose of the OpenCL platform layer is to help developpers identify accessible OpenCL devices at runtime, and query their properties in order to select the devices that are most appropriate for their needs, if any. These devices may then be grouped together in OpenCL contexts for the purpose of performing computations on them.</p>
+</div>
+<div class="paragraph">
+<p>Additionally, this layer allows developers to access platform- and device-specific functionality, such as OpenCL extensions, and to manipulate OpenCL devices by e.g. partitioning them into multiple sub-devices.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_accessing_platforms">Accessing platforms</h4>
+<div class="paragraph">
+<p>OpenCL platform access is provided in the header <code>CLplusplus/queries.hpp</code> through the following functions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>std::vector&lt;CLplusplus::Platform&gt; get_platforms()</code> provides a list of all OpenCL platforms which are available on a given system.</p>
+</li>
+<li>
+<p><code>std::vector&lt;CLplusplus::Platform&gt; get_filtered_platforms(const PlatformPredicate &amp; filter)</code> provides a list of all platforms which match a certain <em>platform predicate</em>.</p>
+</li>
+<li>
+<p><code>std::vector&lt;FilteredPlatform&gt; get_filtered_devices(const PlatformPredicate &amp; platform_filter, const DevicePredicate &amp; device_filter)</code> provides a list of all platforms which match a certain <em>platform predicate</em>, and for each of these platforms, a list of all devices which match a certain <em>device predicate</em>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a id="CLPP_PREDICATES"></a>The notion of platform and device predicates is specific to CLplusplus, so it is worth expanding upon. A platform predicate, as defined in <code>CLplusplus/platform.hpp</code>, is a function which takes as a parameter a platform object and returns a boolean stating whether that platform <em>matches</em> some criterion. Objects which do not match the predicate are left out of the results of <code>get_filtered_xyz()</code> functions. Predicates are thus a relatively simple and convenient way to select OpenCL platform which matches some requirements, that scale very well from simple selection criteria to very complex ones.</p>
+</div>
+<div class="paragraph">
+<p>Platform filtering works best when the predicates are implemented as C++11 lambda anonymous functions. Here is an example of a simple platform filter which matches all platforms offering support for OpenCL version 1.2 or greater:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>auto filtered_platforms = get_filtered_platforms(
+    [&amp;](const CLplusplus::Platform &amp; platform) -&gt; bool {
+        return (platform.version() &gt;= CLplusplus::version_1p2);
+    }
+);</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Device predicates offer comparable ability, but for selecting devices instead of platforms. Together, platform and device predicates allow one to easily set hardware requirements for OpenCL programs, solely consider devices which match these requirements, and abort the program early on if no suitable device is available.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_platform_objects">Platform objects</h4>
+<div class="sect4">
+<h5 id="_platform_properties">Platform properties</h5>
+<div class="paragraph">
+<p>Platform objects are defined in <code>CLplusplus/platform.hpp</code>. Given a platform object as returned by one of the platform access functions, one may easily access the standard OpenCL platform properties using identically named methods:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>CLplusplus::Profile profile()</code> describes which OpenCL profile the platform implements.</p>
+</li>
+<li>
+<p><code>CLplusplus::Version version()</code> describes which OpenCL version the platform implements.</p>
+</li>
+<li>
+<p><code>std::string name()</code> provides a string identifying the platform, such as "NVIDIA CUDA".</p>
+</li>
+<li>
+<p><code>std::string vendor()</code> provides a string identifying the platform vendor, such as "NVIDIA Corporation".</p>
+</li>
+<li>
+<p><code>CLplusplus::ExtensionList extensions()</code> describes which OpenCL extensions are supported.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Some of these functions return CLplusplus-specific objects which warrant further descriptions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a id="CLPP_PROFILE"></a><code>CLplusplus::Profile</code> is just an enum class defined in <code>CLplusplus/profile.h</code> which can currently take the values <code>Profile::Full</code> or <code>Profile::Embedded</code>. An enum is used here as these are much more straightforward to probe, compare, and handle than strings, yet good enough for OpenCL profile identification. If an unexpected profile string is encountered, the exception <code>CLplusplus::UnsupportedProfileString</code> will be thrown.</p>
+</li>
+<li>
+<p><a id="CLPP_VERSION"></a><code>CLplusplus::Version</code> is a struct decomposing OpenCL versioning information (minor, major, and vendor-specific info), and featuring a <code>&gt;=</code> operator overload for easy compatibility checks. The constant <code>CLplusplus::version_1p2</code> corresponds to OpenCL version 1.2.</p>
+</li>
+<li>
+<p><a id="CLPP_EXTENSION_LIST"></a><code>CLplusplus::ExtensionList</code> is basically an lightweight wrapper around an std::vector of extensions, featuring the method <code>bool contains(const std::vector&lt;std::string&gt; &amp; extensions)</code> which allows to efficiently check if a platform or device supports a given set of extensions. Raw access to the underlying extension vector are provided through an <code>operator*</code> overload.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_device_enumeration">Device enumeration</h5>
+<div class="paragraph">
+<p>Given a platform object, one may enumerate the OpenCL devices which it supports, filtering these in two different ways:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Using OpenCL device types, such as <code>CL_DEVICE_TYPE_GPU</code> or <code>CL_DEVICE_TYPE_ACCELERATOR</code>. These are natively supported by the OpenCL implementation, and thus expected to be extremely efficient. But they are pretty ambiguous and limited in scope. Their use is not recommended, and solely supported for OpenCL compatibility.</p>
+</li>
+<li>
+<p>Using device predicates, as presented <a href="#CLPP_PREDICATES">above</a>. This kind of filtering is internally performed by CLplusplus, but provides a fully general device filter which can select devices according to any requirement, including for example minimal memory capacity or image support. It is thus the recommended device filtering mechanism.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Accessing devices is concretely done using the following two platform object methods:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>std::vector&lt;CLplusplus::Device&gt; devices(const cl_device_type dev_type = CL_DEVICE_TYPE_ALL)</code> solely performs OpenCL device type filtering, bypassing it by default to produce the full device list for a platform.</p>
+</li>
+<li>
+<p><code>std::vector&lt;CLplusplus::Device&gt; filtered_devices(const DevicePredicate &amp; filter, const cl_device_type dev_type = CL_DEVICE_TYPE_ALL)</code> performs both device type and predicate-based filtering.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_compiler_unload_hint">Compiler unload hint</h5>
+<div class="paragraph">
+<p>An OpenCL implementation features a compiler for the OpenCL C language, which may in some usage scenarios use an unacceptably large amount of system resources during data processing.</p>
+</div>
+<div class="paragraph">
+<p>In this situation, one may provide the OpenCL platform with a hint that the OpenCL C compiler will not be used anymore and may safely be unloaded, by calling the <code>unload_compiler()</code> platform object method.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_extension_function_access">Extension function access</h5>
+<div class="paragraph">
+<p>To access OpenCL extensions which are not yet supported by CLplusplus, after checking that they are supported by the OpenCL platforms and devices that are going to be used, one may ask for a function pointer to the relevant OpenCL extension functions.</p>
+</div>
+<div class="paragraph">
+<p>This is done by calling the <code>void * raw_extension_function_address(const std::string &amp; funcname)</code> platform object method, and casting the result to the appropriate function pointer type.</p>
+</div>
+<div class="paragraph">
+<p><code>raw_extension_function_address</code> internally checks that the extension function query went well, and throws <code>CLplusplus::NonexistentExtensionFunction</code> if it doesn&#8217;t. The resulting function pointer is thus guaranteed to be valid, although the associated extension function may not be supported by all OpenCL devices on a given platform.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_device_objects">Device objects</h4>
+<div class="sect4">
+<h5 id="_device_properties">Device properties</h5>
+<div class="paragraph">
+<p>Like platform properties, device properties may be accessed using methods of the <code>CLplusplus::Device</code> class, which rigorously follow the OpenCL property naming conventions in the sense that for (almost) every <code>CL_DEVICE_XYZ</code> value of cl_device_info, there is an associated <code>xyz()</code> accessor method in <code>CLplusplus::Device</code>.</p>
+</div>
+<div class="paragraph">
+<p>Due to the sheer number of device properties which can be queried using OpenCL, whose semantics correspond to roughly 15 pages of the OpenCL 1.2 specification, it would not be reasonable to enumerate all of these here. This documentation will thus solely focus on the area where CLplusplus device property semantics differ from that of the original device property which they are mapping.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>max_work_item_sizes()</code> returns an STL vector instead of filling a C array.</p>
+</li>
+<li>
+<p>All boolean properties return standard C++ <code>bool</code> values instead of cl_bool enums.</p>
+</li>
+<li>
+<p><code>built_in_kernels()</code> returns an STL vector of kernel names instead of filling a semicolon-separated C string.</p>
+</li>
+<li>
+<p><code>name()</code> and <code>vendor()</code> return STL strings instead of filling C strings.</p>
+</li>
+<li>
+<p><code>driver_version()</code>, <code>version()</code> and <code>opencl_c_version()</code> use the <a href="#CLPP_VERSION"><code>CLplusplus::Version</code></a> structure.</p>
+</li>
+<li>
+<p><code>profile()</code> uses <a href="#CLPP_PROFILE"><code>CLplusplus::Profile</code></a>, and <code>extensions()</code> uses <a href="#CLPP_EXTENSION_LIST"><code>CLplusplus::ExtensionList</code></a>.</p>
+</li>
+<li>
+<p><code>parent_device()</code> returns a <code>CLplusplus::Device</code> object instead of a raw <code>cl_device</code> handle.</p>
+</li>
+<li>
+<p>An extra <code>supports_partitioning()</code> boolean helper property tells whether the device may be partitioned.</p>
+</li>
+<li>
+<p><code>partition_properties()</code> returns an STL vector of partition types instead of filling a C array.</p>
+</li>
+<li>
+<p><code>partition_type()</code> returns a <a href="#_property_lists"><code>CLplusplus::PropertyList</code></a> instead of a raw OpenCL property list.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_partitioning_a_device">Partitioning a device</h5>
+<div class="paragraph">
+<p>Some OpenCL devices may be partitioned into subdevices, allowing for example for one quad-core CPU to be manipulated as four single-core CPUs or two dual-core CPUs by OpenCL programs. In CLplusplus, this is indicated by the <code>supports_partitioning()</code> property of a device object.</p>
+</div>
+<div class="paragraph">
+<p>In CLplusplus, partitioning a device is done by calling the <code>std::vector&lt;Device&gt; create_sub_devices(PartitionProperties &amp; properties)</code> method of the device object to be partitioned.</p>
+</div>
+<div class="paragraph">
+<p>The partitioning scheme is selected using a single-element <a href="#_property_lists">property list</a>, featuring one of the following properties:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>CL_DEVICE_PARTITION_EQUALLY</code> is a scalar property whose value n corresponds to the amount of compute units that should be featured in each subdevice.</p>
+</li>
+<li>
+<p><code>CL_DEVICE_PARTITION_BY_COUNTS</code> is a vector property whose elements describe how many compute units should be featured in each subdevice.</p>
+</li>
+<li>
+<p><code>CL_DEVICE_PARTITION_BY_AFFINITY_DOMAIN</code> is a scalar property commanding that the device be partitioned according to the source device&#8217;s cache hierarchy:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If set to <code>CL_DEVICE_AFFINITY_DOMAIN_NUMA</code>, each subdevice will share a NUMA node.</p>
+</li>
+<li>
+<p>If set to <code>CL_DEVICE_AFFINITY_DOMAIN_Ln_CACHE</code>, where n is an integer, each subdevice will share a level-n cache</p>
+</li>
+<li>
+<p>If set to <code>CL_DEVICE_AFFINITY_DOMAIN_NEXT_PARTITIONABLE</code>, subdevices will be creating by following the next available caching hierarchy level.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If successful, <code>create_sub_devices</code> will return an array of Device objects which may be used to control the resuling OpenCL sub-devices.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_contexts">Contexts</h4>
+<div class="sect4">
+<h5 id="_creating_a_context">Creating a context</h5>
+<div class="paragraph">
+<p>Contexts are at the center of OpenCL resource management. Spanning one or more OpenCL devices, they allow for the allocation of memory and synchronization resources, for the compilation of OpenCL C programs into kernels, and for the creation of command queues allowing one to send commands to devices. In CLplusplus, contexts are manipulated using the <code>CLplusplus::Context</code> class, which is defined in <code>CLplusplus/context.hpp</code>.</p>
+</div>
+<div class="paragraph">
+<p>In OpenCL, contexts may be created by manually specifying the list of devices which they encompass. As a convenience shortcut, OpenCL also supports creating a context featuring all devices matching a certain OpenCL device type. Finally, CLplusplus acknowledges the common case of creating an OpenCL context for the purpose of controlling one single device by also providing convenience shortcuts for this use cases.</p>
+</div>
+<div class="paragraph">
+<p>Another dimension to context creation is the possible specification of error callbacks, which are used by OpenCL implementations to report on some kind of errors which are not appropriately signaled by OpenCL API function return codes. OpenCL supports passing information to callbacks using a <code>void *</code> pointer, whereas the preferred way to implement complex callback behavior in CLplusplus is to use C++11 lambdas as callbacks.</p>
+</div>
+<div class="paragraph">
+<p>The end result is that to preserve OpenCL compatibility without hampering modern development practices, error callbacks with and without a <code>void *</code> parameter are both supported by CLplusplus, leading to a total of 6 context creation constructors:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Context(ContextProperties &amp; properties, const Device &amp; device, const ContextCallback &amp; callback = nullptr)</code> creates a context for interaction with one single device, with an optional pointer-less error callback.</p>
+</li>
+<li>
+<p><code>Context(ContextProperties &amp; properties, const Device &amp; device, const ContextCallbackWithUserData &amp; callback, void * const user_data)</code> does the same, but features user data as a callback parameter.</p>
+</li>
+<li>
+<p><code>Context(ContextProperties &amp; properties, const std::vector&lt;Device&gt; &amp; devices, const ContextCallback &amp; callback = nullptr)</code> creates a context spanning multiple devices, using pointer-less callbacks.</p>
+</li>
+<li>
+<p><code>Context(ContextProperties &amp; properties, const std::vector&lt;Device&gt; &amp; devices, const ContextCallbackWithUserData &amp; callback, void * const user_data)</code> does the same with a user data callback parameter.</p>
+</li>
+<li>
+<p><code>Context(ContextProperties &amp; properties, const cl_device_type device_type, const ContextCallback &amp; callback = nullptr)</code> creates a context spanning all OpenCL devices of a given type, with pointer-less callbacks.</p>
+</li>
+<li>
+<p><code>Context(ContextProperties &amp; properties, const cl_device_type device_type, const ContextCallbackWithUserData &amp; callback, void * const user_data)</code> does the same with a user data callback parameter.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Optional context properties are specified using a <a href="#_property_lists">property list</a>, whose contents may be filled exactly as one would expect by looking at the OpenCL specification.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_context_properties">Context properties</h5>
+<div class="paragraph">
+<p>CLplusplus context objects provide the following properties:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>cl_uint num_devices()</code> tells how many OpenCL devices are attached to the context.</p>
+</li>
+<li>
+<p><code>std::vector&lt;CLplusplus::Device&gt; devices()</code> provides the list of said devices.</p>
+</li>
+<li>
+<p><code>ContextProperties properties()</code> basically retrieves back the <code>properties</code> argument to Context&#8217;s constructor, which is useful for clients which inherit contexts that they have not created themselves.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_runtime_layer">Runtime layer</h3>
+<div class="paragraph">
+<p>WIP</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Version 1.2.0pre<br>
+Last updated 2016-02-27 19:05:14 CET
+</div>
+</div>
+</body>
+</html>

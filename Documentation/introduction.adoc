@@ -1,0 +1,28 @@
+== Introduction
+
+=== Rationale
+
+OpenCL is a parallel programming API based on the paradigm of data parallelism, which uses a heterogeneous and relaxed memory model. It is designed to allow the creation of software which is easily portable across a large spectrum of parallel programmable hardware, including:
+
+* Multi-core CPUs (from the regular SMP variety to more exotic variations like IBM's CELL)
+* SIMD vector processing units
+* Graphical processing units
+* Field-programmable gate arrays
+
+For portability reasons, the OpenCL API provides a C interface, in spite of using an object-oriented design. This makes it particularly awkward to use from more modern programming environments, such are $$C++$$, where the cumbersome and error-prone interface brought about by the limitations of C feels unnecessarily complex. For this reason, in typical scenarios where the overhead of individual API calls are not a concern, it is desirable to use the API indirectly through a higher-level binding, which makes full use of the host language's features to provide greatly improved usability.
+
+OpenCL valiantly attempts to address these use cases for $$C++$$ by providing a standard $$C++$$ binding. However, concerns of portability to legacy compilers and minimalistic STL implementations made this a half-hearted attempt, which does not really make the most of the $$C++$$ feature set. In particular, the resulting binding fails to leverage modern $$C++$$ features such as lambdas or std::array where these would be appropriate, and instead propagates dangerous bad habits from the C API such as the use of zero-terminated arrays, whose harmful security and reliability impact have been long known.
+
+CLplusplus aims to be a more idiomatic $$C++$$ binding for OpenCL, which does not exhibit these shortcomings.
+
+
+=== OpenCL support status
+
+CLplusplus currently targets OpenCL 1.2, as this is the best which its main developer's hardware implementation will do.
+
+Platform layer is complete: one can query platforms and devices, create contexts, and query context properties.
+
+Runtime layer is coming next. With it, one will be able create command queues, submit commands, and in fact do everything which OpenCL allows on the host side.
+
+Extension support is, at the moment, a question mark. The main developer is most interested in extensions which add new features to OpenCL itself, rather than improving its interoperability with graphics APIs (which is limited to GPUs and, according to various web commenters, seems to be pretty broken in most implementations anyway).
+

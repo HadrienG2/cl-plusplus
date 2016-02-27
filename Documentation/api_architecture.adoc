@@ -1,0 +1,57 @@
+=== Architecture
+
+==== Design principles
+
+One core design tenet of CLplusplus is to stay as close to the OpenCL design as possible, without hesitating to fixing it when it breaks. There are several advantages to doing this:
+
+* The resulting design feels as familiar as possible to experienced OpenCL developers.
+* Design experience from OpenCL is reused, reducing the odds of making a mistake.
+* The abstraction layer is thinner, increasing its efficiency and reducing the odds of a wrapper bug.
+
+Because the design of CLplusplus heavily mirrors that of OpenCL, readers of this documentation are assumed to be familiar with the OpenCL specification, and to understand its general design. The documentation will thus solely focus on the areas where CLplusplus differs from OpenCL, and concentrate on the wrapper's interface rather than on the underlying concepts that it manipulates.
+
+Key areas where CLplusplus will generally deviate from the OpenCL design are as follows:
+
+* All CLplusplus constructs belong to the `CLplusplus` namespace, avoiding collisions with other libraries.
+* All OpenCL objects are mapped to automatically reference-counted $$C++$$ classes.
+* All OpenCL properties are mapped to identically named methods in the associated class for easy access.
+* Many C-style type-unsafe enumerations and string constants are replaced with type-safe $$C++11$$ enum classes.
+* C-style arrays and delimiter-separated strings are replaced with STL containers whenever these fit, and lightweight specialized objects elsewhere.
+* The standard $$C++$$ `bool` type is used in place of `cl_bool` enumerations.
+* Error codes and null pointer results are replaced with exceptions, preventing errors from going unnoticed.
+* Platform and device selection is done using predicate functions, abstracting this laborious process away.
+
+
+==== Wrapping OpenCL handles
+
+Although a user who creates OpenCL objects solely through CLplusplus will never be exposed to this process, CLplusplus wrapper classes are constructed from raw OpenCL handles. Because the wrapper classes are automatically reference counted but the raw handles aren't, special care is needed in this operation, in order to help the wrapper discriminate between two usage scenarios:
+
+* The responsibility for handling an OpenCL object is transferred to a CLplusplus class
+* A new high-level accessor for an OpenCL object is created, but the original handle remains accessible
+
+In the former case, the reference count for the underlying OpenCL object should remain the same, whereas in the later case, it should be incremented. Discriminating between these usage scenarios is handled by a boolean parameter to the corresponding CLplusplus object constructors, called `increment_reference_count`.
+
+After wrapping an OpenCL object into a CLplusplus class, its raw C handle and properties remain readily accessible for compatibility with legacy and third-party OpenCL code, through "raw_"-prefixed methods. In particular, all CLplusplus classes possess a `raw_identifier()` method, which may be used to get back to the underlying raw OpenCL object ID for direct OpenCL usage.
+
+CAUTION: Extracting the raw OpenCL object ID of a CLplusplus object, then wrapping back that handle in a CLplusplus class, is a lossy operation that can cause obscure memory management problems. This should only be done in tightly controlled scenarios, by users who know very well what they are doing.
+
+
+==== Property lists
+
+In various operations, including device partitioning and context creation, OpenCL expects property lists which present themselves as zero-terminated tuples whose elements may themselves be zero-terminated arrays, leading to a fairly unconventional zero-terminated data tree design.
+
+Now, to anyone familiar with the performance and security issues of C strings, it should be clear that zero-terminated data structures are fundamentally an inefficient and dangerous design, which only gained popularity due to C's controversial design decision of equating pointers with arrays and should nowadays be considered deprecated. In a modern programming environment where container objects are aware of their own length, such data structures should never be needed, and communication with legacy API designs that use them should be restricted to carefully designed adapter classes which are entirely focused on filling and using these properly.
+
+CLplusplus thus makes the design choice of abstracting OpenCL property lists away behind a higher-level container abstraction, `CLplusplus::PropertyList`, which is located in `CLplusplus/property_list.hpp`:
+
+* PropertyList is a template types parametrized by an integer type, as OpenCL property lists may be built out of multiple integer property types.
+* A PropertyList may either be created empty, or filled from a raw OpenCL property list.
+* Appending a property to the list is done using the `void PropertyList::append()` overloaded method, which takes as a parameters a property name (such as `CL_DEVICE_PARTITION_EQUALLY`) and the desired property value.
+* PropertyLists may be efficiently iterated through using range-based $$C++11$$ for loops:
+** Iteration provides `PropertyView` objects, which may be used to study the properties contained within the list
+** `PropertyView::name()` tells which properties is being described
+** `PropertyView::kind()` describes using a simple enum class whether the property being parsed is scalar (`PropertyTag::Scalar`) or vectorial (`PropertyTag::Vector`).
+** Scalar property values may be accessed using `PropertyView::value()` or an `operator*` overload.
+** Vector property values may be iterated through, and accessed like an STL vector.   
+* An OpenCL-compatible view of a `CLplusplus::PropertyList` may be generated using `const PropertyType * PropertyList::opencl_view()`.
+
