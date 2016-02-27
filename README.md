@@ -15,7 +15,7 @@ All that should be needed, besides a working OpenCL installation is a relatively
 
 A makefile is provided to automate the build process. It is not very pretty on the inside (.o files are scattered everywhere and modifying a single header rebuilds the entire project), but it gets the job done. If someone wishes to contribute a higher-quality makefile, with dependency tracking for example, that would be most welcome.
 
-Once you have confirmed that the examples applications are working, studying their code and the wrapper's headers, should give you a good feel of how the wrapper works. At the moment, I do not have better documentation available, but I will be sure to write some once the wrapper is feature-complete.
+Once you have confirmed that the examples applications are working, studying their code and the wrapper's headers, should give you a good feel of how the wrapper works. A first draft of higher-quality documentation is available in the Documentation sub-directory of the source tree.
 
 ## What are the current and targeted OpenCL support?
 At the moment (Nov. 2015) I am targeting OpenCL 1.2, because that is the best which my GPU vendor will accept to support, in an attempt to push forward its own competing proprietary technology.
