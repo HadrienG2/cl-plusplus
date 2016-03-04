@@ -15,13 +15,13 @@ Besides OpenCL, we now use CMake as our build system, and require CMake >= 3.1 a
     cmake ..
     make
 
-If the build succeeds, you can quickly check that the examples work by running within the build directory
+If the build succeeds, you can quickly check that the example programs work by running them within the build directory
 
     make test
 
-Once you have confirmed that the examples applications are working, studying their code and the wrapper's headers, should give you a good feel of how the wrapper works. A first draft of higher-quality documentation is available in the doc/ sub-directory of the source tree.
+Once you have confirmed that the examples are working, studying their code and the wrapper's headers should give you a feel of how the wrapper works. Beyond that, a first draft of higher-quality documentation is available in the doc/ sub-directory of the source tree.
 
-Said documentation is written using the Asciidoc format and rendered into HTML for your viewing pleasure. If you have asciidoctor installed, CMake will render the documentaiton automatically as part of a CLplusplus build.
+Said documentation is written using the Asciidoc format and automatically rendered into HTML for your viewing pleasure. If you have asciidoctor installed, CMake will render the documentation as part of a CLplusplus build.
 
 ## What are the current and targeted OpenCL support?
 At the moment (March 2016) I am targeting OpenCL 1.2, because that is the best which my GPU vendor will accept to support, in an attempt to push forward its own competing proprietary technology.
