@@ -9,9 +9,7 @@ In addition, the standard OpenCL C++ wrapper follows dangerous practices from th
 This wrapper aims to provide a more modern C++ wrapper to OpenCL which does not have these shortcomings.
 
 ## Sounds great! How do I use it?
-First, you should check your OpenCL installation by building and running the example applications within the repository's root directory.
-
-We now use CMake as our build system, and require CMake >= 3.1 along with a CMake-supported C++11 compiler. Once these prerequisites are met, in order to create a CLplusplus build, you can do the following
+Besides OpenCL, we now use CMake as our build system, and require CMake >= 3.1 along with a CMake-supported C++11 compiler. Once these prerequisites are met, in order to create a CLplusplus build, you can do the following
 
     mkdir build && cd build
     cmake ..
@@ -23,10 +21,10 @@ If the build succeeds, you can quickly check that the examples work by running w
 
 Once you have confirmed that the examples applications are working, studying their code and the wrapper's headers, should give you a good feel of how the wrapper works. A first draft of higher-quality documentation is available in the doc/ sub-directory of the source tree.
 
-Said documentation is written using the Asciidoc format and rendered into HTML. If you have asciidoctor installed, CMake will render the documentaiton automatically as part of a CLplusplus build.
+Said documentation is written using the Asciidoc format and rendered into HTML for your viewing pleasure. If you have asciidoctor installed, CMake will render the documentaiton automatically as part of a CLplusplus build.
 
 ## What are the current and targeted OpenCL support?
-At the moment (Nov. 2015) I am targeting OpenCL 1.2, because that is the best which my GPU vendor will accept to support, in an attempt to push forward its own competing proprietary technology.
+At the moment (March 2016) I am targeting OpenCL 1.2, because that is the best which my GPU vendor will accept to support, in an attempt to push forward its own competing proprietary technology.
 
 Platform layer is complete: one can query platforms and devices, create contexts, and query context properties.
 
