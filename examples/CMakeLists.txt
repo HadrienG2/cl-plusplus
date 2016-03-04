@@ -12,6 +12,7 @@ FILE( COPY src/kernels
 # Enumerate the examples
 FILE( GLOB EXAMPLES_SRC src/*.cpp )
 FOREACH( EXAMPLE_SRC ${EXAMPLES_SRC} )
+
     # Find the executable name
     GET_FILENAME_COMPONENT( EXAMPLE_EXE ${EXAMPLE_SRC} NAME_WE )
     
@@ -23,4 +24,5 @@ FOREACH( EXAMPLE_SRC ${EXAMPLES_SRC} )
     # Mark it as a unit test for the library
     ADD_TEST( NAME examples-${EXAMPLE_EXE}
               COMMAND ${EXAMPLE_EXE} )
+              
 ENDFOREACH( EXAMPLE_SRC )
