@@ -51,7 +51,7 @@ int main() {
    const auto context = Shared::build_default_context(selected_platform_and_device);
 
    // Create a program object from the basic vector addition example
-   auto program = context.create_program_with_source_file("vector_add.cl");
+   auto program = context.create_program_with_source_file("kernels/vector_add.cl");
 
    // Start an asynchronous program build
    const auto build_event = program.build_with_event("-cl-mad-enable -cl-no-signed-zeros -cl-std=CL1.2 -cl-kernel-arg-info");

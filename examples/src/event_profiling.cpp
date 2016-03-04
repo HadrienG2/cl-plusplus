@@ -93,7 +93,7 @@ int main() {
 
    // Create a program object from the matrix transpose example
    std::cout << "Loading program..." << std::endl;
-   auto program = context.create_program_with_source_file("matrix_transpose_float.cl");
+   auto program = context.create_program_with_source_file("kernels/matrix_transpose_float.cl");
 
    // Start an asynchronous program build
    std::cout << "Starting to build program..." << std::endl;

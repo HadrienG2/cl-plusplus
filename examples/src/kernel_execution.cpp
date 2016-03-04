@@ -69,7 +69,7 @@ int main() {
 
    // Create a program object from the basic vector addition example
    std::cout << "Loading program..." << std::endl;
-   auto program = context.create_program_with_source_file("vector_add.cl");
+   auto program = context.create_program_with_source_file("kernels/vector_add.cl");
 
    // Start an asynchronous program build
    std::cout << "Starting to build program..." << std::endl;

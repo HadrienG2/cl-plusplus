@@ -1,4 +1,1 @@
-*.a
-*.o
-*.bin
-*.log
+build/

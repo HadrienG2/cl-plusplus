@@ -101,8 +101,8 @@ int main() {
 
    // Create programs object from the matrix transpose and matrix multiplication examples
    std::cout << "Loading programs..." << std::endl;
-   auto transpose_program = context.create_program_with_source_file("matrix_transpose_double.cl");
-   auto matmul_program = context.create_program_with_source_file("matrix_multiply_double.cl");
+   auto transpose_program = context.create_program_with_source_file("kernels/matrix_transpose_double.cl");
+   auto matmul_program = context.create_program_with_source_file("kernels/matrix_multiply_double.cl");
 
    // Start asynchronous program builds
    std::cout << "Starting to build program..." << std::endl;

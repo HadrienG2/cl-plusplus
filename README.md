@@ -11,11 +11,19 @@ This wrapper aims to provide a more modern C++ wrapper to OpenCL which does not 
 ## Sounds great! How do I use it?
 First, you should check your OpenCL installation by building and running the example applications within the repository's root directory.
 
-All that should be needed, besides a working OpenCL installation is a relatively recent release of g++, and GNU Make.
+We now use CMake as our build system, and require CMake >= 3.1 along with a CMake-supported C++11 compiler. Once these prerequisites are met, in order to create a CLplusplus build, you can do the following
 
-A makefile is provided to automate the build process. It is not very pretty on the inside (.o files are scattered everywhere and modifying a single header rebuilds the entire project), but it gets the job done. If someone wishes to contribute a higher-quality makefile, with dependency tracking for example, that would be most welcome.
+    mkdir build && cd build
+    cmake ..
+    make
 
-Once you have confirmed that the examples applications are working, studying their code and the wrapper's headers, should give you a good feel of how the wrapper works. A first draft of higher-quality documentation is available in the Documentation sub-directory of the source tree.
+If the build succeeds, you can quickly check that the examples work by running within the build directory
+
+    make test
+
+Once you have confirmed that the examples applications are working, studying their code and the wrapper's headers, should give you a good feel of how the wrapper works. A first draft of higher-quality documentation is available in the doc/ sub-directory of the source tree.
+
+Said documentation is written using the Asciidoc format and rendered into HTML. If you have asciidoctor installed, CMake will render the documentaiton automatically as part of a CLplusplus build.
 
 ## What are the current and targeted OpenCL support?
 At the moment (Nov. 2015) I am targeting OpenCL 1.2, because that is the best which my GPU vendor will accept to support, in an attempt to push forward its own competing proprietary technology.
