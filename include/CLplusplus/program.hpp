@@ -61,8 +61,10 @@ namespace CLplusplus {
          std::vector<size_t> binary_sizes() const;
          std::vector<ProgramBinary> binaries() const;
 
+         #ifdef CL_VERSION_1_2
          size_t num_kernels() const { return raw_value_query<size_t>(CL_PROGRAM_NUM_KERNELS); }
          std::vector<std::string> kernel_names() const { return decode_opencl_list(raw_string_query(CL_PROGRAM_KERNEL_NAMES), ';'); }
+         #endif
 
          // Unsupported property values may be queried in a lower-level way
          cl_context raw_context_id() const { return raw_value_query<cl_context>(CL_PROGRAM_CONTEXT); } // NOTE : Returning a Context here would lead to a circular dependency.
@@ -88,7 +90,9 @@ namespace CLplusplus {
          cl_build_status build_status(const Device & device) const { return raw_build_info_value_query<cl_build_status>(device, CL_PROGRAM_BUILD_STATUS); }
          std::string build_options(const Device & device) const { return raw_build_info_string_query(device, CL_PROGRAM_BUILD_OPTIONS); }
          std::string build_log(const Device & device) const { return raw_build_info_string_query(device, CL_PROGRAM_BUILD_LOG); }
+         #ifdef CL_VERSION_1_2
          cl_program_binary_type binary_type(const Device & device) const { return raw_build_info_value_query<cl_program_binary_type>(device, CL_PROGRAM_BINARY_TYPE); }
+         #endif
 
          // And fully unsupported program build info can be queried in a nearly pure OpenCL way, with some common-case usability optimizations
          std::string raw_build_info_string_query(const Device & device, const cl_program_build_info parameter_name) const;
