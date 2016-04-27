@@ -100,8 +100,10 @@ namespace CLplusplus {
          // Although they are managed using command queues, buffers belong to a context.
          CLplusplus::Buffer create_buffer(const cl_mem_flags flags, const size_t size, void * const host_ptr = nullptr) const;
 
+         #ifdef CL_VERSION_1_2
          // The same is also true of images.
          CLplusplus::Image create_image(const cl_mem_flags flags, const cl_image_format & image_format, const cl_image_desc & image_desc, void * const host_ptr = nullptr) const;
+         #endif
 
          // The folllowing function may be used to query which image formats are supported by the implementation
          std::vector<cl_image_format> supported_image_formats(const cl_mem_flags flags, const cl_mem_object_type image_type) const;
@@ -118,10 +120,12 @@ namespace CLplusplus {
          CLplusplus::Program create_program_with_binary(const std::vector<Device> & device_list, const std::vector<ProgramBinary> & binaries, cl_int * const binaries_status = nullptr) const;
          CLplusplus::Program create_program_with_binary(const ProgramBinary & binary) const;
 
+         #ifdef CL_VERSION_1_2
          // Finally, for devices which support built-in kernels, it is possible to create a program object from them.
          // Again, in single-device context scenarii, the device list can be omitted.
          CLplusplus::Program create_program_with_built_in_kernels(const std::vector<Device> & device_list, const std::vector<std::string> & kernel_names) const;
          CLplusplus::Program create_program_with_built_in_kernels(const std::vector<std::string> & kernel_names) const;
+         #endif
 
          // --- User events ---
 
@@ -155,7 +159,9 @@ namespace CLplusplus {
          // These functions work behind the scene to eliminate code duplication in context object creation
          CommandQueue raw_create_command_queue(const cl_device_id device_id, const cl_command_queue_properties properties) const;
          Program raw_create_program_with_binary(const size_t num_devices, const cl_device_id * const raw_device_ids, const std::vector<ProgramBinary> & binaries, cl_int * const binaries_status) const;
+         #ifdef CL_VERSION_1_2
          Program raw_create_program_with_built_in_kernels(const size_t num_devices, const cl_device_id * const raw_device_ids, const std::vector<std::string> & kernel_names) const;
+         #endif
 
          // These functions manage the life cycle of reference-counted contexts
          void copy_internal_data(const Context & source);

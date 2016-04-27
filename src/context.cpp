@@ -152,12 +152,14 @@ namespace CLplusplus {
       return Buffer{buffer_id, false};
    }
 
+   #ifdef CL_VERSION_1_2
    CLplusplus::Image Context::create_image(const cl_mem_flags flags, const cl_image_format & image_format, const cl_image_desc & image_desc, void * const host_ptr) const {
       cl_int error_code;
       const auto image_id = clCreateImage(internal_id, flags, &image_format, &image_desc, host_ptr, &error_code);
       throw_if_failed(error_code);
       return Image{image_id, false};
    }
+   #endif
 
    std::vector<cl_image_format> Context::supported_image_formats(const cl_mem_flags flags, const cl_mem_object_type image_type) const {
       // Query how many image formats there will be, and prepare a vector of suitable size
@@ -212,6 +214,7 @@ namespace CLplusplus {
       return raw_create_program_with_binary(1, &single_device_id, {binary}, nullptr);
    }
 
+   #ifdef CL_VERSION_1_2
    CLplusplus::Program Context::create_program_with_built_in_kernels(const std::vector<Device> & device_list, const std::vector<std::string> & kernel_names) const {
       const size_t num_devices = device_list.size();
       cl_device_id raw_device_ids[num_devices];
@@ -226,6 +229,7 @@ namespace CLplusplus {
       // Otherwise, create the program using the previously stored device id
       return raw_create_program_with_built_in_kernels(1, &single_device_id, kernel_names);
    }
+   #endif
 
    Event Context::create_user_event() const {
       cl_int error_code;
@@ -295,6 +299,7 @@ namespace CLplusplus {
       return Program{program_id, false};
    }
 
+   #ifdef CL_VERSION_1_2
    Program Context::raw_create_program_with_built_in_kernels(const size_t num_devices, const cl_device_id * const raw_device_ids, const std::vector<std::string> & kernel_names) const {
       // Determine how long a semicolon-separated kernel list should be
       size_t kernel_list_size = kernel_names.size() - 1;
@@ -315,6 +320,7 @@ namespace CLplusplus {
       throw_if_failed(error_code);
       return Program{program_id, false};
    }
+   #endif
 
    void Context::copy_internal_data(const Context & source) {
       internal_id = source.internal_id;
