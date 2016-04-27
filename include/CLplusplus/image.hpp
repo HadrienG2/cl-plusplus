@@ -46,12 +46,14 @@ namespace CLplusplus {
          size_t image_width() const { return raw_image_size_query(CL_IMAGE_WIDTH); }
          size_t image_height() const { return raw_image_size_query(CL_IMAGE_HEIGHT); }
          size_t image_depth() const { return raw_image_size_query(CL_IMAGE_DEPTH); }
+         #ifdef CL_VERSION_1_2
          size_t image_array_size() const { return raw_image_size_query(CL_IMAGE_ARRAY_SIZE); }
          cl_uint image_num_mip_levels() const { return raw_image_uint_query(CL_IMAGE_NUM_MIP_LEVELS); }
          cl_uint image_num_samples() const { return raw_image_uint_query(CL_IMAGE_NUM_SAMPLES); }
 
          // Unsupported property values may be queried in a lower-level way
          cl_mem raw_image_buffer_id() const { return raw_value_query<cl_mem>(CL_IMAGE_BUFFER); }  // WARNING : Beware that trying to use this identifier in a Buffer can lead to callback memory leaks.
+         #endif
 
          // And fully unsupported image properties can be queried in a nearly pure OpenCL way, with some common-case usability optimizations
          size_t raw_image_size_query(const cl_image_info parameter_name) const { return raw_image_value_query<size_t>(parameter_name); }
