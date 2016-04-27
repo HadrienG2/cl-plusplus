@@ -48,7 +48,9 @@ namespace CLplusplus {
          // Kernel properties which are supported by the wrapper are directly accessible in a convenient, high-level fashion
          std::string function_name() const { return raw_string_query(CL_KERNEL_FUNCTION_NAME); }
          cl_uint num_args() const { return raw_uint_query(CL_KERNEL_NUM_ARGS); }
+         #ifdef CL_VERSION_1_2
          std::vector<std::string> attributes() const { return decode_opencl_list(raw_string_query(CL_KERNEL_ATTRIBUTES), ' '); }
+         #endif
 
          // Unsupported property values may be queried in a lower-level way
          cl_context raw_context_id() const { return raw_value_query<cl_context>(CL_KERNEL_CONTEXT); } // WARNING : Beware that trying to use this identifier in a Context can lead to callback memory leaks.
@@ -70,7 +72,9 @@ namespace CLplusplus {
          // --- Device-specific kernel properties, aka "work-group info" ---
 
          // Device-specific properties which are supported by the wrapper are directly accessible in a convenient, high-level fashion
+         #ifdef CL_VERSION_1_2
          std::array<size_t, 3> global_work_size(const Device & device) const { return raw_work_group_size3_query(device, CL_KERNEL_GLOBAL_WORK_SIZE); }
+         #endif
          size_t work_group_size(const Device & device) const { return raw_work_group_size_query(device, CL_KERNEL_WORK_GROUP_SIZE); }
          std::array<size_t, 3> compile_work_group_size(const Device & device) const { return raw_work_group_size3_query(device, CL_KERNEL_COMPILE_WORK_GROUP_SIZE); }
          cl_ulong local_mem_size(const Device & device) const { return raw_work_group_ulong_query(device, CL_KERNEL_LOCAL_MEM_SIZE); }
