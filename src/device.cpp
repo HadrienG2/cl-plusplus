@@ -43,9 +43,19 @@ namespace CLplusplus {
       retain();
       #endif
    }
+   
+   Device::~Device() {
+      #ifdef CL_VERSION_1_2
+      release();
+      #endif
+   }
 
    Device & Device::operator=(const Device & source) {
       // Reference count considerations also apply to copy assignment operator
+      if(source.internal_id == internal_id) return *this;
+      #ifdef CL_VERSION_1_2
+      release();
+      #endif
       internal_id = source.internal_id;
       #ifdef CL_VERSION_1_2
       retain();

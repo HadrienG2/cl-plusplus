@@ -49,7 +49,7 @@ namespace CLplusplus {
 
          // Sub-devices are reference counted using the following functions
          Device(const Device & source);
-         ~Device() { release(); }
+         ~Device();
          Device & operator=(const Device & source);
 
          // === PROPERTIES ===
