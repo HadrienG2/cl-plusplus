@@ -93,8 +93,10 @@ namespace CLplusplus {
          size_t image3d_max_width() const { return raw_size_query(CL_DEVICE_IMAGE3D_MAX_WIDTH); }
          size_t image3d_max_height() const { return raw_size_query(CL_DEVICE_IMAGE3D_MAX_HEIGHT); }
          size_t image3d_max_depth() const { return raw_size_query(CL_DEVICE_IMAGE3D_MAX_DEPTH); }
+         #ifdef CL_VERSION_1_2
          size_t image_max_buffer_size() const { return raw_size_query(CL_DEVICE_IMAGE_MAX_BUFFER_SIZE); }
          size_t image_max_array_size() const { return raw_size_query(CL_DEVICE_IMAGE_MAX_ARRAY_SIZE); }
+         #endif
          cl_uint max_samplers() const { return raw_uint_query(CL_DEVICE_MAX_SAMPLERS); }
 
          size_t max_parameter_size() const { return raw_size_query(CL_DEVICE_MAX_PARAMETER_SIZE); }
@@ -127,13 +129,17 @@ namespace CLplusplus {
          bool available() const { return raw_bool_query(CL_DEVICE_AVAILABLE); }
 
          bool compiler_available() const { return raw_bool_query(CL_DEVICE_COMPILER_AVAILABLE); }
+         #ifdef CL_VERSION_1_2
          bool linker_available() const { return raw_bool_query(CL_DEVICE_LINKER_AVAILABLE); }
+         #endif
 
          cl_device_exec_capabilities execution_capabilities() const { return raw_value_query<cl_device_exec_capabilities>(CL_DEVICE_EXECUTION_CAPABILITIES); }
 
          cl_command_queue_properties queue_properties() const { return raw_value_query<cl_command_queue_properties>(CL_DEVICE_QUEUE_PROPERTIES); }
 
+         #ifdef CL_VERSION_1_2
          std::vector<std::string> built_in_kernels() const { return decode_opencl_list(raw_string_query(CL_DEVICE_BUILT_IN_KERNELS), ';'); }
+         #endif
 
          std::string name() const { return raw_string_query(CL_DEVICE_NAME); }
          std::string vendor() const { return raw_string_query(CL_DEVICE_VENDOR); }
@@ -143,11 +149,11 @@ namespace CLplusplus {
          CLplusplus::Version opencl_c_version() const { return decode_opencl_c_version_string(raw_string_query(CL_DEVICE_OPENCL_C_VERSION)); }
          CLplusplus::ExtensionList extensions() const { return ExtensionList{raw_string_query(CL_DEVICE_EXTENSIONS)}; }
 
+         #ifdef CL_VERSION_1_2
          size_t printf_buffer_size() const { return raw_size_query(CL_DEVICE_PRINTF_BUFFER_SIZE); }
 
          bool preferred_interop_user_sync() const { return raw_bool_query(CL_DEVICE_PREFERRED_INTEROP_USER_SYNC); }
 
-         #ifdef CL_VERSION_1_2
          bool has_parent_device() const { return (raw_parent_device() != NULL); }
          CLplusplus::Device parent_device() const { return Device{raw_parent_device(), true}; }
          
@@ -199,10 +205,12 @@ namespace CLplusplus {
       private:
          cl_device_id internal_id;
 
+         #ifdef CL_VERSION_1_2
          // The following can be used to manage subdevice reference counting
          cl_uint reference_count() const { return raw_uint_query(CL_DEVICE_REFERENCE_COUNT); }
          void retain() const;
          void release();
+         #endif
 
    };
 

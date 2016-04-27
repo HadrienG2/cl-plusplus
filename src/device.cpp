@@ -29,21 +29,27 @@ namespace CLplusplus {
       // Handle invalid device IDs
       if(internal_id == NULL) throw InvalidArgument();
 
+      #ifdef CL_VERSION_1_2
       // Unless asked not to do so, increment the device's reference count
       if(increment_reference_count) retain();
+      #endif
    }
 
    Device::Device(const Device & source) :
       internal_id{source.internal_id}
    {
+      #ifdef CL_VERSION_1_2
       // Whenever a copy of a reference-counted device is made, its reference count should be incremented
       retain();
+      #endif
    }
 
    Device & Device::operator=(const Device & source) {
       // Reference count considerations also apply to copy assignment operator
       internal_id = source.internal_id;
+      #ifdef CL_VERSION_1_2
       retain();
+      #endif
       return *this;
    }
 
@@ -131,7 +137,6 @@ namespace CLplusplus {
       // Return the result
       return result;
    }
-   #endif
 
    void Device::retain() const {
       throw_if_failed(clRetainDevice(internal_id));
@@ -140,5 +145,6 @@ namespace CLplusplus {
    void Device::release() {
       throw_if_failed(clReleaseDevice(internal_id));
    }
+   #endif
 
 }
