@@ -130,4 +130,7 @@ namespace CLplusplus {
 
 }
 
+// Implementation of PropertyList
+#include "property_list_impl.hpp"
+
 #endif
