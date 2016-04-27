@@ -194,12 +194,16 @@ namespace CLplusplus {
    template<typename PropertyType>
    typename PropertyList<PropertyType>::PropertyTag PropertyList<PropertyType>::find_property_tag(const PropertyName name) {
       switch(name) {
+         #ifdef CL_VERSION_1_2
          case CL_DEVICE_PARTITION_EQUALLY: return PropertyTag::Scalar;
          case CL_DEVICE_PARTITION_BY_COUNTS: return PropertyTag::Vector;
          case CL_DEVICE_PARTITION_BY_AFFINITY_DOMAIN: return PropertyTag::Scalar;
+         #endif
 
          case CL_CONTEXT_PLATFORM: return PropertyTag::Scalar;
+         #ifdef CL_VERSION_1_2
          case CL_CONTEXT_INTEROP_USER_SYNC: return PropertyTag::Scalar;
+         #endif
 
          // WARNING : This database must be kept up to date as new properties are added to OpenCL
 
@@ -210,6 +214,7 @@ namespace CLplusplus {
    namespace UnitTests {
 
       void run_tests_property_list() {
+         #ifdef CL_VERSION_1_2
          // For this test, we will use lists of device partition properties
          using TestedProperty = cl_device_partition_property;
          using TestedPropertyList = PropertyList<TestedProperty>;
@@ -372,6 +377,7 @@ namespace CLplusplus {
             check(opencl_version[8] == 69, "OpenCL output of scalar-vector-scalar test vector should match");
             check(opencl_version[9] == 0, "OpenCL output of scalar-vector-scalar test vector should match");
          }
+         #endif
       }
 
    }
