@@ -91,6 +91,7 @@ namespace CLplusplus {
          size_t raw_work_group_query_output_size(const Device & device, const cl_kernel_work_group_info parameter_name) const;
          void raw_work_group_query(const Device & device, const cl_kernel_work_group_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
 
+         #ifdef CL_VERSION_1_2
          // --- Kernel argument properties ---  (NOTE : These are only available in very specific circumstances, and thus to be used with caution in production code)
 
          // Argument properties which are supported by the wrapper are directly accessible in a convenient, high-level fashion
@@ -111,6 +112,7 @@ namespace CLplusplus {
 
          size_t raw_argument_query_output_size(const cl_uint arg_indx, const cl_kernel_arg_info parameter_name) const;
          void raw_argument_query(const cl_uint arg_indx, const cl_kernel_arg_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
+         #endif
 
          // === KERNEL ARGUMENT SETUP ===
 

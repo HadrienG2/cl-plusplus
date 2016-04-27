@@ -39,6 +39,8 @@ namespace CLplusplus {
 
    Kernel & Kernel::operator=(const Kernel & source) {
       // Reference count considerations also apply to copy assignment operator
+      if(source.internal_id == internal_id) return *this;
+      release();
       internal_id = source.internal_id;
       retain();
       return *this;
@@ -82,6 +84,7 @@ namespace CLplusplus {
       throw_if_failed(clGetKernelWorkGroupInfo(internal_id, device.raw_identifier(), parameter_name, output_storage_size, output_storage, actual_output_size));
    }
 
+   #ifdef CL_VERSION_1_2
    std::string Kernel::raw_argument_string_query(const cl_uint arg_indx, const cl_kernel_arg_info parameter_name) const {
       // Check how long the output string should be
       size_t output_string_length = raw_argument_query_output_size(arg_indx, parameter_name);
@@ -103,6 +106,7 @@ namespace CLplusplus {
    void Kernel::raw_argument_query(const cl_uint arg_indx, const cl_kernel_arg_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size) const {
       throw_if_failed(clGetKernelArgInfo(internal_id, arg_indx, parameter_name, output_storage_size, output_storage, actual_output_size));
    }
+   #endif
 
    void Kernel::set_buffer_argument(const cl_uint arg_index, const Buffer * arg_value) const {
       if(arg_value) {
