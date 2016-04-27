@@ -32,10 +32,12 @@
 // This code unit provides facilities for handling OpenCL devices
 namespace CLplusplus {
 
+   #ifdef CL_VERSION_1_2
    // When an OpenCL device is partitioned into subdevices, some partitioning properties must be specified.
    // For this, OpenCL uses zero-terminated lists, which are relatively impractical to parse and a common source of security issues.
    // We propose an higher-level abstraction, see details in property_list.hpp
    using PartitionProperties = CLplusplus::PropertyList<cl_device_partition_property>;
+   #endif
 
    // This class represents an OpenCL device that can be queried in a high-level way
    class Device {
@@ -145,6 +147,7 @@ namespace CLplusplus {
 
          bool preferred_interop_user_sync() const { return raw_bool_query(CL_DEVICE_PREFERRED_INTEROP_USER_SYNC); }
 
+         #ifdef CL_VERSION_1_2
          bool has_parent_device() const { return (raw_parent_device() != NULL); }
          CLplusplus::Device parent_device() const { return Device{raw_parent_device(), true}; }
          
@@ -154,11 +157,14 @@ namespace CLplusplus {
          cl_device_affinity_domain partition_affinity_domain() const { return raw_value_query<cl_device_affinity_domain>(CL_DEVICE_PARTITION_AFFINITY_DOMAIN); }
 
          PartitionProperties partition_type() const;
+         #endif
 
          // Wrapper-unsupported property values may be queried in a lower-level way
          cl_platform_id raw_platform_id() const { return raw_value_query<cl_platform_id>(CL_DEVICE_PLATFORM); } // NOTE : Using a Platform here would lead to a circular dependency.
          std::string raw_profile_string() const { return raw_string_query(CL_DEVICE_PROFILE); }
+         #ifdef CL_VERSION_1_2
          cl_device_id raw_parent_device() const { return raw_value_query<cl_device_id>(CL_DEVICE_PARENT_DEVICE); }
+         #endif
 
          // And fully unsupported device properties can be queried in a nearly pure OpenCL way, with some common-case usability optimizations
          std::string raw_string_query(const cl_platform_info parameter_name) const;
@@ -177,10 +183,12 @@ namespace CLplusplus {
          size_t raw_query_output_size(const cl_device_info parameter_name) const;
          void raw_query(const cl_device_info parameter_name, const size_t output_storage_size, void * output_storage, size_t * actual_output_size = nullptr) const;
 
+         #ifdef CL_VERSION_1_2
          // === DEVICE PARTITIONING ===
 
          // It is possible to partition some devices into subdevices. For this purpose, we wrap clCreateSubDevices into a cleaner interface.
          std::vector<Device> create_sub_devices(PartitionProperties & properties);
+         #endif
 
          // === RAW OPENCL ID ===
 

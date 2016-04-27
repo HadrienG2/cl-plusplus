@@ -54,6 +54,7 @@ namespace CLplusplus {
       return result;
    }
 
+   #ifdef CL_VERSION_1_2
    std::vector<cl_device_partition_property> Device::partition_properties() const {
       // Check if the device supports partitioning at all. If not, return an empty result.
       if(!supports_partitioning()) return std::vector<cl_device_partition_property>();
@@ -83,6 +84,7 @@ namespace CLplusplus {
       // Return a higher-level abstraction of it
       return PartitionProperties{opencl_list};
    }
+   #endif
 
    std::string Device::raw_string_query(cl_platform_info parameter_name) const {
       // Check how long the output string should be
@@ -106,6 +108,7 @@ namespace CLplusplus {
       throw_if_failed(clGetDeviceInfo(internal_id, parameter_name, output_storage_size, output_storage, actual_output_size));
    }
 
+   #ifdef CL_VERSION_1_2
    std::vector<Device> Device::create_sub_devices(PartitionProperties & properties) {
       // Convert the provided partition property list into a zero-terminated OpenCL array
       const auto opencl_properties = properties.opencl_view();
@@ -128,6 +131,7 @@ namespace CLplusplus {
       // Return the result
       return result;
    }
+   #endif
 
    void Device::retain() const {
       throw_if_failed(clRetainDevice(internal_id));
