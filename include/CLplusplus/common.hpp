@@ -39,7 +39,9 @@ namespace CLplusplus {
       class CompilerNotAvailable : public StandardException {};
       class DeviceNotAvailable : public StandardException {};
       class DeviceNotFound : public StandardException {};
+      #ifdef CL_VERSION_1_2
       class DevicePartitionFailed : public StandardException {};
+      #endif
       class ExecStatusErrorForEventsInWaitList : public StandardException {};
       class ImageFormatNotSupported : public StandardException {};
       class InvalidArgIndex : public StandardException {};
@@ -51,13 +53,17 @@ namespace CLplusplus {
       class InvalidCommandQueue : public StandardException {};
       class InvalidContext : public StandardException {};
       class InvalidDevice : public StandardException {};
+      #ifdef CL_VERSION_1_2
       class InvalidDevicePartitionCount : public StandardException {};
+      #endif
       class InvalidDeviceType : public StandardException {};
       class InvalidEvent : public StandardException {};
       class InvalidEventWaitList : public StandardException {};
       class InvalidGlobalOffset : public StandardException {};
       class InvalidGlobalWorkSize : public StandardException {};
+      #ifdef CL_VERSION_1_2
       class InvalidImageDescriptor : public StandardException {};
+      #endif
       class InvalidImageFormatDescriptor : public StandardException {};
       class InvalidImageSize : public StandardException {};
       class InvalidHostPtr : public StandardException {};
@@ -77,16 +83,18 @@ namespace CLplusplus {
       class InvalidWorkDimension : public StandardException {};
       class InvalidWorkGroupSize : public StandardException {};
       class InvalidWorkItemSize : public StandardException {};
+      #ifdef CL_VERSION_1_2
       class KernelArgInfoNotAvailable : public StandardException {};
+      #endif
       class MapFailure : public StandardException {};
       class MemCopyOverlap : public StandardException {};
       class MemObjectAllocationFailure : public StandardException {};
       class MisalignedSubBufferOffset : public StandardException {};
       class OutOfHostMemory : public StandardException {};
       class OutOfResources : public StandardException {};
-#ifdef CL_PLATFORM_NOT_FOUND_KHR
+      #ifdef CL_PLATFORM_NOT_FOUND_KHR
       class PlatformNotFoundKhr : public StandardException {};
-#endif
+      #endif
       class ProfilingInfoNotAvailable : public StandardException {};
    }
 

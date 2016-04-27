@@ -37,8 +37,10 @@ namespace CLplusplus {
             throw DeviceNotAvailable();
          case CL_DEVICE_NOT_FOUND:
             throw DeviceNotFound();
+         #ifdef CL_VERSION_1_2
          case CL_DEVICE_PARTITION_FAILED:
             throw DevicePartitionFailed();
+         #endif
          case CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST:
             throw ExecStatusErrorForEventsInWaitList();
          case CL_IMAGE_FORMAT_NOT_SUPPORTED:
@@ -61,8 +63,10 @@ namespace CLplusplus {
             throw InvalidContext();
          case CL_INVALID_DEVICE:
             throw InvalidDevice();
+         #ifdef CL_VERSION_1_2
          case CL_INVALID_DEVICE_PARTITION_COUNT:
             throw InvalidDevicePartitionCount();
+         #endif
          case CL_INVALID_DEVICE_TYPE:
             throw InvalidDeviceType();
          case CL_INVALID_EVENT:
@@ -75,8 +79,10 @@ namespace CLplusplus {
             throw InvalidGlobalOffset();
          case CL_INVALID_HOST_PTR:
             throw InvalidHostPtr();
+         #ifdef CL_VERSION_1_2
          case CL_INVALID_IMAGE_DESCRIPTOR:
             throw InvalidImageDescriptor();
+         #endif
          case CL_INVALID_IMAGE_FORMAT_DESCRIPTOR:
             throw InvalidImageFormatDescriptor();
          case CL_INVALID_IMAGE_SIZE:
@@ -113,8 +119,10 @@ namespace CLplusplus {
             throw InvalidWorkGroupSize();
          case CL_INVALID_WORK_ITEM_SIZE:
             throw InvalidWorkItemSize();
+         #ifdef CL_VERSION_1_2
          case CL_KERNEL_ARG_INFO_NOT_AVAILABLE:
             throw KernelArgInfoNotAvailable();
+         #endif
          case CL_MAP_FAILURE:
             throw MapFailure();
          case CL_MEM_COPY_OVERLAP:
@@ -127,10 +135,10 @@ namespace CLplusplus {
             throw OutOfHostMemory();
          case CL_OUT_OF_RESOURCES:
             throw OutOfResources();
-#ifdef CL_PLATFORM_NOT_FOUND_KHR
+         #ifdef CL_PLATFORM_NOT_FOUND_KHR
          case CL_PLATFORM_NOT_FOUND_KHR:
             throw PlatformNotFoundKhr();
-#endif
+         #endif
          case CL_PROFILING_INFO_NOT_AVAILABLE:
             throw ProfilingInfoNotAvailable();
          default:
