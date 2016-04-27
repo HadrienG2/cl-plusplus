@@ -85,6 +85,8 @@ namespace CLplusplus {
 
    Context & Context::operator=(const Context & source) {
       // Reference count considerations also apply to copy assignment operator
+      if(source.internal_id == internal_id) return *this;
+      release();
       copy_internal_data(source);
       retain();
       return *this;

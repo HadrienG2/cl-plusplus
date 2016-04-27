@@ -22,6 +22,8 @@ namespace CLplusplus {
 
    CommandQueue & CommandQueue::operator=(const CommandQueue & source) {
       // Reference count considerations also apply to copy assignment operator
+      if(source.internal_id == internal_id) return *this;
+      release();
       internal_id = source.internal_id;
       retain();
       return *this;
