@@ -450,6 +450,7 @@ namespace CLplusplus {
       raw_task(kernel, event_wait_list, nullptr);
    }
 
+   #ifdef CL_VERSION_1_2
    Event CommandQueue::enqueued_marker_with_wait_list(const EventWaitList & event_wait_list) const {
       cl_event event_id;
       raw_marker_with_wait_list(event_wait_list, &event_id);
@@ -469,6 +470,7 @@ namespace CLplusplus {
    void CommandQueue::enqueue_barrier_with_wait_list(const EventWaitList & event_wait_list) const {
       raw_barrier_with_wait_list(event_wait_list, nullptr);
    }
+   #endif
 
    void CommandQueue::flush() const {
       throw_if_failed(clFlush(internal_id));
@@ -772,6 +774,7 @@ namespace CLplusplus {
       }
    }
 
+   #ifdef CL_VERSION_1_2
    void CommandQueue::raw_marker_with_wait_list(const EventWaitList & event_wait_list, cl_event * const event) const {
       const auto num_events = event_wait_list.size();
       if(num_events == 0) {
@@ -793,6 +796,7 @@ namespace CLplusplus {
          throw_if_failed(clEnqueueBarrierWithWaitList(internal_id, num_events, raw_event_ids, event));
       }
    }
+   #endif
 
    void CommandQueue::retain() const {
       throw_if_failed(clRetainCommandQueue(internal_id));
