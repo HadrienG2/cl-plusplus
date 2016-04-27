@@ -174,6 +174,7 @@ namespace CLplusplus {
                                           const std::array<size_t, 3> size,
                                           const EventWaitList & event_wait_list) const;
 
+         #ifdef CL_VERSION_1_2
          // Asynchronously fill a buffer with a fixed pattern of a device-supported OpenCL type.
          // This functionality is available both in a high-level templatized form, and in a low-level form which matches the raw OpenCL API.
          template<typename PatternType> Event enqueued_fill_buffer(const PatternType pattern, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const {
@@ -184,6 +185,7 @@ namespace CLplusplus {
          }
          Event raw_enqueued_fill_buffer(const void * const pattern, const size_t pattern_size, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const;
          void raw_enqueue_fill_buffer(const void * const pattern, const size_t pattern_size, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const;
+         #endif
 
          // Asynchronously or synchronously map a buffer to host memory.
          // NOTE: For asynchronous mappings, unlike the raw OpenCL API, we prefer to put the focus on the asynchronous event, not the mapped pointer.
@@ -250,9 +252,11 @@ namespace CLplusplus {
          Event enqueued_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list) const;
          void enqueue_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list) const;
 
+         #ifdef CL_VERSION_1_2
          // Asynchronously migrate memory objects to the device represented by this command queue
          Event enqueued_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list) const;
          void enqueue_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list) const;
+         #endif
 
          // === KERNEL EXECUTION ===
 
@@ -414,7 +418,9 @@ namespace CLplusplus {
                                       const std::array<size_t, 3> size,
                                       const EventWaitList & event_wait_list, cl_event * const event) const;
 
+         #ifdef CL_VERSION_1_2
          void raw_fill_buffer(const void * const pattern, const size_t pattern_size, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list, cl_event * event) const;
+         #endif
 
          void * raw_map_buffer(const Buffer & buffer, const size_t offset, const size_t size, const bool synchronous_map, const cl_map_flags map_flags, const EventWaitList & event_wait_list, cl_event * event) const;
 
@@ -433,7 +439,9 @@ namespace CLplusplus {
 
          void raw_unmap_mem_object(const MemoryObject & memobj, void * const mapped_ptr, const EventWaitList & event_wait_list, cl_event * event) const;
 
+         #ifdef CL_VERSION_1_2
          void raw_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list, cl_event * event) const;
+         #endif
 
          void raw_Nd_range_kernel(const Kernel & kernel, const cl_uint work_dim,
                                   const size_t * const global_work_offset,

@@ -179,6 +179,7 @@ namespace CLplusplus {
       raw_copy_buffer_rect_3d(source_buffer, source_offset, source_pitch, dest_buffer, dest_offset, dest_pitch, size, event_wait_list, nullptr);
    }
 
+   #ifdef CL_VERSION_1_2
    Event CommandQueue::raw_enqueued_fill_buffer(const void * const pattern, const size_t pattern_size, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const {
       cl_event event_id;
       raw_fill_buffer(pattern, pattern_size, dest_buffer, offset, size, event_wait_list, &event_id);
@@ -188,6 +189,7 @@ namespace CLplusplus {
    void CommandQueue::raw_enqueue_fill_buffer(const void * const pattern, const size_t pattern_size, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list) const {
       raw_fill_buffer(pattern, pattern_size, dest_buffer, offset, size, event_wait_list, nullptr);
    }
+   #endif
 
    Event CommandQueue::enqueued_map_buffer(const Buffer & buffer, const size_t offset, const size_t size, const cl_map_flags map_flags, const EventWaitList & event_wait_list, void * & future_result) const {
       cl_event event_id;
@@ -282,6 +284,7 @@ namespace CLplusplus {
       raw_unmap_mem_object(memobj, mapped_ptr, event_wait_list, nullptr);
    }
 
+   #ifdef CL_VERSION_1_2
    Event CommandQueue::enqueued_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list) const {
       cl_event event_id;
       raw_migrate_mem_objects(mem_objects, flags, event_wait_list, &event_id);
@@ -291,6 +294,7 @@ namespace CLplusplus {
    void CommandQueue::enqueue_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list) const {
       raw_migrate_mem_objects(mem_objects, flags, event_wait_list, nullptr);
    }
+   #endif
 
    Event CommandQueue::enqueued_1d_range_kernel(const Kernel & kernel,
                                                 const size_t global_work_size,
@@ -621,6 +625,7 @@ namespace CLplusplus {
       }
    }
 
+   #ifdef CL_VERSION_1_2
    void CommandQueue::raw_fill_buffer(const void * const pattern, const size_t pattern_size, const Buffer & dest_buffer, const size_t offset, const size_t size, const EventWaitList & event_wait_list, cl_event * const event) const {
       const auto num_events = event_wait_list.size();
       if(num_events == 0) {
@@ -631,6 +636,7 @@ namespace CLplusplus {
          throw_if_failed(clEnqueueFillBuffer(internal_id, dest_buffer.raw_identifier(), pattern, pattern_size, offset, size, num_events, raw_event_ids, event));
       }
    }
+   #endif
 
    void * CommandQueue::raw_map_buffer(const Buffer & buffer, const size_t offset, const size_t size, const bool synchronous_map, const cl_map_flags map_flags, const EventWaitList & event_wait_list, cl_event * const event) const {
       // Determine if we are waiting for events, and prepare error code and result storage
@@ -711,6 +717,7 @@ namespace CLplusplus {
       }
    }
 
+   #ifdef CL_VERSION_1_2
    void CommandQueue::raw_migrate_mem_objects(const ConstMemoryObjectRefVector & mem_objects, const cl_mem_migration_flags flags, const EventWaitList & event_wait_list, cl_event * const event) const {
       // Convert the memory object list to its OpenCL representation
       const auto num_objects = mem_objects.size();
@@ -729,6 +736,7 @@ namespace CLplusplus {
          throw_if_failed(clEnqueueMigrateMemObjects(internal_id, num_objects, raw_object_ids, flags, num_events, raw_event_ids, event));
       }
    }
+   #endif
 
    void CommandQueue::raw_Nd_range_kernel(const Kernel & kernel, const cl_uint work_dim,
                                           const size_t * const global_work_offset,
