@@ -85,6 +85,7 @@ namespace CLplusplus {
       return result;
    }
 
+   #ifdef CL_VERSION_1_2
    void Platform::unload_compiler() const {
       throw_if_failed(clUnloadPlatformCompiler(internal_id));
    }
@@ -94,5 +95,6 @@ namespace CLplusplus {
       if(!extension_address) throw NonexistentExtensionFunction();
       return extension_address;
    }
+   #endif
 
 }

@@ -68,6 +68,7 @@ namespace CLplusplus {
          std::vector<CLplusplus::Device> devices(const cl_device_type dev_type = CL_DEVICE_TYPE_ALL) const;
          std::vector<CLplusplus::Device> filtered_devices(const DevicePredicate & filter, const cl_device_type dev_type = CL_DEVICE_TYPE_ALL) const;
 
+         #ifdef CL_VERSION_1_2
          // === OPENCL C COMPILER UNLOAD HINT ===
 
          // Allow the implementation to unload the resources associated to the OpenCL C compiler
@@ -77,6 +78,7 @@ namespace CLplusplus {
 
          // In case an extension is not supported by the wrapper, it is still possible to get extension function addresses in a raw OpenCL way
          void * raw_extension_function_address(const std::string & funcname);
+         #endif
 
          // === RAW OPENCL ID ===
 
