@@ -23,7 +23,7 @@ namespace CLplusplus {
 
    Program::Program(const cl_program identifier, const bool increment_reference_count) :
       internal_id{identifier},
-      internal_callback_ptr{nullptr}
+      internal_callback_ptr{std::make_shared<std::unique_ptr<BuildCallback>>()}
    {
       // Handle invalid program IDs
       if(internal_id == NULL) throw InvalidArgument();
@@ -241,20 +241,21 @@ namespace CLplusplus {
       auto & program_object = *(static_cast<Program *>(program_object_ptr));
       
       // Call its previously saved build callback
-      const auto actual_callback = *(program_object.internal_callback_ptr);
+      auto &callback_ptr = *program_object.internal_callback_ptr;
+      const auto actual_callback = *callback_ptr;
       actual_callback(program);
 
-      // Delete and NULL-out the build callback
-      delete program_object.internal_callback_ptr;
-      program_object.internal_callback_ptr = nullptr;
+      // Destroy the build callback
+      callback_ptr.reset();
    }
 
    void Program::raw_build_program(const std::vector<Device> * const device_list_ptr, const std::string & options, const BuildCallback & callback) {
       // To avoid callback memory leaks, raise InvalidOperation ourselves if a build is already occuring (rather than having OpenCL do it for us)
-      if(internal_callback_ptr) throw StandardExceptions::InvalidOperation();
+      auto & callback_ptr = *internal_callback_ptr;
+      if(callback_ptr) throw StandardExceptions::InvalidOperation();
 
       // Save the program build callback and build event, if any
-      if(callback) internal_callback_ptr = new BuildCallback{callback};
+      if(callback) callback_ptr.reset( new BuildCallback{callback} );
 
       // Build the program, creating an OpenCL-compatible view of the device list if necessary
       try {
@@ -276,7 +277,7 @@ namespace CLplusplus {
             }
          }
       } catch(...) {
-         if(internal_callback_ptr) delete internal_callback_ptr;
+         callback_ptr.reset();
          throw;
       }
    }
@@ -293,7 +294,6 @@ namespace CLplusplus {
    void Program::release() {
       bool last_reference = (reference_count() == 1);
       throw_if_failed(clReleaseProgram(internal_id));
-      if(last_reference && internal_callback_ptr) delete internal_callback_ptr; // NOTE : This should never happen and is likely to cause a segmentation fault, but hey, user's fault in this case.
    }
 
 }

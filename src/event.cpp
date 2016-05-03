@@ -22,7 +22,7 @@ namespace CLplusplus {
 
    Event::Event(const cl_event identifier, const bool increment_reference_count) :
       internal_id{identifier},
-      internal_callbacks_ptr{new std::vector<EventCallback>[3]}
+      internal_callbacks_ptr{std::make_shared<EventCallbackLists>()}
    {
       // Handle invalid event IDs
       if(internal_id == NULL) throw InvalidArgument();
@@ -105,7 +105,8 @@ namespace CLplusplus {
          default:
             throw UnsupportedCallbackType();
       }
-      auto & event_callback_store = internal_callbacks_ptr[callback_store_index];
+      auto & event_callback_lists = *internal_callbacks_ptr;
+      auto & event_callback_store = event_callback_lists[callback_store_index];
 
       // Add our new event callback, if any, to the shared callback database
       if(callback) event_callback_store.emplace_back(callback);
@@ -136,7 +137,6 @@ namespace CLplusplus {
    void Event::release() {
       bool last_reference = (reference_count() == 1);
       throw_if_failed(clReleaseEvent(internal_id));
-      if(last_reference && internal_callbacks_ptr) delete[] internal_callbacks_ptr;
    }
 
    void wait_for_events(const std::vector<Event> & events) {

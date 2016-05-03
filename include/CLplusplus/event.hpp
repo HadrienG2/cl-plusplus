@@ -18,7 +18,9 @@
 #ifndef INCLUDE_CL_PLUSPLUS_EVENT
 #define INCLUDE_CL_PLUSPLUS_EVENT
 
+#include <array>
 #include <functional>
+#include <memory>
 #include <vector>
 
 #include <CL/cl.h>
@@ -111,7 +113,8 @@ namespace CLplusplus {
 
          // High-level destructor callbacks are stored here. They will be called by lower-level static functions which follow OpenCL's linkage conventions.
          // We need multiple event lists and static callbacks because we can be waiting for multiple event states.
-         std::vector<EventCallback> * internal_callbacks_ptr;
+         using EventCallbackLists = std::array<std::vector<EventCallback>, 3>;
+         std::shared_ptr<EventCallbackLists> internal_callbacks_ptr;
          void add_event_callback(const cl_int command_exec_callback_type, const EventCallback & callback);
          static void CL_CALLBACK raw_callback(cl_event event, cl_int event_command_exec_status, void * actual_callbacks_ptr);
 

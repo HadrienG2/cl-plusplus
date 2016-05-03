@@ -18,6 +18,7 @@
 #ifndef INCLUDE_CL_PLUSPLUS_PROGRAM
 #define INCLUDE_CL_PLUSPLUS_PROGRAM
 
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -161,7 +162,7 @@ namespace CLplusplus {
          std::pair<Event, BuildCallback> make_build_event_callback(const std::vector<Device> * const device_list_ptr) const;
 
          // High-level context callbacks are stored here. They will be called by a lower-level static function which follows OpenCL's linkage conventions.
-         BuildCallback * internal_callback_ptr;
+         std::shared_ptr<std::unique_ptr<BuildCallback>> internal_callback_ptr;
          static void CL_CALLBACK raw_callback(cl_program program, void * program_object);
 
          // This lower-level function eliminates code duplication in program build code

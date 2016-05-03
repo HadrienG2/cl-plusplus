@@ -19,6 +19,7 @@
 #define INCLUDE_CL_PLUSPLUS_CONTEXT
 
 #include <functional>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -149,7 +150,7 @@ namespace CLplusplus {
          static ContextCallback make_context_callback(const ContextCallbackWithUserData & callback, void * const user_data);
 
          // High-level context callbacks are stored here. They will be called by a lower-level static function which follows OpenCL's linkage conventions.
-         ContextCallback * internal_callback_ptr;
+         std::shared_ptr<ContextCallback> internal_callback_ptr;
          static void CL_CALLBACK raw_callback(const char * errinfo, const void * private_info, size_t cb, void * actual_callback_ptr);
 
          // These functions represent the common code path of context creation constructors, whichever callback option is chosen.

@@ -37,42 +37,42 @@ namespace CLplusplus {
 
    Context::Context(ContextProperties & properties, const Device & device, const ContextCallback & callback) :
       single_device_id{device.raw_identifier()},
-      internal_callback_ptr{callback ? (new ContextCallback{callback}) : nullptr}
+      internal_callback_ptr{callback ? std::make_shared<ContextCallback>(callback) : nullptr}
    {
       create_context(properties, 1, &device);
    }
 
    Context::Context(ContextProperties & properties, const Device & device, const ContextCallbackWithUserData & callback, void * const user_data) :
       single_device_id{device.raw_identifier()},
-      internal_callback_ptr{callback ? new ContextCallback{make_context_callback(callback, user_data)} : nullptr}
+      internal_callback_ptr{callback ? std::make_shared<ContextCallback>(make_context_callback(callback, user_data)) : nullptr}
    {
       create_context(properties, 1, &device);
    }
 
    Context::Context(ContextProperties & properties, const std::vector<Device> & devices, const ContextCallback & callback) :
       single_device_id{NULL},
-      internal_callback_ptr{callback ? (new ContextCallback{callback}) : nullptr}
+      internal_callback_ptr{callback ? std::make_shared<ContextCallback>(callback) : nullptr}
    {
       create_context(properties, devices.size(), &devices[0]);
    }
 
    Context::Context(ContextProperties & properties, const std::vector<Device> & devices, const ContextCallbackWithUserData & callback, void * const user_data) :
       single_device_id{NULL},
-      internal_callback_ptr{callback ? new ContextCallback{make_context_callback(callback, user_data)} : nullptr}
+      internal_callback_ptr{callback ? std::make_shared<ContextCallback>(make_context_callback(callback, user_data)) : nullptr}
    {
       create_context(properties, devices.size(), &devices[0]);
    }
 
    Context::Context(ContextProperties & properties, const cl_device_type device_type, const ContextCallback & callback) :
       single_device_id{NULL},
-      internal_callback_ptr{callback ? (new ContextCallback{callback}) : nullptr}
+      internal_callback_ptr{callback ? std::make_shared<ContextCallback>(callback) : nullptr}
    {
       create_context_from_type(properties, device_type);
    }
 
    Context::Context(ContextProperties & properties, const cl_device_type device_type, const ContextCallbackWithUserData & callback, void * const user_data) :
       single_device_id{NULL},
-      internal_callback_ptr{callback ? new ContextCallback{make_context_callback(callback, user_data)} : nullptr}
+      internal_callback_ptr{callback ? std::make_shared<ContextCallback>(make_context_callback(callback, user_data)) : nullptr}
    {
       create_context_from_type(properties, device_type);
    }
@@ -258,7 +258,7 @@ namespace CLplusplus {
       // Create the context
       cl_int error_code;
       if(internal_callback_ptr) {
-         internal_id = clCreateContext(properties.opencl_view(), device_count, device_ids, raw_callback, static_cast<void *>(internal_callback_ptr), &error_code);
+         internal_id = clCreateContext(properties.opencl_view(), device_count, device_ids, raw_callback, static_cast<void *>(&*internal_callback_ptr), &error_code);
       } else {
          internal_id = clCreateContext(properties.opencl_view(), device_count, device_ids, nullptr, nullptr, &error_code);
       }
@@ -271,7 +271,7 @@ namespace CLplusplus {
       // Create the context from a given device type
       cl_int error_code;
       if(internal_callback_ptr) {
-         internal_id = clCreateContextFromType(properties.opencl_view(), device_type, raw_callback, static_cast<void *>(internal_callback_ptr), &error_code);
+         internal_id = clCreateContextFromType(properties.opencl_view(), device_type, raw_callback, static_cast<void *>(&*internal_callback_ptr), &error_code);
       } else {
          internal_id = clCreateContextFromType(properties.opencl_view(), device_type, nullptr, nullptr, &error_code);
       }
@@ -337,7 +337,6 @@ namespace CLplusplus {
    void Context::release() {
       bool last_reference = (reference_count() == 1);
       throw_if_failed(clReleaseContext(internal_id));
-      if(last_reference && internal_callback_ptr) delete internal_callback_ptr;
    }
 
 }
