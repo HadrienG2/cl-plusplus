@@ -135,7 +135,6 @@ namespace CLplusplus {
    }
 
    void Event::release() {
-      bool last_reference = (reference_count() == 1);
       throw_if_failed(clReleaseEvent(internal_id));
    }
 

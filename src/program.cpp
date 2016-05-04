@@ -292,7 +292,6 @@ namespace CLplusplus {
    }
 
    void Program::release() {
-      bool last_reference = (reference_count() == 1);
       throw_if_failed(clReleaseProgram(internal_id));
    }
 
