@@ -236,32 +236,31 @@ namespace CLplusplus {
       return {user_event, callback};
    }
 
-   void CL_CALLBACK Program::raw_callback(cl_program program, void * program_object_ptr) {
+   void CL_CALLBACK Program::raw_callback(cl_program program, void * callback_ptr) {
       // Fetch our program object
-      auto & program_object = *(static_cast<Program *>(program_object_ptr));
+      auto & callback_unique_ptr = *(static_cast<std::unique_ptr<BuildCallback>*>(callback_ptr));
       
       // Call its previously saved build callback
-      auto &callback_ptr = *program_object.internal_callback_ptr;
-      const auto actual_callback = *callback_ptr;
+      const auto actual_callback = *callback_unique_ptr;
       actual_callback(program);
 
       // Destroy the build callback
-      callback_ptr.reset();
+      callback_unique_ptr.reset();
    }
 
    void Program::raw_build_program(const std::vector<Device> * const device_list_ptr, const std::string & options, const BuildCallback & callback) {
       // To avoid callback memory leaks, raise InvalidOperation ourselves if a build is already occuring (rather than having OpenCL do it for us)
-      auto & callback_ptr = *internal_callback_ptr;
-      if(callback_ptr) throw StandardExceptions::InvalidOperation();
+      auto & callback_unique_ptr = *internal_callback_ptr;
+      if(callback_unique_ptr) throw StandardExceptions::InvalidOperation();
 
       // Save the program build callback and build event, if any
-      if(callback) callback_ptr.reset( new BuildCallback{callback} );
+      if(callback) callback_unique_ptr.reset( new BuildCallback{callback} );
 
       // Build the program, creating an OpenCL-compatible view of the device list if necessary
       try {
          if(device_list_ptr == nullptr) {
             if(callback) {
-               throw_if_failed(clBuildProgram(internal_id, 0, nullptr, options.c_str(), raw_callback, (void *)this));
+               throw_if_failed(clBuildProgram(internal_id, 0, nullptr, options.c_str(), raw_callback, (void *)&callback_unique_ptr));
             } else {
                throw_if_failed(clBuildProgram(internal_id, 0, nullptr, options.c_str(), nullptr, nullptr));
             }
@@ -271,13 +270,13 @@ namespace CLplusplus {
             cl_device_id raw_device_ids[num_devices];
             for(size_t i = 0; i < num_devices; ++i) raw_device_ids[i] = device_list[i].raw_identifier();
             if(callback) {
-               throw_if_failed(clBuildProgram(internal_id, num_devices, raw_device_ids, options.c_str(), raw_callback, (void *)this));
+               throw_if_failed(clBuildProgram(internal_id, num_devices, raw_device_ids, options.c_str(), raw_callback, (void *)&callback_unique_ptr));
             } else {
                throw_if_failed(clBuildProgram(internal_id, num_devices, raw_device_ids, options.c_str(), nullptr, nullptr));
             }
          }
       } catch(...) {
-         callback_ptr.reset();
+         callback_unique_ptr.reset();
          throw;
       }
    }

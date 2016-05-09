@@ -163,7 +163,7 @@ namespace CLplusplus {
 
          // High-level context callbacks are stored here. They will be called by a lower-level static function which follows OpenCL's linkage conventions.
          std::shared_ptr<std::unique_ptr<BuildCallback>> internal_callback_ptr;
-         static void CL_CALLBACK raw_callback(cl_program program, void * program_object);
+         static void CL_CALLBACK raw_callback(cl_program program, void * callback_ptr);
 
          // This lower-level function eliminates code duplication in program build code
          void raw_build_program(const std::vector<Device> * const device_list_ptr, const std::string & options, const BuildCallback & callback);
