@@ -149,11 +149,17 @@ namespace CLplusplus {
    }
 
    void Device::retain() const {
-      throw_if_failed(clRetainDevice(internal_id));
+      // This should be a no-op for OpenCL 1.1 devices
+      if( this->version() >= CLplusplus::version_1p2 ) {
+         throw_if_failed(clRetainDevice(internal_id));
+      }
    }
 
    void Device::release() {
-      throw_if_failed(clReleaseDevice(internal_id));
+      // This should be a no-op for OpenCL 1.1 devices
+      if( this->version() >= CLplusplus::version_1p2 ) {
+         throw_if_failed(clReleaseDevice(internal_id));
+      }
    }
    #endif
 
