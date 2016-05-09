@@ -204,6 +204,10 @@ namespace CLplusplus {
 
       private:
          cl_device_id internal_id;
+         bool opencl_1p2_support;
+         
+         // Copy the internal data of one device object to another
+         void copy_internal_data(const Device & source);
 
          #ifdef CL_VERSION_1_2
          // The following can be used to manage subdevice reference counting

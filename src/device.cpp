@@ -28,6 +28,9 @@ namespace CLplusplus {
    {
       // Handle invalid device IDs
       if(internal_id == NULL) throw InvalidArgument();
+      
+      // Detect if the device supports OpenCL 1.2
+      this->opencl_1p2_support = ( this->version() >= CLplusplus::version_1p2 );
 
       #ifdef CL_VERSION_1_2
       // Unless asked not to do so, increment the device's reference count
@@ -35,9 +38,8 @@ namespace CLplusplus {
       #endif
    }
 
-   Device::Device(const Device & source) :
-      internal_id{source.internal_id}
-   {
+   Device::Device(const Device & source) {
+      copy_internal_data(source);
       #ifdef CL_VERSION_1_2
       // Whenever a copy of a reference-counted device is made, its reference count should be incremented
       retain();
@@ -56,7 +58,7 @@ namespace CLplusplus {
       #ifdef CL_VERSION_1_2
       release();
       #endif
-      internal_id = source.internal_id;
+      copy_internal_data(source);
       #ifdef CL_VERSION_1_2
       retain();
       #endif
@@ -147,17 +149,24 @@ namespace CLplusplus {
       // Return the result
       return result;
    }
+   #endif
+   
+   void Device::copy_internal_data(const Device & source) {
+      internal_id = source.internal_id;
+      opencl_1p2_support = source.opencl_1p2_support;
+   }
 
+   #ifdef CL_VERSION_1_2
    void Device::retain() const {
       // This should be a no-op for OpenCL 1.1 devices
-      if( this->version() >= CLplusplus::version_1p2 ) {
+      if( opencl_1p2_support ) {
          throw_if_failed(clRetainDevice(internal_id));
       }
    }
 
    void Device::release() {
       // This should be a no-op for OpenCL 1.1 devices
-      if( this->version() >= CLplusplus::version_1p2 ) {
+      if( opencl_1p2_support ) {
          throw_if_failed(clReleaseDevice(internal_id));
       }
    }
