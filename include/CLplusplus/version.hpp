@@ -39,9 +39,7 @@ namespace CLplusplus {
 
    // These specific instances represent various supported OpenCL versions
    const Version version_1p1 { 1, 1, "" };
-   #ifdef CL_VERSION_1_2
    const Version version_1p2 { 1, 2, "" };
-   #endif
 
    // This function decodes an OpenCL version string, using generic format "<preamble><major>.<minor>[ <vendor_specific>]", into the struct above.
    Version decode_version_string(const std::string & version_string, const std::string & preamble, const bool has_vendor_info);
